@@ -1,1 +1,1 @@
-禁用绝大部分动画效果，降低页面资源占用，使设备更省电。
+Disable most animation effects, reduce page resource usage, and make the device more power efficient.
