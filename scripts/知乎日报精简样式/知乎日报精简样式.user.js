@@ -2,7 +2,7 @@
 // @name         知乎日报精简样式
 // @description  向页面注入样式表
 // @namespace    https://greasyfork.org/users/197529
-// @version      0.1
+// @version      0.2
 // @author       kkocdko
 // @license      Unlicense
 // @match        *://daily.zhihu.com/*
@@ -10,7 +10,7 @@
 // ==/UserScript==
 'use strict'
 
-document.documentElement.insertAdjacentHTML('beforeend', `<style>
+document.head.insertAdjacentHTML('beforeend', `<style>
 
 body {
   padding-top: 0;

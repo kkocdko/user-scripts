@@ -1,48 +1,73 @@
 // ==UserScript==
 // @name         Bilibili摸鱼模式
-// @description  隐藏无用元素，添加浮动时钟，自动关闭弹幕
-// @namespace    https://greasyfork.org/users/
-// @version      0.1
+// @description  仅显示播放器，关闭弹幕，添加浮动时钟
+// @namespace    https://greasyfork.org/users/197529
+// @version      0.2
 // @author       kkocdko
 // @license      Unlicense
 // @match        *://*.bilibili.com/video/*
+// @run-at       document-start
 // ==/UserScript==
 'use strict'
 
-// Close danmaku
-document.querySelector('#bofqi').addEventListener('DOMSubtreeModified', () => {
-  const danmakuSwitchEl = document.querySelector('.bilibili-player-video-danmaku-switch>input')
-  if (danmakuSwitchEl && danmakuSwitchEl.dataset.disabled !== 'true') {
+// Disable danmaku
+disableDanmaku()
+runAfterPageReady(() => {
+  document.querySelector('#multi_page').addEventListener('DOMSubtreeModified', () => {
+    disableDanmaku()
     setTimeout(() => {
-      danmakuSwitchEl.dataset.disabled = 'true'
-      danmakuSwitchEl.checked = true
-      danmakuSwitchEl.click()
-    }, 700)
-  }
+      // Fix the player's bug
+      window.dispatchEvent(new window.UIEvent('resize'))
+    }, 1000)
+  })
 })
 
+function disableDanmaku () {
+  const disableDanmakuTimer = setInterval(() => {
+    const danmakuSwitch = document.querySelector('.bilibili-player-video-danmaku-switch>input')
+    if (danmakuSwitch) {
+      clearInterval(disableDanmakuTimer)
+      if (danmakuSwitch.checked) {
+        danmakuSwitch.click()
+      }
+    }
+  }, 500)
+}
+
 // Float clock
-const clockStyleEl = document.createElement('style')
+const clockStyle = document.head.appendChild(document.createElement('style'))
 setInterval(() => {
-  clockStyleEl.textContent = `#bilibiliPlayer::before{content:"${new Date().toTimeString().substr(0, 8)}"}`
+  clockStyle.textContent = `#bilibiliPlayer::before{content:"${new Date().toTimeString().substr(0, 8)}"}`
 }, 1000)
-document.body.append(clockStyleEl)
 
 // Modify style
-document.body.insertAdjacentHTML('beforeend', `<style>
+document.head.insertAdjacentHTML('beforeend', `<style>
 
 body,
 html {
   height: unset;
 }
 
-#entryOld,
-.bili-header-m,
+body>:not(#app),
+#app>div>:not(.l-con),
 .l-con>:not(#playerWrap),
-.r-con>:not(#multi_page),
 .bilibili-player-video-top,
 .bilibili-player-video-danmaku-root {
-  display: none !important;
+  display: none;
+}
+
+#bofqi {
+  height: unset;
+}
+
+.bilibili-player-video-sendbar {
+  margin-top: -10px;
+  height: 10px;
+  visibility: hidden;
+}
+
+.bilibili-player-video-btn-pagelist {
+  display: unset;
 }
 
 #bilibiliPlayer::before {
@@ -54,4 +79,10 @@ html {
   text-shadow: #000 0 0 3px, #000 0 0 4px;
 }
 
-</style>`)
+</style>`.replace(/;/g, '!important;'))
+
+function runAfterPageReady (callback) {
+  window.addEventListener('DOMContentLoaded', callback) // Run script after dom loaded
+  window.addEventListener('load', callback) // For overslow script inserting
+  if (document.readyState === 'complete') callback() // For lessfunctional script-manager
+}

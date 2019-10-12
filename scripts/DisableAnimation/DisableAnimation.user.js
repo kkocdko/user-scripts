@@ -16,7 +16,7 @@ runInGrobal(() => {
   window.requestAnimationFrame = callback => setTimeout(callback, 200)
 })
 
-document.documentElement.insertAdjacentHTML('beforeend', `<style>
+document.head.insertAdjacentHTML('beforeend', `<style>
 
 *,
 *::before,
@@ -30,5 +30,5 @@ document.documentElement.insertAdjacentHTML('beforeend', `<style>
 function runInGrobal (callback) {
   const scriptEl = document.createElement('script')
   scriptEl.textContent = callback.toString()
-  document.documentElement.appendChild(scriptEl)
+  document.head.appendChild(scriptEl)
 }
