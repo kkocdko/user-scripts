@@ -1,8 +1,8 @@
 // ==UserScript==
 // @name         Bilibili摸鱼模式
-// @description  仅显示播放器，关闭弹幕，添加浮动时钟
+// @description  保持网页全屏，去除弹幕，添加浮动时钟
 // @namespace    https://greasyfork.org/users/197529
-// @version      0.2
+// @version      0.3
 // @author       kkocdko
 // @license      Unlicense
 // @match        *://*.bilibili.com/video/*
@@ -10,19 +10,14 @@
 // ==/UserScript==
 'use strict'
 
-// Disable danmaku
-disableDanmaku()
-runAfterPageReady(() => {
-  document.querySelector('#multi_page').addEventListener('DOMSubtreeModified', () => {
-    disableDanmaku()
-    setTimeout(() => {
-      // Fix the player's bug
-      window.dispatchEvent(new window.UIEvent('resize'))
-    }, 1000)
-  })
-})
+document.documentElement.style = `
+  background: #000;
+  transition: opacity 0.3s;
+  opacity: 0
+`
 
-function disableDanmaku () {
+runAfterPageReady(() => {
+  // Disable danmaku
   const disableDanmakuTimer = setInterval(() => {
     const danmakuSwitch = document.querySelector('.bilibili-player-video-danmaku-switch>input')
     if (danmakuSwitch) {
@@ -32,57 +27,48 @@ function disableDanmaku () {
       }
     }
   }, 500)
-}
 
-// Float clock
-const clockStyle = document.head.appendChild(document.createElement('style'))
-setInterval(() => {
-  clockStyle.textContent = `#bilibiliPlayer::before{content:"${new Date().toTimeString().substr(0, 8)}"}`
-}, 1000)
+  document.querySelector('#bilibiliPlayer').addEventListener('DOMSubtreeModified', function () {
+    if (window.player && window.player.isFullScreen && !window.player.isFullScreen()) {
+      document.querySelector('.bilibili-player-video-web-fullscreen').click()
+      document.documentElement.style.opacity = ''
+    }
+  })
 
-// Modify style
-document.head.insertAdjacentHTML('beforeend', `<style>
+  // Float clock
+  const closkStyle = document.head.appendChild(document.createElement('style'))
+  setInterval(() => {
+    closkStyle.textContent = `#bilibiliPlayer::before{content:"${new Date().toTimeString().substr(0, 8)}"}`
+  }, 1000)
 
-body,
-html {
-  height: unset;
-}
+  // Modify style
+  document.head.appendChild(document.createElement('style')).innerHTML = `
+    .bilibili-player-video-top,
+    .bilibili-player-video-danmaku-root {
+      display: none;
+    }
 
-body>:not(#app),
-#app>div>:not(.l-con),
-.l-con>:not(#playerWrap),
-.bilibili-player-video-top,
-.bilibili-player-video-danmaku-root {
-  display: none;
-}
+    #bilibiliPlayer::before {
+      position: absolute;
+      margin: 1em;
+      font-size: 24px;
+      z-index: 99;
+      color: #fff;
+      text-shadow: #000 0 0 3px, #000 0 0 4px;
+    }
+  `.replace(/;/g, '!important;')
+})
 
-#bofqi {
-  height: unset;
-}
-
-.bilibili-player-video-sendbar {
-  margin-top: -10px;
-  height: 10px;
-  visibility: hidden;
-}
-
-.bilibili-player-video-btn-pagelist {
-  display: unset;
-}
-
-#bilibiliPlayer::before {
-  position: absolute;
-  margin: 1em;
-  font-size: 24px;
-  z-index: 99;
-  color: #fff;
-  text-shadow: #000 0 0 3px, #000 0 0 4px;
-}
-
-</style>`.replace(/;/g, '!important;'))
-
-function runAfterPageReady (callback) {
-  window.addEventListener('DOMContentLoaded', callback) // Run script after dom loaded
-  window.addEventListener('load', callback) // For overslow script inserting
-  if (document.readyState === 'complete') callback() // For lessfunctional script-manager
+function runAfterPageReady (onready) {
+  const callback = () => {
+    window.removeEventListener('DOMContentLoaded', callback)
+    window.removeEventListener('load', callback)
+    onready()
+  }
+  if (document.readyState === 'complete') {
+    onready() // For lessfunctional script-manager
+  } else {
+    window.addEventListener('DOMContentLoaded', callback) // Run script after dom loaded
+    window.addEventListener('load', callback) // For overslow script inserting
+  }
 }
