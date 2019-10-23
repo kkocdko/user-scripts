@@ -2,7 +2,7 @@
 // @name         转换微信公众号图片到兼容格式
 // @description  将WEBP格式图片转换到JPEG、PNG等兼容性较好的格式
 // @namespace    https://greasyfork.org/users/197529
-// @version      0.5
+// @version      0.6
 // @author       kkocdko
 // @license      Unlicense
 // @match        *://mp.weixin.qq.com/*
@@ -13,12 +13,12 @@
 addFloatButton('转换全部图片到兼容格式', function () {
   document.querySelectorAll('img').forEach(el => {
     const imgUrlStr = el.dataset.src || el.src
-    if (!imgUrlStr) { return }
+    if (!imgUrlStr) return
     const imgUrl = new URL(imgUrlStr)
     imgUrl.searchParams.set('tp', 'png')
     const newImg = el.cloneNode()
     newImg.src = imgUrl.href
-    el.parentNode.replaceChild(newImg, el)
+    el.replaceWith(newImg)
   })
   this.style.background = '#4caf50'
   this.textContent = '全部图片都已转换完成！'
