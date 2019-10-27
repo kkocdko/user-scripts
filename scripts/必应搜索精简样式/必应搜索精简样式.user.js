@@ -2,7 +2,7 @@
 // @name         必应搜索精简样式
 // @description  向页面注入样式表
 // @namespace    https://greasyfork.org/users/197529
-// @version      0.2
+// @version      0.3
 // @author       kkocdko
 // @license      Unlicense
 // @match        *://*.bing.com/search
@@ -10,7 +10,7 @@
 // ==/UserScript==
 'use strict'
 
-document.head.insertAdjacentHTML('beforeend', `<style>
+document.documentElement.insertAdjacentHTML('beforeend', `<style>
 
 #id_h,
 #b_opalpers,
