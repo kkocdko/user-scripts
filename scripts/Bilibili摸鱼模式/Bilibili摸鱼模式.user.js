@@ -2,7 +2,7 @@
 // @name         Bilibili摸鱼模式
 // @description  保持网页全屏，去除弹幕，添加浮动时钟
 // @namespace    https://greasyfork.org/users/197529
-// @version      0.4
+// @version      0.5
 // @author       kkocdko
 // @license      Unlicense
 // @match        *://*.bilibili.com/video/*
@@ -76,14 +76,14 @@ async function waitUntilAsync (conditionCalculator, timeout = 2000, interval = 3
 }
 
 function runAfterPageReady (onready) {
-  const callback = () => {
-    window.removeEventListener('DOMContentLoaded', callback)
-    window.removeEventListener('load', callback)
-    onready()
-  }
   if (document.readyState === 'complete') {
     onready() // For lessfunctional script-manager
   } else {
+    const callback = () => {
+      window.removeEventListener('DOMContentLoaded', callback)
+      window.removeEventListener('load', callback)
+      onready()
+    }
     window.addEventListener('DOMContentLoaded', callback) // Run script after dom loaded
     window.addEventListener('load', callback) // For overslow script inserting
   }
