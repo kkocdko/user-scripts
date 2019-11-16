@@ -1,8 +1,8 @@
 // ==UserScript==
 // @name         Bilibili摸鱼模式
-// @description  保持网页全屏，去除弹幕，添加浮动时钟
+// @description  保持网页全屏，去除弹幕，嵌入时钟
 // @namespace    https://greasyfork.org/users/197529
-// @version      0.5
+// @version      0.6
 // @author       kkocdko
 // @license      Unlicense
 // @match        *://*.bilibili.com/video/*
