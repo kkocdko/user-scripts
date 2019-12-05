@@ -2,7 +2,7 @@
 // @name         Google谷歌翻译自动中英互译
 // @description  自动切换输出语言
 // @namespace    https://greasyfork.org/users/197529
-// @version      0.9
+// @version      1.1
 // @author       kkocdko
 // @license      Unlicense
 // @match        *://translate.google.com/*
@@ -10,21 +10,16 @@
 // ==/UserScript==
 'use strict'
 
-const sourceTextEl = document.querySelector('#source')
-const sourceLangEl = document.querySelector('.sl-selector a')
-window.location.hash = '#view=home&op=translate&sl=auto&tl=en&text=' + sourceTextEl.value
+const sourceTextInputBox = document.querySelector('#source')
+const sourceLangSelector = document.querySelector('.sl-selector a')
+window.location.hash = '#view=home&op=translate&sl=auto&tl=en&text=' + sourceTextInputBox.value
 autoSwitchLanguage()
-sourceLangEl.addEventListener('DOMSubtreeModified', autoSwitchLanguage)
+new window.MutationObserver(autoSwitchLanguage).observe(sourceLangSelector, { childList: true })
 
 function autoSwitchLanguage () {
-  if (sourceTextEl.value === '') {
-    return
-  }
-  const isEnglish = sourceLangEl.textContent === '检测到英语' || sourceLangEl.textContent === 'English - detected'
-  const targetValue = isEnglish ? 'tl=zh-CN' : 'tl=en'
-  const sourceValue = isEnglish ? 'tl=en' : 'tl=zh-CN'
-  if (window.location.hash.indexOf(targetValue) !== -1) {
-    window.location.hash = window.location.hash.replace(targetValue, sourceValue)
-  }
-  window.location.hash = window.location.hash.replace(sourceValue, targetValue)
+  if (sourceTextInputBox.value === '') return
+  const sourceLangIsEnglish = /英语|English/.test(sourceLangSelector.textContent)
+  const targetLang = sourceLangIsEnglish ? 'zh-CN' : 'en'
+  window.location.hash = window.location.hash.replace(/&tl=[^&]+/, '&tl=' + targetLang)
+  window.dispatchEvent(new window.HashChangeEvent('hashchange'))
 }
