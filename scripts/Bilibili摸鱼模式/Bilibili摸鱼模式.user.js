@@ -2,7 +2,7 @@
 // @name         Bilibili摸鱼模式
 // @description  保持网页全屏，去除弹幕，嵌入时钟
 // @namespace    https://greasyfork.org/users/197529
-// @version      0.6
+// @version      0.7
 // @author       kkocdko
 // @license      Unlicense
 // @match        *://*.bilibili.com/video/*
@@ -10,14 +10,16 @@
 // ==/UserScript==
 'use strict'
 
-document.documentElement.style = `
-  background: #000;
-  opacity: 0;
-  overflow: hidden;
-  transition: opacity 0.3s;
-`
+;(async () => {
+  document.documentElement.style = (`
+    background: #000;
+    opacity: 0;
+    overflow: hidden;
+    transition: opacity 0.3s;
+  `)
 
-runAfterPageReady(async () => {
+  await waitUntilPageReadyAsync()
+
   // Modify style
   document.head.insertAdjacentHTML('beforeend', `<style>
     .bilibili-player-video-top,
@@ -42,7 +44,7 @@ runAfterPageReady(async () => {
   }, 1000)
 
   // Wait until player loaded
-  await waitUntilAsync(() => document.querySelector('.bilibili-player-video-btn-danmaku'), 9000)
+  await waitUntilAsync(() => document.querySelector('.bilibili-player-video-btn-danmaku'), 10000, 200)
 
   // Close danmaku
   document.querySelector('.bilibili-player-video-danmaku-switch>input').click()
@@ -57,9 +59,9 @@ runAfterPageReady(async () => {
   }
   setWebFullScreen()
   new window.MutationObserver(setWebFullScreen).observe(playerContrainer, { attributes: true })
-})
+})()
 
-async function waitUntilAsync (conditionCalculator, timeout = 2000, interval = 30) {
+async function waitUntilAsync (conditionCalculator, timeout = 5000, interval = 50) {
   return new Promise((resolve, reject) => {
     const intervalTimer = setInterval(() => {
       if (conditionCalculator()) {
@@ -75,16 +77,18 @@ async function waitUntilAsync (conditionCalculator, timeout = 2000, interval = 3
   })
 }
 
-function runAfterPageReady (onready) {
-  if (document.readyState === 'complete') {
-    onready() // For lessfunctional script-manager
-  } else {
-    const callback = () => {
-      window.removeEventListener('DOMContentLoaded', callback)
-      window.removeEventListener('load', callback)
-      onready()
+async function waitUntilPageReadyAsync () {
+  return new Promise(resolve => {
+    if (document.readyState === 'complete') {
+      resolve() // For lessfunctional script-manager
+    } else {
+      const onReady = () => {
+        window.removeEventListener('DOMContentLoaded', onReady)
+        window.removeEventListener('load', onReady)
+        resolve()
+      }
+      window.addEventListener('DOMContentLoaded', onReady) // Run script after dom loaded
+      window.addEventListener('load', onReady) // For overslow script inserting
     }
-    window.addEventListener('DOMContentLoaded', callback) // Run script after dom loaded
-    window.addEventListener('load', callback) // For overslow script inserting
-  }
+  })
 }
