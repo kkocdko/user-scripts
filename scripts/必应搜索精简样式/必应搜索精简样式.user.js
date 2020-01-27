@@ -2,7 +2,7 @@
 // @name         必应搜索精简样式
 // @description  向页面注入样式表
 // @namespace    https://greasyfork.org/users/197529
-// @version      0.3
+// @version      0.4
 // @author       kkocdko
 // @license      Unlicense
 // @match        *://*.bing.com/search
@@ -27,7 +27,7 @@ document.documentElement.insertAdjacentHTML('beforeend', `<style>
 }
 
 #est_switch {
-  margin-left: 0;
+  margin-left: 1px;
 }
 
 #sb_form {
@@ -48,11 +48,35 @@ html,
   background: #f8f9fa;
 }
 
+.est_selected::after,
+.b_searchboxForm:hover,
+.b_searchboxForm {
+  box-shadow: 0 2px 5px #ccc;
+  border-left: none;
+  border-right: none;
+  border-top: none;
+  border-bottom: none;
+}
+
+.est_selected::before {
+  left: 0;
+  bottom: -9px;
+}
+
+#sa_ul {
+  box-shadow: 0 2px 5px #ccc;
+}
+
 #b_results>li {
   box-shadow: 0 2px 5px #ccc;
   border-radius: 5px;
   margin-bottom: 1em;
   padding: 0.9em 1.3em 0.5em;
+}
+
+#b_header,
+#b_results {
+  width: 649px;
 }
 
 #b_results>li>h2 {
