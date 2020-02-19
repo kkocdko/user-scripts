@@ -2,7 +2,7 @@
 // @name         必应搜索精简样式
 // @description  向页面注入样式表
 // @namespace    https://greasyfork.org/users/197529
-// @version      0.4
+// @version      0.4.1
 // @author       kkocdko
 // @license      Unlicense
 // @match        *://*.bing.com/search
@@ -85,6 +85,12 @@ html,
 
 #b_results>li>div>p {
   margin-bottom: 0.2em;
+}
+
+#b_results>.b_topborder>* {
+  margin-top: -10px;
+  margin-bottom: 0;
+  border: none;
 }
 
 </style>`.replace(/;/g, '!important;'))
