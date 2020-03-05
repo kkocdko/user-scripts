@@ -1,8 +1,8 @@
 // ==UserScript==
-// @name         必应搜索精简样式
-// @description  向页面注入样式表
+// @name         必应搜索页面美化
+// @description  单列居中，以卡片形式展示搜索结果
 // @namespace    https://greasyfork.org/users/197529
-// @version      0.4.1
+// @version      0.4.2
 // @author       kkocdko
 // @license      Unlicense
 // @match        *://*.bing.com/search
@@ -16,10 +16,6 @@ document.documentElement.insertAdjacentHTML('beforeend', `<style>
 #b_opalpers,
 #b_context {
   display: none;
-}
-
-#b_content {
-  padding: 41px 0 0 0;
 }
 
 .b_scopebar {
@@ -74,8 +70,11 @@ html,
   padding: 0.9em 1.3em 0.5em;
 }
 
-#b_header,
-#b_results {
+#b_content,
+.b_searchboxForm,
+main>* {
+  padding: 0;
+  margin: 0;
   width: 649px;
 }
 
@@ -87,10 +86,30 @@ html,
   margin-bottom: 0.2em;
 }
 
+.dict_oa,
 #b_results>.b_topborder>* {
-  margin-top: -10px;
   margin-bottom: 0;
   border: none;
+}
+
+footer,
+#b_pole {
+  display: none;
+}
+
+#b_tween,
+.b_cards,
+.b_underSearchbox {
+  box-sizing: border-box;
+  margin: 5px 0;
+  padding: 0 5px;
+  line-height: 30px;
+  width: 100%;
+}
+
+body,
+#b_header {
+  min-width: 0;
 }
 
 </style>`.replace(/;/g, '!important;'))
