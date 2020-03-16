@@ -1,3 +1,3 @@
-截图：
+效果图：
 
-![截图](https://s2.ax1x.com/2020/03/10/8CtVxS.png)
+![效果图](https://s1.ax1x.com/2020/03/16/8GBkCT.png)
