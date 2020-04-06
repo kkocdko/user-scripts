@@ -9,12 +9,12 @@
 // @match        *://www.xxt.fj.chinamobile.com/mhnew/htm/all.htm
 // @run-at       document-start
 // ==/UserScript==
-'use strict'
+"use strict";
 
-Object.defineProperty(unsafeWindow, 'dyniframesize', {
+Object.defineProperty(unsafeWindow, "dyniframesize", {
   writable: false,
-  value () {
-    const iframe = document.querySelector('#rightiframe')
-    iframe.height = iframe.contentDocument.scrollingElement.scrollHeight
-  }
-})
+  value() {
+    const iframe = document.querySelector("#rightiframe");
+    iframe.height = iframe.contentDocument.scrollingElement.scrollHeight;
+  },
+});

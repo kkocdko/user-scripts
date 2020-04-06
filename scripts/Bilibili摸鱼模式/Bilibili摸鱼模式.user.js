@@ -13,7 +13,7 @@
 const waitUntilAsync = async ({
   condition = () => true,
   timeout = 5000,
-  interval = 50
+  interval = 50,
 }) => {
   return new Promise((resolve, reject) => {
     const intervalTimer = setInterval(() => {
@@ -39,7 +39,7 @@ const waitUntilAsync = async ({
   `;
 
   // Wait until page ready
-  await new Promise(resolve => {
+  await new Promise((resolve) => {
     if (document.readyState === "complete") {
       resolve(); // For lessfunctional script-manager
     } else {
@@ -85,7 +85,7 @@ const waitUntilAsync = async ({
   await waitUntilAsync({
     condition: () =>
       document.querySelector(".bilibili-player-video-btn-danmaku"),
-    timeout: 10000
+    timeout: 10000,
   });
 
   // Close danmaku
@@ -101,6 +101,6 @@ const waitUntilAsync = async ({
   };
   setWebFullScreen();
   new window.MutationObserver(setWebFullScreen).observe(playerContrainer, {
-    attributes: true
+    attributes: true,
   });
 })();

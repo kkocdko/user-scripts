@@ -9,9 +9,11 @@
 // @run-at       document-start
 // @noframes
 // ==/UserScript==
-'use strict'
+"use strict";
 
-document.documentElement.insertAdjacentHTML('beforeend', `<style>
+document.documentElement.insertAdjacentHTML(
+  "beforeend",
+  `<style>
 
 #top_tips_container, #top_tips_seat {
   display: none;
@@ -21,4 +23,5 @@ document.documentElement.insertAdjacentHTML('beforeend', `<style>
   margin: 0;
 }
 
-</style>`.replace(/;/g, '!important;'))
+</style>`.replace(/;/g, "!important;")
+);

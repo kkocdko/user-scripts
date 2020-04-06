@@ -8,9 +8,11 @@
 // @match        *://*.zhixue.com/marking/marking/personal/*
 // @run-at       document-start
 // ==/UserScript==
-'use strict'
+"use strict";
 
-document.documentElement.insertAdjacentHTML('beforeend', `<style>
+document.documentElement.insertAdjacentHTML(
+  "beforeend",
+  `<style>
 
 #div_Annotation {
   /* display: none !important; */
@@ -41,4 +43,5 @@ document.documentElement.insertAdjacentHTML('beforeend', `<style>
   height: 100% !important;
 }
 
-</style>`.replace(/;/g, '!important;'))
+</style>`.replace(/;/g, "!important;")
+);

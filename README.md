@@ -1,13 +1,9 @@
-<h1 align="center">
-user-scripts
-</h1>
-<p align="center">
-Collection of my user scripts.
-</p>
-<p align="center">
-<img src="https://img.shields.io/badge/code_style-standard-brightgreen.svg?style=flat-square&color=4caf50">
-<img src="https://img.shields.io/github/license/kkocdko/user-scripts.svg?style=flat-square&color=4caf50">
-</p>
+<div align="center">
+<h1>user-scripts</h1>
+<p>Collection of my user scripts.</p>
+<img src="https://flat.badgen.net/badge/code%20style/prettier?color=4caf50">
+<img src="https://flat.badgen.net/github/license/kkocdko/user-scripts?color=4caf50">
+</div>
 
 Published on: <https://greasyfork.org/users/197529>
 

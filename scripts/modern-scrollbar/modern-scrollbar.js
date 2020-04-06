@@ -10,9 +10,11 @@
 // @match        *://*/*
 // @run-at       document-start
 // ==/UserScript==
-'use strict'
+"use strict";
 
-document.documentElement.insertAdjacentHTML('beforeend', `<style>
+document.documentElement.insertAdjacentHTML(
+  "beforeend",
+  `<style>
 
 * {
   scrollbar-width: thin;
@@ -47,4 +49,5 @@ document.documentElement.insertAdjacentHTML('beforeend', `<style>
   }
 }
 
-</style>`.replace(/;/g, '!important;'))
+</style>`.replace(/;/g, "!important;")
+);

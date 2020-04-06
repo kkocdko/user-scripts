@@ -10,13 +10,15 @@
 // @match        *://*/*
 // @run-at       document-start
 // ==/UserScript==
-'use strict'
+"use strict";
 
 runInGrobal(() => {
-  window.requestAnimationFrame = callback => setTimeout(callback, 200)
-})
+  window.requestAnimationFrame = (callback) => setTimeout(callback, 200);
+});
 
-document.head.insertAdjacentHTML('beforeend', `<style>
+document.head.insertAdjacentHTML(
+  "beforeend",
+  `<style>
 
 *,
 *::before,
@@ -25,10 +27,11 @@ document.head.insertAdjacentHTML('beforeend', `<style>
   transition: none !important;
 }
 
-</style>`)
+</style>`
+);
 
-function runInGrobal (callback) {
-  const scriptEl = document.createElement('script')
-  scriptEl.textContent = callback.toString()
-  document.head.appendChild(scriptEl)
+function runInGrobal(callback) {
+  const scriptEl = document.createElement("script");
+  scriptEl.textContent = callback.toString();
+  document.head.appendChild(scriptEl);
 }
