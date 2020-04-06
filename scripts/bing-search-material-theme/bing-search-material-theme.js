@@ -1,10 +1,10 @@
 // ==UserScript==
-// @name         BingGrayTheme
-// @name:zh-CN   必应搜索灰色主题
-// @description  Show search results as cards, color similar to the settings page of MS Edge
-// @description:zh-CN  以卡片形式展示搜索结果，配色类似于MSEdge的设置页面
+// @name         BingSearchMaterialTheme
+// @name:zh-CN   必应搜索Material主题
+// @description  Show search results as cards, follow Material Design
+// @description:zh-CN  以卡片形式展示搜索结果，遵循Material Design
 // @namespace    https://greasyfork.org/users/197529
-// @version      0.5.7
+// @version      0.6.0
 // @author       kkocdko
 // @license      Unlicense
 // @match        *://*.bing.com/search
@@ -16,6 +16,7 @@ document.documentElement.insertAdjacentHTML(
   "beforeend",
   `<style>
 
+#sb_clt,
 .b_logoArea,
 #id_h,
 #b_pole,
@@ -25,17 +26,17 @@ document.documentElement.insertAdjacentHTML(
 }
 
 body {
-  --card-shadow: 0 1.6px 3.6px rgba(0, 0, 0, 0.13),
-    0 0.3px 0.9px rgba(0, 0, 0, 0.11);
+  --card-shadow: 0 1px 2px 0 rgba(60, 64, 67, 0.3),
+    0 1px 3px 1px rgba(60, 64, 67, 0.15);
   min-width: unset;
-  background: rgb(247, 247, 247);
+  background: rgb(248, 249, 250);
 }
 
 #b_header,
 #b_content {
   width: 90vw;
   min-width: unset;
-  max-width: 650px;
+  max-width: 680px;
   margin: 0 auto;
 }
 
