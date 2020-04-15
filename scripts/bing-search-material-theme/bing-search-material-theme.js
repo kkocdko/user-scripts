@@ -4,7 +4,7 @@
 // @description  Show search results as cards, follow Material Design
 // @description:zh-CN  以卡片形式展示搜索结果，遵循Material Design
 // @namespace    https://greasyfork.org/users/197529
-// @version      0.6.0
+// @version      0.6.1
 // @author       kkocdko
 // @license      Unlicense
 // @match        *://*.bing.com/search
@@ -36,7 +36,7 @@ body {
 #b_content {
   width: 90vw;
   min-width: unset;
-  max-width: 680px;
+  max-width: 700px;
   margin: 0 auto;
 }
 
