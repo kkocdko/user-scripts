@@ -1,19 +1,19 @@
 // ==UserScript==
-// @name         BingSearchMaterialTheme
-// @name:zh-CN   必应搜索Material主题
-// @description  Show search results as cards, follow Material Design
-// @description:zh-CN  以卡片形式展示搜索结果，遵循Material Design
-// @namespace    https://greasyfork.org/users/197529
-// @version      0.6.1
-// @author       kkocdko
-// @license      Unlicense
-// @match        *://*.bing.com/search
-// @run-at       document-start
+// @name        Bing Search Material Theme
+// @name:zh-CN  必应搜索Material主题
+// @description Show search results as cards, follow Material Design
+// @description:zh-CN 以卡片形式展示搜索结果，遵循Material Design
+// @namespace   https://greasyfork.org/users/197529
+// @version     0.6.3
+// @author      kkocdko
+// @license     Unlicense
+// @match       *://*.bing.com/search
+// @run-at      document-start
 // ==/UserScript==
 "use strict";
 
-document.documentElement.insertAdjacentHTML(
-  "beforeend",
+document.head.insertAdjacentHTML(
+  "afterbegin",
   `<style>
 
 #sb_clt,
@@ -41,6 +41,7 @@ body {
 }
 
 #b_header {
+  position: relative;
   background: none;
 }
 
