@@ -1,11 +1,13 @@
 // ==UserScript==
-// @name         转换微信公众号图片到兼容格式
-// @description  将WEBP格式图片转换到JPEG、PNG等兼容性较好的格式
+// @name         Float Button
+// @name:zh-CN   浮动按钮
+// @description  A reliable function to insert float buttons in web page.
+// @description:zh-CN  一个可靠的在网页中插入浮动按钮的方法.
 // @namespace    https://greasyfork.org/users/197529
-// @version      0.6.2
+// @version      0.8.1
 // @author       kkocdko
 // @license      Unlicense
-// @match        *://mp.weixin.qq.com/*
+// @match        *://*/*
 // ==/UserScript==
 "use strict";
 
@@ -28,16 +30,11 @@ const { addFloatButton } = {
   },
 };
 
-addFloatButton("转换全部图片到兼容格式", function () {
-  document.querySelectorAll("img").forEach((el) => {
-    const imgUrlStr = el.dataset.src || el.src;
-    if (!imgUrlStr) return;
-    const imgUrl = new URL(imgUrlStr);
-    imgUrl.searchParams.set("tp", "png");
-    const newImg = el.cloneNode();
-    newImg.src = imgUrl.href;
-    el.replaceWith(newImg);
-  });
-  this.style.background = "#4caf50";
-  this.textContent = "全部图片都已转换完成！";
-});
+const button1 = addFloatButton("This is a button", () =>
+  console.log("The first button was pressed")
+);
+const button2 = addFloatButton("Button with emoji 🙂", () =>
+  console.log("The second button was pressed")
+);
+console.log(button1);
+console.log(button2);
