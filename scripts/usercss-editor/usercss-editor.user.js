@@ -26,12 +26,31 @@ textarea {
   outline: none;
   border: 3px solid transparent;
   padding: 7px;
-  font-size: 14px;
   font-family: monospace;
 }
 `;
-const inputBox = container.appendChild(document.createElement("textarea"));
 const styleTag = document.head.appendChild(document.createElement("style"));
-setInterval(() => {
-  styleTag.textContent = inputBox.value.replace(/;/g, "!important;");
-}, 500);
+const inputBox = container.appendChild(document.createElement("textarea"));
+
+let idle = true;
+let task = null;
+const interval = 300;
+const exec = () => {
+  if (idle && task) {
+    task();
+    task = null;
+    idle = false;
+    setTimeout(() => {
+      idle = true;
+      exec();
+    }, interval);
+  }
+};
+
+const refreshStyle = () => {
+  styleTag.textContent = inputBox.value.replaceAll(";", "!important;");
+};
+inputBox.oninput = () => {
+  task = refreshStyle;
+  exec();
+};

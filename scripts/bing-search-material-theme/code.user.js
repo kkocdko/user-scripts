@@ -1,18 +1,16 @@
 // ==UserScript==
 // @name        Bing Search Material Theme
 // @name:zh-CN  必应搜索质感主题
-// @description Show results as cards, follow Material Design.
-// @description:zh-CN 以卡片形式展示结果，遵循Material Design。
+// @description Show results as cards, follow Material Design
+// @description:zh-CN 以卡片形式展示结果，遵循 Material Design
 // @namespace   https://greasyfork.org/users/197529
-// @version     0.7.2
+// @version     0.7.6
 // @author      kkocdko
 // @license     Unlicense
 // @match       *://*.bing.com/search
 // @run-at      document-start
 // ==/UserScript==
-"use strict";
-
-document.head.appendChild(document.createElement("style")).textContent = `
+document.lastChild.appendChild(document.createElement("style")).textContent = `
 
 #b_context,
 #b_footer,
@@ -22,17 +20,21 @@ document.head.appendChild(document.createElement("style")).textContent = `
 #b_content #mfa_root,
 #b_results .sb_fav,
 #b_results .fbans,
+#b_results > li:empty,
 #fbpgbt,
 #b_notificationContainer_bop,
 #b_opalpers {
   display: none;
 }
 
+html {
+  background: rgb(248, 249, 250);
+}
+
 body {
   --card-shadow: 0 1px 2px 0 rgba(60, 64, 67, 0.3),
     0 1px 3px 1px rgba(60, 64, 67, 0.15);
   min-width: 0;
-  background: rgb(248, 249, 250);
 }
 
 #b_header,
@@ -162,4 +164,12 @@ body {
   margin: -15px -20px -20px;
 }
 
-`.replace(/;/g, "!important;");
+/* Hotspot Panel */
+#b_content #b_pole {
+  margin: 5px;
+}
+#b_content #b_pole div {
+  background: none;
+}
+
+`.replaceAll(";", "!important;");
