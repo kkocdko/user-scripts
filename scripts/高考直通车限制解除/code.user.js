@@ -1,18 +1,17 @@
 // ==UserScript==
-// @name         Float Button
-// @name:zh-CN   浮动按钮
-// @description  A reliable function to insert float buttons in web page.
-// @description:zh-CN  一个可靠的在网页中插入浮动按钮的方法.
+// @name         高考直通车限制解除
+// @description  无需下载APP，直接查看试卷/答案
 // @namespace    https://greasyfork.org/users/197529
-// @version      0.8.1
+// @version      0.0.2
 // @author       kkocdko
 // @license      Unlicense
-// @match        *://*/*
+// @match        *://app.gaokaozhitongche.com/newsexam/h/*
+// @inject-into  content
 // ==/UserScript==
 "use strict";
 
 const { addFloatButton } = {
-  addFloatButton(text, onClick) /* 20200707-1237 */ {
+  addFloatButton(text, onClick) /* 20200707-123713 */ {
     if (!document.addFloatButton) {
       const container = document.body
         .appendChild(document.createElement("div"))
@@ -30,11 +29,11 @@ const { addFloatButton } = {
   },
 };
 
-const button1 = addFloatButton("This is a button", () =>
-  console.log("The first button was pressed")
-);
-const button2 = addFloatButton("Button with emoji 🙂", () =>
-  console.log("The second button was pressed")
-);
-console.log(button1);
-console.log(button2);
+addFloatButton("直接查看内容", () => {
+  document
+    .querySelectorAll("img[data-imgsrc]")
+    .forEach((e) => (e.src = e.dataset.imgsrc));
+  document.body.innerHTML =
+    "<style>img{max-width:100%}</style>" +
+    document.querySelector("#content-box>.wrap-box").innerHTML;
+});

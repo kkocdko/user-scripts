@@ -2,7 +2,7 @@
 // @name         修复福建校讯通
 // @description  使福建校讯通网站在现代浏览器上正常显示
 // @namespace    https://greasyfork.org/users/197529
-// @version      1.1
+// @version      1.2
 // @author       kkocdko
 // @license      Unlicense
 // @match        *://www.xxtyd.fj.cn/mhnew/htm/all.htm
@@ -11,7 +11,7 @@
 // ==/UserScript==
 "use strict";
 
-Object.defineProperty(unsafeWindow, "dyniframesize", {
+Object.defineProperty(this.unsafeWindow || window, "dyniframesize", {
   writable: false,
   value() {
     const iframe = document.querySelector("#rightiframe");

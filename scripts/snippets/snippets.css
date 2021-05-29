@@ -1,17 +1,3 @@
-// ==UserScript==
-// @name        Bing Search Material Theme
-// @name:zh-CN  必应搜索质感主题
-// @description Show results as cards, follow Material Design.
-// @description:zh-CN 以卡片形式展示结果，遵循Material Design。
-// @namespace   https://greasyfork.org/users/197529
-// @version     0.7.14
-// @author      kkocdko
-// @license     Unlicense
-// @match       *://*.bing.com/search
-// @run-at      document-start
-// ==/UserScript==
-document.lastChild.appendChild(document.createElement("style")).textContent = `
-
 #b_context,
 #b_footer,
 #b_header #id_h,
@@ -178,5 +164,3 @@ body {
 #b_content #b_pole div {
   background: none;
 }
-
-`.replace(/;/g, "!important;");

@@ -11,23 +11,25 @@
 
 /* WIP */
 
-const shadowHost = document.body.appendChild(document.createElement("div"));
-const shadowRoot = shadowHost.attachShadow({ mode: "open" });
 // Improve render speed
-shadowRoot.appendChild(document.createElement("style")).innerHTML = `
-:host {
-  position: fixed;
-  left: -2500px;
-  width: 2000px;
-  height: 1px;
-  overflow: scroll;
-  font-size: 1px;
-}
-`;
-const container = shadowRoot.appendChild(document.createElement("div"));
-const html2text = (htmlStr) => {
+const container = document.body
+  .appendChild(document.createElement("div"))
+  .attachShadow({ mode: "open" })
+  .appendChild(document.createElement("div"));
+Object.entries({
+  position: "fixed",
+  left: "-2500px",
+  width: "2000px",
+  height: "1px",
+  overflow: "hidden",
+  // overflow: "scroll",
+  fontSize: "1px",
+}).forEach(([k, v]) => (container.style[k] = v));
+const html2text = (htmlStr, selector) => {
   container.innerHTML = htmlStr;
-  const text = container.innerText;
+  const text = selector
+    ? container.querySelector(selector).innerText
+    : container.innerText;
   container.innerHTML = "";
   return text;
 };
@@ -68,3 +70,5 @@ const downloadStr = (str, filename = "download.txt") => {
   const result = parts.map(([, text]) => text).join("\n");
   downloadStr(result);
 })();
+
+// 出错重试
