@@ -2,7 +2,7 @@
 // @name         安全教育平台自动答题
 // @description  支持安全课程、专题活动
 // @namespace    https://greasyfork.org/users/197529
-// @version      0.8.3
+// @version      0.8.4
 // @author       kkocdko
 // @license      Unlicense
 // @match        *://*.xueanquan.com/*
@@ -29,17 +29,20 @@ const { addFloatButton } = {
   },
 };
 
+const isSpecialTopic = location.host.indexOf("huodong.") === 0;
+
 addFloatButton("自动答题", () => {
   document.querySelectorAll(":enabled:not(:checked)").forEach((el) => {
-    el.value = 1;
+    if (!isSpecialTopic) el.value = 1;
     el.click();
   });
 });
 
 addFloatButton("半自动答题", () => {
+  // For old browser
   document.querySelectorAll("[type=radio],[type=checkbox]").forEach((el) => {
     if (el.checked) return;
-    el.value = 1;
+    if (!isSpecialTopic) el.value = 1;
     el.click();
   });
   scroll({ top: 9e9 });
