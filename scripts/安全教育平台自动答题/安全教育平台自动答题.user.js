@@ -2,7 +2,7 @@
 // @name         安全教育平台自动答题
 // @description  支持安全课程、专题活动
 // @namespace    https://greasyfork.org/users/197529
-// @version      0.8.5
+// @version      0.8.6
 // @author       kkocdko
 // @license      Unlicense
 // @match        *://*.xueanquan.com/*
@@ -36,4 +36,6 @@ addFloatButton("自动答题", () => {
     if (!isSpecialTopic) el.value = 1;
     el.click();
   });
+  scroll(0, 9e9);
+  scrollBy(0, -0.3 * innerHeight);
 });
