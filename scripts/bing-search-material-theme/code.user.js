@@ -4,7 +4,7 @@
 // @description Show results as cards, follow Material Design.
 // @description:zh-CN 以卡片形式展示结果，遵循Material Design。
 // @namespace   https://greasyfork.org/users/197529
-// @version     0.7.14
+// @version     0.7.15
 // @author      kkocdko
 // @license     Unlicense
 // @match       *://*.bing.com/search
@@ -58,18 +58,27 @@ body {
 #b_header .b_searchboxForm,
 #b_header #sa_ul {
   border: 0;
+  border-radius: 8px;
   box-shadow: var(--card-shadow);
+}
+
+#b_header #est_switch > * {
+  margin: 0 15px 8px 0;
 }
 
 #b_header .b_searchboxForm {
   text-align: right;
   background: #fff;
-  border-radius: 0 5px 5px 5px;
+}
+
+#b_header #sb_search {
+  margin-left: -2px;
+  margin-right: 2px;
 }
 
 #b_header #sb_form_q {
   float: left;
-  width: calc(100% - 150px);
+  width: calc(100% - 160px);
   height: 46px;
   padding-top: 0;
   margin: 0;
@@ -77,13 +86,14 @@ body {
 }
 
 #b_header .sa_as {
+  margin-top: -1px;
   text-align: left;
   border: none;
 }
 
 #b_header #sb_form,
 #b_content #b_tween {
-  margin-bottom: 10px;
+  margin-bottom: 8px;
 }
 
 #b_content {
@@ -97,7 +107,7 @@ body {
   margin: 0;
   margin-bottom: 15px;
   overflow: hidden;
-  border-radius: 5px;
+  border-radius: 8px;
   box-shadow: var(--card-shadow);
 }
 
@@ -107,6 +117,10 @@ body {
   margin: 0;
   border: 0;
   outline: 0;
+}
+
+#b_results .b_caption {
+  padding-left: 0;
 }
 
 #b_results :not(.b_rs) > h2 {
