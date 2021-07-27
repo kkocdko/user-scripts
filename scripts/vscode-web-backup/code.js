@@ -1,12 +1,12 @@
-(async () => {
-  const data = {};
+(async function exportData() {
+  const json = {};
   const decoder = new TextDecoder();
   for (const { name: dbName } of await indexedDB.databases()) {
-    data[dbName] = {};
+    json[dbName] = {};
     const req = indexedDB.open(dbName);
     await new Promise((r) => (req.onsuccess = r));
     for (const storeName of req.result.objectStoreNames) {
-      data[dbName][storeName] = {};
+      json[dbName][storeName] = {};
       const transaction = req.result.transaction(storeName);
       const store = transaction.objectStore(storeName);
       const keysReq = store.getAllKeys();
@@ -14,57 +14,45 @@
       await new Promise((r) => (transaction.oncomplete = r));
       for (const k of keysReq.result) {
         const v = valuesReq.result.shift();
-        const item = { type: v.constructor.name }; //"String|Uint8Array"
+        const item = { type: v.constructor.name }; // String | Uint8Array
         const str = item.type === "String" ? v : decoder.decode(v);
         item.value = encodeURIComponent(str);
-        data[dbName][storeName][k] = item;
+        json[dbName][storeName][k] = item;
       }
     }
   }
   const link = document.createElement("a");
-  link.download = "vscode-web-backup-test_" + Date.now() + ".json";
-  link.href = "data:text/json," + encodeURIComponent(JSON.stringify(data));
+  link.download = "vscode-web-backup_" + Date.now() + ".json";
+  link.href = "data:text/json," + encodeURIComponent(JSON.stringify(json));
   link.click();
 })();
 
-(async () => {
-  const fileInput = document.createElement("input");
-  fileInput.type = "file";
-  fileInput.click();
-  await new Promise((r) => (fileInput.onchange = r));
-  const fileReader = new FileReader();
-  fileReader.readAsText(fileInput.files[0]);
-  await new Promise((r) => (fileReader.onload = r));
+(async function importData() {
+  const input = document.createElement("input");
+  input.type = "file";
+  input.click();
+  await new Promise((r) => (input.onchange = r));
+  const reader = new FileReader();
+  reader.readAsText(input.files[0]);
+  await new Promise((r) => (reader.onload = r));
   const encoder = new TextEncoder();
-  for (const { name } of await indexedDB.databases()) {
-    const req = indexedDB.deleteDatabase(name);
-    console.log("before");
-    await new Promise((r) => (req.onblocked = req.onsuccess = req.onerror = r));
-    console.log("after");
-  }
-  for (const [dbName, v] of Object.entries(JSON.parse(fileReader.result))) {
+  for (const [dbName, dbData] of Object.entries(JSON.parse(reader.result))) {
     const req = indexedDB.open(dbName);
     req.onupgradeneeded = (event) => {
       const db = event.target.result;
-      for (const storeName of Object.keys(v)) {
-        if (!db.objectStoreNames.contains(storeName)) {
-          db.createObjectStore(storeName);
-        }
-      }
+      for (const storeName in dbData) db.createObjectStore(storeName);
     };
     await new Promise((r) => (req.onsuccess = r));
-    for (const [storeName, items] of Object.entries(v)) {
+    for (const [storeName, items] of Object.entries(dbData)) {
       const transaction = req.result.transaction(storeName, "readwrite");
-      const oncomplete = new Promise((r) => (transaction.oncomplete = r));
       const store = transaction.objectStore(storeName);
+      store.clear(); // Avoid config conflict
       for (const [key, { type, value }] of Object.entries(items)) {
         const str = decodeURIComponent(value);
-        const v = type === "String" ? str : encoder.encode(str);
-        store.put(v, key);
+        store.put(type === "String" ? str : encoder.encode(str), key);
       }
-      await oncomplete;
+      await new Promise((r) => (transaction.oncomplete = r));
     }
   }
-
   location.reload();
 })();
