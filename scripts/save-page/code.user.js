@@ -32,8 +32,14 @@ const { addFloatButton } = {
 
 addFloatButton("Save page", async function () {
   console.time("save page");
-
-  // [TODO:Function] loading lint
+  this.style.background = "#ff9800";
+  let dotI = 1;
+  const dotTick = () => {
+    const dot = ".".padStart((++dotI % 3) + 1, " ").padEnd(3, " ");
+    this.innerHTML = "Saving " + dot.replace(/\s/g, "&nbsp;");
+  };
+  dotTick();
+  const interval = setInterval(dotTick, 333);
 
   // [TODO:Function] lazyload images
 
@@ -43,6 +49,8 @@ addFloatButton("Save page", async function () {
   for (const el of dom.querySelectorAll("img")) {
     // [TODO:Limitation] `el.srcset` will break img
     el.srcset = "";
+    // [TODO:Limitation] fetch failed will break whole progress
+    // [TODO:Optimize] parallel download
     const res = await fetch(el.src);
     const reader = new FileReader();
     reader.readAsDataURL(await res.blob());
@@ -72,4 +80,8 @@ addFloatButton("Save page", async function () {
   link.click();
 
   console.timeEnd("save page");
+
+  clearInterval(interval);
+  this.textContent = "Page saved";
+  this.style.background = "#4caf50";
 });
