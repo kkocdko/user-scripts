@@ -34,48 +34,58 @@ addFloatButton("Save page", async function () {
   console.time("save page");
   this.style.background = "#ff9800";
   let dotI = 1;
-  const dotTick = () => {
+  const interval = setInterval(() => {
     const dot = ".".padStart((++dotI % 3) + 1, " ").padEnd(3, " ");
     this.innerHTML = "Saving " + dot.replace(/\s/g, "&nbsp;");
-  };
-  dotTick();
-  const interval = setInterval(dotTick, 333);
+  }, 333);
 
   // [TODO:Function] lazyload images
 
+  // [TODO:Limitation] shadow dom???
   const /** @type {Document} */ dom = document.cloneNode(true);
-  // [TODO:Function] many useless item such as manifest should be removed
-  dom.querySelectorAll("script,link[rel=preload]").forEach((el) => el.remove());
-  for (const el of dom.querySelectorAll("img")) {
+  dom.querySelectorAll("script, link[rel*=pre]").forEach((el) => el.remove());
+  let css = [];
+  const procCss = async (/** @type {HTMLElement} */ el) => {
+    const index = css.push(null) - 1; // Keep css order
+    css[index] =
+      el.tagName === "STYLE"
+        ? el.textContent
+        : await (await fetch(el.href)).text();
+    el.remove();
+  };
+  const procImg = async (/** @type {HTMLImageElement} */ el) => {
+    // [TODO:Function] favicon image
     // [TODO:Limitation] `el.srcset` will break img
-    el.srcset = "";
-    // [TODO:Limitation] fetch failed will break whole progress
-    // [TODO:Optimize] parallel download
-    const res = await fetch(el.src);
+    // Image was not rendered, `el.currentSrc` == null
+    // console.log(el.currentSrc);
+    // const ratio = Math.ceil(devicePixelRatio);
+    let src = el.src;
+    if (el.srcset) {
+      // el.srcset.split(",").flatMap();
+      el.srcset = "";
+    }
+    const res = await fetch(src); // Fit `el.srcset`
     const reader = new FileReader();
     reader.readAsDataURL(await res.blob());
     await new Promise((r) => (reader.onload = reader.onerror = r));
     el.src = reader.result;
-  }
-  let css = "";
-  for (const el of dom.querySelectorAll("style,link[rel=stylesheet]")) {
-    if (el.tagName === "STYLE") {
-      css += el.textContent;
-    } else {
-      css += await (await fetch(el.href)).text();
-    }
-    css += "\n";
-    el.remove();
-  }
-  // [TODO:Limitation] `url()` in css will not be save
-  css = css.replace(/url\(.*?\)/g, "url()"); // Temporary solve the long-loading issue
+  };
+
+  await Promise.allSettled([
+    ...[...dom.querySelectorAll("style,link[rel=stylesheet]")].map(procCss),
+    ...[...dom.querySelectorAll("img")].map(procImg),
+  ]);
+
+  // [TODO:Limitation] `url()` and `image-set()` in css will not be save
+  // Avoid the long-loading issue
+  css = css.join("\n").replace(/(url|image-set)\(.*?\)/g, "url()");
   dom.head.appendChild(dom.createElement("style")).textContent = css;
 
-  // [TODO:Limitation] some no-doctype / xhtml / html4 pages
+  // [TODO:Limitation] breaked some no-doctype / xhtml / html4 pages
   const result = "<!DOCTYPE html>" + dom.documentElement.outerHTML;
 
-  const link = document.createElement("a");
-  link.download = `${document.title}_${Date.now()}.html`;
+  const link = document.createElement("a"); // Using `dom` will cause failure
+  link.download = `${dom.title}_${Date.now()}.html`;
   link.href = "data:text/html," + encodeURIComponent(result);
   link.click();
 
