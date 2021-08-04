@@ -33,53 +33,43 @@ const { addFloatButton } = {
 addFloatButton("Save page", async function () {
   console.time("save page");
   this.style.background = "#ff9800";
-  let dotI = 1;
-  const interval = setInterval(() => {
-    const dot = ".".padStart((++dotI % 3) + 1, " ").padEnd(3, " ");
-    this.innerHTML = "Saving " + dot.replace(/\s/g, "&nbsp;");
-  }, 333);
+  const interval = setInterval((o) => {
+    const suffix = ".".padStart((++o.i % 3) + 1, " ").padEnd(3, " ");
+    this.innerHTML = "Saving " + suffix.replace(/\s/g, "&nbsp;");
+  }, ...[333, { i: 0 }]); // 茴回囘囬
 
-  // [TODO:Function] lazyload images
+  // [TODO:Limitation] lazyload images
 
   // [TODO:Limitation] shadow dom???
   const /** @type {Document} */ dom = document.cloneNode(true);
-  dom.querySelectorAll("script, link[rel*=pre]").forEach((el) => el.remove());
-  let css = [];
-  const procCss = async (/** @type {HTMLElement} */ el) => {
-    const index = css.push(null) - 1; // Keep css order
-    css[index] =
-      el.tagName === "STYLE"
-        ? el.textContent
-        : await (await fetch(el.href)).text();
-    el.remove();
-  };
-  const procImg = async (/** @type {HTMLImageElement} */ el) => {
-    // [TODO:Function] favicon image
-    // [TODO:Limitation] `el.srcset` will break img
-    // Image was not rendered, `el.currentSrc` == null
-    // console.log(el.currentSrc);
-    // const ratio = Math.ceil(devicePixelRatio);
-    let src = el.src;
-    if (el.srcset) {
-      // el.srcset.split(",").flatMap();
-      el.srcset = "";
-    }
-    const res = await fetch(src); // Fit `el.srcset`
-    const reader = new FileReader();
-    reader.readAsDataURL(await res.blob());
-    await new Promise((r) => (reader.onload = reader.onerror = r));
-    el.src = reader.result;
-  };
 
-  await Promise.allSettled([
-    ...[...dom.querySelectorAll("style,link[rel=stylesheet]")].map(procCss),
-    ...[...dom.querySelectorAll("img")].map(procImg),
-  ]);
+  const removeList = `script, style, source, link[rel=stylesheet], link[rel=alternate], link[rel=search], link[rel*=pre]`;
+  dom.querySelectorAll(removeList).forEach((el) => el.remove());
+
+  const qsam = (s, f) => [...document.querySelectorAll(s)].map(f);
+
+  const imgs = dom.querySelectorAll("img, link[rel=icon]");
+  const imgTasks = qsam("img, link[rel=icon]", async (el, index) => {
+    const reader = new FileReader();
+    reader.readAsDataURL(await (await fetch(el.currentSrc ?? el.href)).blob());
+    await new Promise((r) => (reader.onload = reader.onerror = r));
+    imgs[index][el.src ? "src" : "href"] = reader.result;
+    imgs[index].removeAttribute(el.srcset ? "srcset" : "");
+  });
+
+  const css = [];
+  const cssTasks = qsam("style, link[rel=stylesheet]", async (el) => {
+    const i = css.push(null) - 1; // Keep css order
+    if (el.tagName === "STYLE") css[i] = el.textContent;
+    else css[i] = await (await fetch(el.href)).text();
+  });
+
+  await Promise.allSettled([...imgTasks, ...cssTasks]);
 
   // [TODO:Limitation] `url()` and `image-set()` in css will not be save
   // Avoid the long-loading issue
-  css = css.join("\n").replace(/(url|image-set)\(.*?\)/g, "url()");
-  dom.head.appendChild(dom.createElement("style")).textContent = css;
+  const cssStr = css.join("\n").replace(/(url|image-set)\(.*?\)/g, "url()");
+  dom.head.appendChild(dom.createElement("style")).textContent = cssStr;
 
   // [TODO:Limitation] breaked some no-doctype / xhtml / html4 pages
   const result = "<!DOCTYPE html>" + dom.documentElement.outerHTML;

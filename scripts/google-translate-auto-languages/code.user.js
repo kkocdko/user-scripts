@@ -4,40 +4,32 @@
 // @description Auto switch Chinese/English
 // @description:zh-CN 自动切换目标语言为中/英文
 // @namespace   https://greasyfork.org/users/197529
-// @version     1.4
+// @version     1.5
 // @author      kkocdko
 // @license     Unlicense
 // @match       *://translate.google.com/*
 // @match       *://translate.google.cn/*
+// @noframes
 // ==/UserScript==
 "use strict";
 
-const firstLangExp = /英语|English/;
-const firstLangCode = "en";
-const secondLangCode = "zh-CN";
+const firstLangRule = /English|英语/;
+const firstLang = "en";
+const secondLang = "zh-CN";
 
 const inputBox = document.querySelector("textarea");
-const langSelector = document.querySelector('[role="tablist"]').parentNode
-  .parentNode.previousElementSibling;
+const detectTab = document.querySelector("[role=tab]");
 let prevIsFirstLang = null;
 const switchLang = () => {
-  if (inputBox.value == "") return;
-  const isFirstLang = firstLangExp.test(langSelector.textContent);
+  if (inputBox.value === "") return;
+  const isFirstLang = firstLangRule.test(detectTab.textContent);
   if (isFirstLang === prevIsFirstLang) return;
   prevIsFirstLang = isFirstLang;
-  let targetLang = isFirstLang ? secondLangCode : firstLangCode;
-  const targetButton = document.querySelector(
-    `[data-popup-corner]~* [role="tab"][data-language-code="${targetLang}"]`
-  );
-  if (targetButton.getAttribute("aria-selected") === "true") return;
-  targetButton.click();
+  const lang = isFirstLang ? secondLang : firstLang;
+  const selector = `[data-popup-corner]~* [data-language-code=${lang}]`;
+  const tab = document.querySelector(selector);
+  if (tab.getAttribute("aria-selected") !== "true") tab.click();
 };
-// switchLang();
-new MutationObserver(switchLang).observe(langSelector, {
-  characterData: true,
-  subtree: true,
-});
-const autoLangButton = document.querySelector("[data-language-code=auto]");
-if (autoLangButton.getAttribute("aria-selected") !== "true") {
-  autoLangButton.click();
-}
+const options = { characterData: true, subtree: true };
+new MutationObserver(switchLang).observe(detectTab, options);
+if (detectTab.getAttribute("aria-selected") !== "true") detectTab.click();
