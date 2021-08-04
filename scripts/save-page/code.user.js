@@ -4,7 +4,7 @@
 // @description Save page as single HTML file.
 // @description:zh-CN 将页面保存为单个 HTML 文件。
 // @namespace   https://greasyfork.org/users/197529
-// @version     0.0.1
+// @version     0.1.0
 // @author      kkocdko
 // @license     Unlicense
 // @match       *://*/*
@@ -38,28 +38,25 @@ addFloatButton("Save page", async function () {
     this.innerHTML = "Saving " + suffix.replace(/\s/g, "&nbsp;");
   }, ...[333, { i: 0 }]); // 茴回囘囬
 
-  // [TODO:Limitation] lazyload images
-
-  // [TODO:Limitation] shadow dom???
+  const document = Object.freeze(window.document);
   const /** @type {Document} */ dom = document.cloneNode(true);
 
-  const removeList = `script, style, source, link[rel=stylesheet], link[rel=alternate], link[rel=search], link[rel*=pre]`;
+  const removeList = `script, style, source, title, link[rel=stylesheet], link[rel=alternate], link[rel=search], link[rel*=pre], link[rel*=icon]`;
   dom.querySelectorAll(removeList).forEach((el) => el.remove());
 
   const qsam = (s, f) => [...document.querySelectorAll(s)].map(f);
 
-  const imgs = dom.querySelectorAll("img, link[rel=icon]");
-  const imgTasks = qsam("img, link[rel=icon]", async (el, index) => {
+  const imgs = dom.querySelectorAll("img");
+  const imgTasks = qsam("img", async (el, i) => {
     const reader = new FileReader();
-    reader.readAsDataURL(await (await fetch(el.currentSrc ?? el.href)).blob());
+    reader.readAsDataURL(await (await fetch(el.currentSrc)).blob());
     await new Promise((r) => (reader.onload = reader.onerror = r));
-    imgs[index][el.src ? "src" : "href"] = reader.result;
-    imgs[index].removeAttribute(el.srcset ? "srcset" : "");
+    imgs[i].src = reader.result;
+    imgs[i].srcset = "";
   });
 
   const css = [];
-  const cssTasks = qsam("style, link[rel=stylesheet]", async (el) => {
-    const i = css.push(null) - 1; // Keep css order
+  const cssTasks = qsam("style, link[rel=stylesheet]", async (el, i) => {
     if (el.tagName === "STYLE") css[i] = el.textContent;
     else css[i] = await (await fetch(el.href)).text();
   });
@@ -75,7 +72,7 @@ addFloatButton("Save page", async function () {
   const result = "<!DOCTYPE html>" + dom.documentElement.outerHTML;
 
   const link = document.createElement("a"); // Using `dom` will cause failure
-  link.download = `${dom.title}_${Date.now()}.html`;
+  link.download = `${document.title}_${Date.now()}.html`;
   link.href = "data:text/html," + encodeURIComponent(result);
   link.click();
 
