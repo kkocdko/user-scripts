@@ -4,15 +4,17 @@
 // @description Save page as single HTML file.
 // @description:zh-CN 将页面保存为单个 HTML 文件。
 // @namespace   https://greasyfork.org/users/197529
-// @version     0.1.0
+// @version     0.1.1
 // @author      kkocdko
 // @license     Unlicense
 // @match       *://*/*
+// @grant       GM_xmlhttpRequest
+// @noframes
 // ==/UserScript==
 "use strict";
 
-const { addFloatButton } = {
-  addFloatButton(text, onClick) /* 20200707-123713 */ {
+const { addFloatButton, fetchex } = {
+  addFloatButton(text, onClick) /* 20200707-1237 */ {
     if (!document.addFloatButton) {
       const container = document.body
         .appendChild(document.createElement("div"))
@@ -28,6 +30,19 @@ const { addFloatButton } = {
     }
     return document.addFloatButton(text, onClick);
   },
+  async fetchex(url, type) /* 20210904-1148 */ {
+    // @grant       GM_xmlhttpRequest
+    if (self.GM_xmlhttpRequest)
+      return new Promise((resolve, reject) => {
+        GM_xmlhttpRequest({
+          url,
+          responseType: type,
+          onload: (e) => resolve(e.response),
+          onerror: reject,
+        });
+      });
+    else return (await fetch(url))[type]();
+  },
 };
 
 addFloatButton("Save page", async function () {
@@ -38,7 +53,6 @@ addFloatButton("Save page", async function () {
     this.innerHTML = "Saving " + suffix.replace(/\s/g, "&nbsp;");
   }, ...[333, { i: 0 }]); // 茴回囘囬
 
-  const document = Object.freeze(window.document);
   const /** @type {Document} */ dom = document.cloneNode(true);
 
   const removeList = `script, style, source, title, link[rel=stylesheet], link[rel=alternate], link[rel=search], link[rel*=pre], link[rel*=icon]`;
@@ -49,23 +63,23 @@ addFloatButton("Save page", async function () {
   const imgs = dom.querySelectorAll("img");
   const imgTasks = qsam("img", async (el, i) => {
     const reader = new FileReader();
-    reader.readAsDataURL(await (await fetch(el.currentSrc)).blob());
+    reader.readAsDataURL(await fetchex(el.currentSrc, "blob"));
     await new Promise((r) => (reader.onload = reader.onerror = r));
     imgs[i].src = reader.result;
     imgs[i].srcset = "";
   });
 
-  const css = [];
+  const css = []; // Keep order
   const cssTasks = qsam("style, link[rel=stylesheet]", async (el, i) => {
     if (el.tagName === "STYLE") css[i] = el.textContent;
-    else css[i] = await (await fetch(el.href)).text();
+    else css[i] = await fetchex(el.href, "text");
   });
 
   await Promise.allSettled([...imgTasks, ...cssTasks]);
 
   // [TODO:Limitation] `url()` and `image-set()` in css will not be save
   // Avoid the long-loading issue
-  const cssStr = css.join("\n").replace(/(url|image-set)\(.*?\)/g, "url()");
+  const cssStr = css.join("\n").replace(/(url|image-set)(.+?)/g, "url()");
   dom.head.appendChild(dom.createElement("style")).textContent = cssStr;
 
   // [TODO:Limitation] breaked some no-doctype / xhtml / html4 pages

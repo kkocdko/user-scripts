@@ -51,6 +51,19 @@ const { addFloatButton, sleep, getTimeStr } = {
       zeroPad(d.getMilliseconds(), 3);
     return str;
   },
+  async fetchex(url, type) /* 20210904-1148 */ {
+    // @grant       GM_xmlhttpRequest
+    if (self.GM_xmlhttpRequest)
+      return new Promise((resolve, reject) => {
+        GM_xmlhttpRequest({
+          url,
+          responseType: type,
+          onload: (e) => resolve(e.response),
+          onerror: reject,
+        });
+      });
+    else return (await fetch(url))[type]();
+  },
 };
 
 // User CSS Template
