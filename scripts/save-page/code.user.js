@@ -45,6 +45,8 @@ const { addFloatButton, fetchex } = {
   },
 };
 
+// TODO: Content Security Policy. Example: https://github.com/kkocdko/kblog
+
 addFloatButton("Save page", async function () {
   console.time("save page");
   this.style.background = "#ff9800";
