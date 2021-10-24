@@ -38,6 +38,23 @@ const { addFloatButton, sleep, getTimeStr } = {
       setTimeout(finish, timeout);
     });
   },
+  waitValue(fn, interval = 200, timeout = 3000) /* 20210928-1143 */ {
+    return new Promise((resolve, reject) => {
+      const intervalHandle = setInterval(() => {
+        try {
+          const value = fn();
+          if (!value) return;
+          clearInterval(intervalHandle);
+          clearTimeout(timeoutHandle);
+          resolve(value);
+        } catch {}
+      }, interval);
+      const timeoutHandle = setTimeout(() => {
+        clearInterval(intervalHandle);
+        reject();
+      }, timeout);
+    });
+  },
   getTimeStr() /* 20210416-2319 */ {
     const zeroPad = (num, len = 2) => ("00000" + num).substr(-len, len);
     const d = new Date();
