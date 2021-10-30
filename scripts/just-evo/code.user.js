@@ -2,7 +2,7 @@
 // @name        JUST EVO
 // @description Patches & tools for JUST Website
 // @namespace   https://greasyfork.org/users/197529
-// @version     0.1.3
+// @version     0.1.5
 // @author      kkocdko
 // @license     Unlicense
 // @match       *://*.just.edu.cn/*
@@ -10,7 +10,7 @@
 // ==/UserScript==
 "use strict";
 
-const { addFloatButton, waitValue } = {
+const { addFloatButton, waitValue, downloadText } = {
   addFloatButton(text, onClick) /* 20200707-1237 */ {
     if (!document.addFloatButton) {
       const container = document.body
@@ -44,6 +44,15 @@ const { addFloatButton, waitValue } = {
       }, timeout);
     });
   },
+  downloadText(name, contentStr) /* 20211027-0709 */ {
+    const blob = new window.Blob([contentStr]);
+    const href = URL.createObjectURL(blob);
+    URL.revokeObjectURL(blob);
+    const aTag = document.createElement("a");
+    aTag.download = name;
+    aTag.href = href;
+    aTag.click();
+  },
 };
 
 // Auto login
@@ -65,5 +74,19 @@ if (
   addFloatButton("Clock in", () => {
     input_tw.value = input_zwtw.value = 36;
     post.click();
+  });
+}
+
+// Shedule dump
+if (
+  location.pathname.split("/")?.[2] ==
+  "webvpneb26120c0b61d26f61ce45ea5ef07bf864a455884ca2133c138748630669de2c"
+) {
+  addFloatButton("Dump schedule", () => {
+    downloadText(
+      `schedule_${zc.value}_${Date.now()}.html`,
+      `<!DOCTYPE html><meta name="viewport" content="width=device-width">` +
+        kbtable.outerHTML
+    );
   });
 }

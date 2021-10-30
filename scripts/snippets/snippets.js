@@ -11,7 +11,7 @@
 // @run-at      document-start
 // ==/UserScript==
 
-const { addFloatButton, sleep, getTimeStr } = {
+const {} = {
   addFloatButton(text, onClick) /* 20200707-1237 */ {
     if (!document.addFloatButton) {
       const container = document.body
@@ -80,6 +80,15 @@ const { addFloatButton, sleep, getTimeStr } = {
         });
       });
     else return (await fetch(url))[type]();
+  },
+  downloadText(name, contentStr) /* 20211027-0709 */ {
+    const blob = new window.Blob([contentStr]);
+    const href = URL.createObjectURL(blob);
+    URL.revokeObjectURL(blob);
+    const aTag = document.createElement("a");
+    aTag.download = name;
+    aTag.href = href;
+    aTag.click();
   },
 };
 
