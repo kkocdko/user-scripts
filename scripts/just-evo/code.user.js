@@ -2,11 +2,12 @@
 // @name        JUST EVO
 // @description Patches & tools for JUST Website
 // @namespace   https://greasyfork.org/users/197529
-// @version     0.1.5
+// @version     0.1.7
 // @author      kkocdko
 // @license     Unlicense
 // @match       *://*.just.edu.cn/*
-// @noframes
+// @match       *://*.just.edu.cn:8080/*
+// @match       *://*.just.edu.cn:80/*
 // ==/UserScript==
 "use strict";
 
@@ -78,15 +79,24 @@ if (
 }
 
 // Shedule dump
-if (
-  location.pathname.split("/")?.[2] ==
-  "webvpneb26120c0b61d26f61ce45ea5ef07bf864a455884ca2133c138748630669de2c"
-) {
+waitValue(() => document.querySelector("#kbtable")).then((el) => {
   addFloatButton("Dump schedule", () => {
     downloadText(
       `schedule_${zc.value}_${Date.now()}.html`,
       `<!DOCTYPE html><meta name="viewport" content="width=device-width">` +
-        kbtable.outerHTML
+        el.outerHTML
     );
   });
+});
+
+{
+  const el = document.createElement("script");
+  el.src = "//cdn.jsdelivr.net/gh/niutech/showModalDialog/showModalDialog.js";
+  document.head.appendChild(el);
 }
+
+/*
+http://ids2.just.edu.cn/cas/logout
+http://jwgl.just.edu.cn:8080/jsxsd/framework/xsMain.jsp
+https://client.v.just.edu.cn/http/webvpn764a2e4853ae5e537560ba711c0f46bd/_s2/students_sy/main.psp
+*/

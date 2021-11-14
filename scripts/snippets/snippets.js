@@ -55,18 +55,10 @@ const {} = {
       }, timeout);
     });
   },
-  getTimeStr() /* 20210416-2319 */ {
-    const zeroPad = (num, len = 2) => ("00000" + num).substr(-len, len);
+  timeStr() /* 20211114-1554 */ {
+    const zp = (n) => ("0" + n).substr(-2, 2);
     const d = new Date();
-    const str =
-      zeroPad(d.getHours()) +
-      ":" +
-      zeroPad(d.getMinutes()) +
-      ":" +
-      zeroPad(d.getSeconds()) +
-      "." +
-      zeroPad(d.getMilliseconds(), 3);
-    return str;
+    return `${zp(d.getHours())}:${zp(d.getMinutes())}:${zp(d.getSeconds())}`;
   },
   async fetchex(url, type) /* 20210904-1148 */ {
     // @grant       GM_xmlhttpRequest
