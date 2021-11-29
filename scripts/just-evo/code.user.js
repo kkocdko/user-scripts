@@ -2,12 +2,13 @@
 // @name        JUST EVO
 // @description Patches & tools for JUST Website
 // @namespace   https://greasyfork.org/users/197529
-// @version     0.1.7
+// @version     0.1.8
 // @author      kkocdko
 // @license     Unlicense
 // @match       *://*.just.edu.cn/*
 // @match       *://*.just.edu.cn:8080/*
 // @match       *://*.just.edu.cn:80/*
+// @match       *://10.250.255.34/authentication/*
 // ==/UserScript==
 "use strict";
 
@@ -89,11 +90,18 @@ waitValue(() => document.querySelector("#kbtable")).then((el) => {
   });
 });
 
-{
-  const el = document.createElement("script");
-  el.src = "//cdn.jsdelivr.net/gh/niutech/showModalDialog/showModalDialog.js";
-  document.head.appendChild(el);
-}
+// Fix `window.showModalDialog` for book purchase page
+(this.unsafeWindow || window).showModalDialog = (url, args, opt = "") => {
+  // Thanks for github.com/niutech/showModalDialog
+  const dialog = document.body.appendChild(document.createElement("dialog"));
+  dialog.style = `padding:0;${opt.replace(/dialog/gi, "")}`;
+  const iframe = dialog.appendChild(document.createElement("iframe"));
+  iframe.style = "width:100%;height:100%;border:0";
+  iframe.src = url;
+  iframe.contentWindow.dialogArguments = args;
+  iframe.onload = () => (iframe.contentWindow.close = () => dialog.remove());
+  dialog.showModal();
+};
 
 /*
 http://ids2.just.edu.cn/cas/logout

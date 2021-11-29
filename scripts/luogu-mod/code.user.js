@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name        Luogu Mod
 // @namespace   https://greasyfork.org/users/197529
-// @version     1.1
+// @version     1.3
 // @author      kkocdko
 // @license     Unlicense
 // @match       *://www.luogu.com.cn/*
@@ -36,7 +36,7 @@ html {
   overflow: overlay;
 }
 
-section.side > :last-child {
+section.side > :not(.card) {
   display: none;
 }
 
@@ -45,9 +45,8 @@ section.side > :last-child {
 }
 
 #app > nav:not(:hover) {
-  border-radius: 5px;
-  opacity: 0.4;
-  transform: translate(calc(-100% + 20px), calc(-100% + 20px));
+  opacity: 0.3;
+  transform: translate(calc(-100% + 20px), calc(100% - 20px));
 }
 
 `.replace(/;/g, "!important;");

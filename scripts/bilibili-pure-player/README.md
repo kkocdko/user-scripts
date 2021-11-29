@@ -9,6 +9,7 @@ bilibili.com##.r-con>:first-child~:not(#multi_page)
 bilibili.com##.bilibili-player-video-wrap>:not(.bilibili-player-video)
 bilibili.com##.bilibili-player-video-wrap~*
 ||s1.hdslb.com/bfs/static/player/main/widgets
+||s1.hdslb.com/bfs/static/jinkela/video/stardust-video
 ||s1.hdslb.com/bfs/seed
 ||s1.hdslb.com/bfs/cm
 ```
