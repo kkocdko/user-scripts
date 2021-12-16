@@ -1,8 +1,8 @@
 // ==UserScript==
 // @name         安全教育平台自动答题
-// @description  支持安全课程、专题活动
+// @description  支持安全课程、专题活动、互动视频
 // @namespace    https://greasyfork.org/users/197529
-// @version      0.8.6
+// @version      0.9.1
 // @author       kkocdko
 // @license      Unlicense
 // @match        *://*.xueanquan.com/*
@@ -29,13 +29,28 @@ const { addFloatButton } = {
   },
 };
 
-const isSpecialTopic = location.host.indexOf("huodong.") === 0;
-
-addFloatButton("自动答题", () => {
-  document.querySelectorAll("input:not(:checked)").forEach((el) => {
-    if (!isSpecialTopic) el.value = 1;
-    el.click();
-  });
-  scroll(0, 9e9);
-  scrollBy(0, -0.3 * innerHeight);
+addFloatButton("自动完成", async function () {
+  this.textContent = "正在运行";
+  this.style.background = "#ff9800";
+  if (document.querySelector(".choseArea")) {
+    // interactive video
+    while (true) {
+      const qsaf = (s, f) => document.querySelectorAll(s).forEach(f);
+      qsaf(".choseArea :first-child", (el) => el.click());
+      qsaf("video", (el) => (el.currentTime = 2147483647));
+      if (document.querySelector(".seminar_nav .finish:not(.normal)")) break;
+      await new Promise((r) => setTimeout(r, 500));
+    }
+  } else {
+    // paper or exam
+    const specTopic = location.host.indexOf("huodong.") === 0;
+    for (const el of document.querySelectorAll("input:not(:checked)")) {
+      if (!specTopic) el.value = 1;
+      el.click();
+    }
+    scroll(0, 9e9);
+    scrollBy(0, -0.3 * innerHeight);
+  }
+  this.textContent = "运行结束";
+  this.style.background = "#4caf50";
 });

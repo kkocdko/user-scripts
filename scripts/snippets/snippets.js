@@ -73,14 +73,11 @@ const {} = {
       });
     else return (await fetch(url))[type]();
   },
-  downloadText(name, contentStr) /* 20211027-0709 */ {
-    const blob = new window.Blob([contentStr]);
-    const href = URL.createObjectURL(blob);
-    URL.revokeObjectURL(blob);
-    const aTag = document.createElement("a");
-    aTag.download = name;
-    aTag.href = href;
-    aTag.click();
+  saveStr(name, str) /* 20211203-1130 */ {
+    const el = document.createElement("a");
+    el.download = name;
+    el.href = URL.createObjectURL(new Blob([str]));
+    el.click();
   },
 };
 

@@ -2,17 +2,18 @@
 // @name        JUST EVO
 // @description Patches & tools for JUST Website
 // @namespace   https://greasyfork.org/users/197529
-// @version     0.1.8
+// @version     0.1.11
 // @author      kkocdko
 // @license     Unlicense
 // @match       *://*.just.edu.cn/*
 // @match       *://*.just.edu.cn:8080/*
 // @match       *://*.just.edu.cn:80/*
+// @match       *://10.250.255.34/*
 // @match       *://10.250.255.34/authentication/*
 // ==/UserScript==
 "use strict";
 
-const { addFloatButton, waitValue, downloadText } = {
+const { addFloatButton, waitValue, saveStr } = {
   addFloatButton(text, onClick) /* 20200707-1237 */ {
     if (!document.addFloatButton) {
       const container = document.body
@@ -46,14 +47,11 @@ const { addFloatButton, waitValue, downloadText } = {
       }, timeout);
     });
   },
-  downloadText(name, contentStr) /* 20211027-0709 */ {
-    const blob = new window.Blob([contentStr]);
-    const href = URL.createObjectURL(blob);
-    URL.revokeObjectURL(blob);
-    const aTag = document.createElement("a");
-    aTag.download = name;
-    aTag.href = href;
-    aTag.click();
+  saveStr(name, str) /* 20211203-1130 */ {
+    const el = document.createElement("a");
+    el.download = name;
+    el.href = URL.createObjectURL(new Blob([str]));
+    el.click();
   },
 };
 
@@ -61,50 +59,105 @@ const { addFloatButton, waitValue, downloadText } = {
 waitValue(() => document.querySelector(".login_btn")).then((e) => e.click());
 
 // Fix JUST P.E.
-waitValue(() => leftFrame.document.readyState === "complete").then(() => {
+waitValue(() => leftFrame.document.readyState === "complete").then(() =>
   leftFrame.document.querySelectorAll("[onclick]").forEach((el) => {
     const v = el.getAttribute("onclick").replace("href(", "href=(");
     el.setAttribute("onclick", v);
-  });
-});
+  })
+);
 
 // Health clock in
-if (
-  location.pathname.split("/")?.[2] ==
-  "webvpn929a314d8b5a743de924a3a45cc360c56b072364889c09028d67155f67909744"
-) {
+waitValue(() => input_zwtw).then(() =>
   addFloatButton("Clock in", () => {
     input_tw.value = input_zwtw.value = 36;
     post.click();
-  });
-}
+  })
+);
 
 // Shedule dump
-waitValue(() => document.querySelector("#kbtable")).then((el) => {
-  addFloatButton("Dump schedule", () => {
-    downloadText(
+waitValue(() => kbtable).then((el) =>
+  addFloatButton("Dump schedule", () =>
+    saveStr(
       `schedule_${zc.value}_${Date.now()}.html`,
       `<!DOCTYPE html><meta name="viewport" content="width=device-width">` +
         el.outerHTML
-    );
-  });
-});
+    )
+  )
+);
 
 // Fix `window.showModalDialog` for book purchase page
-(this.unsafeWindow || window).showModalDialog = (url, args, opt = "") => {
+(this.unsafeWindow || self).showModalDialog = async (url, args, opt = "") => {
   // Thanks for github.com/niutech/showModalDialog
   const dialog = document.body.appendChild(document.createElement("dialog"));
   dialog.style = `padding:0;${opt.replace(/dialog/gi, "")}`;
   const iframe = dialog.appendChild(document.createElement("iframe"));
   iframe.style = "width:100%;height:100%;border:0";
   iframe.src = url;
-  iframe.contentWindow.dialogArguments = args;
-  iframe.onload = () => (iframe.contentWindow.close = () => dialog.remove());
   dialog.showModal();
+  await new Promise((r) => (iframe.onload = r));
+  iframe.contentWindow.close = dialog.remove;
+  iframe.contentWindow.dialogArguments = args;
 };
 
+// Free WLAN?
+// (this.unsafeWindow || self).XMLHttpRequest = new Proxy(XMLHttpRequest, {
+//   construct: (T, args) => {
+//     const ret = new T(...args);
+//     let inner = null;
+//     Object.defineProperty(ret, "onreadystatechange", {
+//       value(...args) {
+//         if (
+//           ret.readyState == 4 &&
+//           ret.responseURL === "http://10.250.255.34/api/v1/login"
+//         ) {
+//         }
+//         if (inner) inner(...args);
+//       },
+//       set: (n) => (inner = n),
+//     });
+//     return ret;
+//   },
+// });
+// if (property == "responseText") {
+//   if (target.responseURL === "http://10.250.255.34/api/v1/login") {
+//     const json = JSON.parse(target.responseText);
+//     if (json?.data?.policy?.pagenumb === "mondaypage") {
+//       json.data.policy.channels.push({ name: "XSWK", id: "1" });
+//       target.responseText = JSON.stringify(json);
+//     }
+//     let b = target.responseText;
+//     let a = {
+//       code: 200,
+//       message: "ok",
+//       data: {
+//         reauth: true,
+//         policy: {
+//           pagenumb: "mondaypage",
+//           channels: [
+//             { name: "中国移动", id: "2" },
+//             { name: "中国电信", id: "3" },
+//             { name: "中国联通", id: "4" },
+//           ],
+//         },
+//       },
+//     };
+//   }
+// }
+
 /*
+Useful addresses
+
 http://ids2.just.edu.cn/cas/logout
 http://jwgl.just.edu.cn:8080/jsxsd/framework/xsMain.jsp
 https://client.v.just.edu.cn/http/webvpn764a2e4853ae5e537560ba711c0f46bd/_s2/students_sy/main.psp
+
+http://hqgy.just.edu.cn
+http://hqgy.just.edu.cn/sg/wechat/index.jsp
+
+http://tyxy.just.edu.cn
+
+http://my.just.edu.cn
+
+http://teach.just.edu.cn
+
 */
