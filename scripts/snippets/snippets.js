@@ -38,7 +38,7 @@ const {} = {
       setTimeout(finish, timeout);
     });
   },
-  waitValue(fn, interval = 200, timeout = 3000) /* 20210928-1143 */ {
+  waitValue(fn, interval = 200, timeout = 3000) /* 20220104-1405 */ {
     return new Promise((resolve, reject) => {
       const intervalHandle = setInterval(() => {
         try {
@@ -51,7 +51,7 @@ const {} = {
       }, interval);
       const timeoutHandle = setTimeout(() => {
         clearInterval(intervalHandle);
-        reject();
+        reject("waitValue: timeout");
       }, timeout);
     });
   },

@@ -1,8 +1,9 @@
 // ==UserScript==
-// @name        JUST EVO
-// @description Patches & tools for JUST Website
+// @name        JUST Kit
+// @description Patches & tools for JUST Website.
+// @description:zh-CN 用于江苏科技大学网站的补丁与工具。
 // @namespace   https://greasyfork.org/users/197529
-// @version     0.1.11
+// @version     0.1.14
 // @author      kkocdko
 // @license     Unlicense
 // @match       *://*.just.edu.cn/*
@@ -10,6 +11,9 @@
 // @match       *://*.just.edu.cn:80/*
 // @match       *://10.250.255.34/*
 // @match       *://10.250.255.34/authentication/*
+// @match       *://202.195.195.198/*
+// @match       *://202.195.206.36:8080/*
+// @match       *://202.195.206.37:8080/*
 // ==/UserScript==
 "use strict";
 
@@ -30,7 +34,7 @@ const { addFloatButton, waitValue, saveStr } = {
     }
     return document.addFloatButton(text, onClick);
   },
-  waitValue(fn, interval = 200, timeout = 3000) /* 20210928-1143 */ {
+  waitValue(fn, interval = 200, timeout = 3000) /* 20220104-1405 */ {
     return new Promise((resolve, reject) => {
       const intervalHandle = setInterval(() => {
         try {
@@ -43,7 +47,7 @@ const { addFloatButton, waitValue, saveStr } = {
       }, interval);
       const timeoutHandle = setTimeout(() => {
         clearInterval(intervalHandle);
-        reject();
+        reject("waitValue: timeout");
       }, timeout);
     });
   },
@@ -55,37 +59,58 @@ const { addFloatButton, waitValue, saveStr } = {
   },
 };
 
-// Auto login
-waitValue(() => document.querySelector(".login_btn")).then((e) => e.click());
+// Styles
+document.lastChild.appendChild(document.createElement("style")).textContent = `
+body>[wd-root]{overflow:unset;}
+.personalinfo>.list_nav_box>iframe:first-child{display:none;}
+/* .rememberdiv{display:none;} */
+`.replace(/;/g, "!important;");
 
-// Fix JUST P.E.
-waitValue(() => leftFrame.document.readyState === "complete").then(() =>
+// Auto login
+waitValue(() => document.querySelector(".login_btn")).then((el) => {
+  // Remember forever
+  // const loginInfo = localStorage
+  //   .getItem("autoLoginInfo")
+  //   .replace(/"expires":\d+/, '"expires":4796812800000');
+  // localStorage.setItem("autoLoginInfo", loginInfo);
+  el.click();
+});
+
+// Fix P.E. page left frame
+waitValue(() => leftFrame.document.readyState === "complete").then(() => {
   leftFrame.document.querySelectorAll("[onclick]").forEach((el) => {
     const v = el.getAttribute("onclick").replace("href(", "href=(");
     el.setAttribute("onclick", v);
-  })
-);
+  });
+});
 
 // Health clock in
-waitValue(() => input_zwtw).then(() =>
+waitValue(() => input_zwtw).then(() => {
   addFloatButton("Clock in", () => {
     input_tw.value = input_zwtw.value = 36;
     post.click();
-  })
-);
+  });
+});
 
-// Shedule dump
-waitValue(() => kbtable).then((el) =>
-  addFloatButton("Dump schedule", () =>
-    saveStr(
-      `schedule_${zc.value}_${Date.now()}.html`,
-      `<!DOCTYPE html><meta name="viewport" content="width=device-width">` +
-        el.outerHTML
-    )
-  )
-);
+// Schedule dump
+waitValue(() => kbtable).then((el) => {
+  addFloatButton("Dump schedule", () => {
+    const name = `schedule_${zc.value}_${(Date.now() + "").slice(2, -3)}.html`;
+    const head = `<!DOCTYPE html><meta name=viewport content="width=device-width">`;
+    saveStr(name, head + el.outerHTML);
+  });
+});
 
-// Fix `window.showModalDialog` for book purchase page
+// Evaluation of teaching
+waitValue(() => location.pathname.endsWith("/xspj_edit.do")).then(() => {
+  addFloatButton("Fill form", () => {
+    for (const el of document.querySelectorAll("[type=radio]:first-child"))
+      el.click();
+    document.querySelector("[type=radio]:not(:first-child)").click();
+  });
+});
+
+// Fix `window.showModalDialog`
 (this.unsafeWindow || self).showModalDialog = async (url, args, opt = "") => {
   // Thanks for github.com/niutech/showModalDialog
   const dialog = document.body.appendChild(document.createElement("dialog"));
@@ -95,7 +120,7 @@ waitValue(() => kbtable).then((el) =>
   iframe.src = url;
   dialog.showModal();
   await new Promise((r) => (iframe.onload = r));
-  iframe.contentWindow.close = dialog.remove;
+  iframe.contentWindow.close = () => dialog.remove();
   iframe.contentWindow.dialogArguments = args;
 };
 
@@ -106,11 +131,7 @@ waitValue(() => kbtable).then((el) =>
 //     let inner = null;
 //     Object.defineProperty(ret, "onreadystatechange", {
 //       value(...args) {
-//         if (
-//           ret.readyState == 4 &&
-//           ret.responseURL === "http://10.250.255.34/api/v1/login"
-//         ) {
-//         }
+//         if (ret.readyState == 4 &&ret.responseURL === "http://10.250.255.34/api/v1/login") {}
 //         if (inner) inner(...args);
 //       },
 //       set: (n) => (inner = n),
@@ -118,46 +139,33 @@ waitValue(() => kbtable).then((el) =>
 //     return ret;
 //   },
 // });
-// if (property == "responseText") {
-//   if (target.responseURL === "http://10.250.255.34/api/v1/login") {
-//     const json = JSON.parse(target.responseText);
-//     if (json?.data?.policy?.pagenumb === "mondaypage") {
-//       json.data.policy.channels.push({ name: "XSWK", id: "1" });
-//       target.responseText = JSON.stringify(json);
-//     }
-//     let b = target.responseText;
-//     let a = {
-//       code: 200,
-//       message: "ok",
-//       data: {
-//         reauth: true,
-//         policy: {
-//           pagenumb: "mondaypage",
-//           channels: [
-//             { name: "中国移动", id: "2" },
-//             { name: "中国电信", id: "3" },
-//             { name: "中国联通", id: "4" },
-//           ],
-//         },
-//       },
-//     };
+// if (property == "responseText" && target.responseURL === "http://10.250.255.34/api/v1/login") {
+//   const json = JSON.parse(target.responseText);
+//   if (json?.data?.policy?.pagenumb === "mondaypage") {
+//     json.data.policy.channels.push({ name: "XSWK", id: "1" });
+//     target.responseText = JSON.stringify(json);
 //   }
+//   let b = target.responseText;
+//   let a = `{"code":200,"message":"ok","data":{"reauth":true,"policy":{"pagenumb":"mondaypage","channels":[{"name":"中国移动","id":"2"},{"name":"中国电信","id":"3"},{"name":"中国联通","id":"4"}]}}}`;
 // }
 
-/*
-Useful addresses
+/* ===== Notes ===== *
 
-http://ids2.just.edu.cn/cas/logout
-http://jwgl.just.edu.cn:8080/jsxsd/framework/xsMain.jsp
-https://client.v.just.edu.cn/http/webvpn764a2e4853ae5e537560ba711c0f46bd/_s2/students_sy/main.psp
+个人主页：my.just.edu.cn
+VPN2反代：vpn2.just.edu.cn
+Bing through VPN2：client.v.just.edu.cn/https/webvpn75e21a7d71bfef5014373fde6b3dc8d6/
+教务系统自动登录：jwgl.just.edu.cn:8080/sso.jsp
+后勤：hqgy.just.edu.cn/sg/wechat/index.jsp
+查寝分数：hqgy.just.edu.cn/sg/wechat/healthCheck.jsp
+体育：tyxy.just.edu.cn
+网课：teach.just.edu.cn
+实验课成绩：202.195.195.198/sy/
+退出登录：http://ids2.just.edu.cn/cas/logout
+智慧树：http://portals.zhihuishu.com/just
+超星：http://just.fanya.chaoxing.com/
 
-http://hqgy.just.edu.cn
-http://hqgy.just.edu.cn/sg/wechat/index.jsp
+教务系统内网：
+http://202.195.206.36:8080/jsxsd
+http://202.195.206.37:8080/jsxsd
 
-http://tyxy.just.edu.cn
-
-http://my.just.edu.cn
-
-http://teach.just.edu.cn
-
-*/
+/* ================= */
