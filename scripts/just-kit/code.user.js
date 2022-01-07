@@ -3,7 +3,7 @@
 // @description Patches & tools for JUST Website.
 // @description:zh-CN 用于江苏科技大学网站的补丁与工具。
 // @namespace   https://greasyfork.org/users/197529
-// @version     0.1.14
+// @version     0.1.18
 // @author      kkocdko
 // @license     Unlicense
 // @match       *://*.just.edu.cn/*
@@ -60,21 +60,22 @@ const { addFloatButton, waitValue, saveStr } = {
 };
 
 // Styles
-document.lastChild.appendChild(document.createElement("style")).textContent = `
-body>[wd-root]{overflow:unset;}
-.personalinfo>.list_nav_box>iframe:first-child{display:none;}
-/* .rememberdiv{display:none;} */
-`.replace(/;/g, "!important;");
+// document.lastChild.appendChild(document.createElement("style")).textContent = `
+// .personalinfo>.list_nav_box>iframe:first-child,browserPrompt{display:none;}
+// `.replace(/;/g, "!important;");
+
+// Force page to scroll on x axis
+waitValue(() => document.readyState !== "loading").then(() => {
+  if (document.documentElement.offsetWidth >= 1280) return;
+  addFloatButton("Scroll X Axis", () => {
+    let v = document.documentElement.getAttribute("style") ?? "";
+    v += `width:1280px!important;min-width:1280px!important;overflow-x:scroll!important`;
+    document.documentElement.setAttribute("style", v);
+  });
+});
 
 // Auto login
-waitValue(() => document.querySelector(".login_btn")).then((el) => {
-  // Remember forever
-  // const loginInfo = localStorage
-  //   .getItem("autoLoginInfo")
-  //   .replace(/"expires":\d+/, '"expires":4796812800000');
-  // localStorage.setItem("autoLoginInfo", loginInfo);
-  el.click();
-});
+waitValue(() => document.querySelector(".login_btn")).then((el) => el.click());
 
 // Fix P.E. page left frame
 waitValue(() => leftFrame.document.readyState === "complete").then(() => {
@@ -95,9 +96,11 @@ waitValue(() => input_zwtw).then(() => {
 // Schedule dump
 waitValue(() => kbtable).then((el) => {
   addFloatButton("Dump schedule", () => {
-    const name = `schedule_${zc.value}_${(Date.now() + "").slice(2, -3)}.html`;
-    const head = `<!DOCTYPE html><meta name=viewport content="width=device-width">`;
-    saveStr(name, head + el.outerHTML);
+    saveStr(
+      `schedule_${zc.value}_${Date.now().toString(36).slice(0, -2)}.html`,
+      `<!DOCTYPE html><meta name="viewport" content="width=device-width">` +
+        el.outerHTML
+    );
   });
 });
 
@@ -153,19 +156,21 @@ waitValue(() => location.pathname.endsWith("/xspj_edit.do")).then(() => {
 
 个人主页：my.just.edu.cn
 VPN2反代：vpn2.just.edu.cn
-Bing through VPN2：client.v.just.edu.cn/https/webvpn75e21a7d71bfef5014373fde6b3dc8d6/
+Bing via VPN2：client.v.just.edu.cn/https/webvpn75e21a7d71bfef5014373fde6b3dc8d6/
 教务系统自动登录：jwgl.just.edu.cn:8080/sso.jsp
 后勤：hqgy.just.edu.cn/sg/wechat/index.jsp
 查寝分数：hqgy.just.edu.cn/sg/wechat/healthCheck.jsp
 体育：tyxy.just.edu.cn
 网课：teach.just.edu.cn
 实验课成绩：202.195.195.198/sy/
-退出登录：http://ids2.just.edu.cn/cas/logout
+退出登录：ids2.just.edu.cn/cas/logout
 智慧树：http://portals.zhihuishu.com/just
 超星：http://just.fanya.chaoxing.com/
 
 教务系统内网：
 http://202.195.206.36:8080/jsxsd
 http://202.195.206.37:8080/jsxsd
+
+https://client.v.just.edu.cn/enlink/#/client/app
 
 /* ================= */
