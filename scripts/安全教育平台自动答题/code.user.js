@@ -2,7 +2,7 @@
 // @name         安全教育平台自动答题
 // @description  支持安全课程、专题活动、互动视频
 // @namespace    https://greasyfork.org/users/197529
-// @version      0.9.1
+// @version      0.9.3
 // @author       kkocdko
 // @license      Unlicense
 // @match        *://*.xueanquan.com/*
@@ -11,7 +11,7 @@
 "use strict";
 
 const { addFloatButton } = {
-  addFloatButton(text, onClick) /* 20200707-123713 */ {
+  addFloatButton(text, onClick) /* 20200707-1237 */ {
     if (!document.addFloatButton) {
       const container = document.body
         .appendChild(document.createElement("div"))
@@ -34,12 +34,15 @@ addFloatButton("自动完成", async function () {
   this.style.background = "#ff9800";
   if (document.querySelector(".choseArea")) {
     // interactive video
-    while (true) {
-      const qsaf = (s, f) => document.querySelectorAll(s).forEach(f);
-      qsaf(".choseArea :first-child", (el) => el.click());
-      qsaf("video", (el) => (el.currentTime = 2147483647));
-      if (document.querySelector(".seminar_nav .finish:not(.normal)")) break;
-      await new Promise((r) => setTimeout(r, 500));
+    while (!document.querySelector(".seminar_nav .finish:not(.normal)")) {
+      for (const el of document.querySelectorAll(".choseArea :first-child"))
+        el.click();
+      for (const el of document.querySelectorAll("video")) {
+        el.volume = 0;
+        el.currentTime = 2147483647;
+        el.play();
+      }
+      await new Promise((r) => setTimeout(r, 900));
     }
   } else {
     // paper or exam

@@ -1,0 +1,19 @@
+.toolbar:not(:hover) {
+  opacity: 0;
+}
+
+#viewerContainer {
+  top: 0;
+  filter: brightness(0.7) contrast(3) hue-rotate(180deg) invert(1);
+}
+
+.pdfViewer .page {
+  margin: 0;
+  overflow: hidden;
+  border: 0;
+  border-top: 1px solid #777;
+}
+
+.pdfViewer .canvasWrapper {
+  /*margin:-50px ;*/
+}

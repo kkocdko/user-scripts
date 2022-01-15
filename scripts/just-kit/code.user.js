@@ -3,14 +3,12 @@
 // @description Patches & tools for JUST Website.
 // @description:zh-CN 用于江苏科技大学网站的补丁与工具。
 // @namespace   https://greasyfork.org/users/197529
-// @version     0.1.18
+// @version     0.1.28
 // @author      kkocdko
 // @license     Unlicense
 // @match       *://*.just.edu.cn/*
 // @match       *://*.just.edu.cn:8080/*
-// @match       *://*.just.edu.cn:80/*
 // @match       *://10.250.255.34/*
-// @match       *://10.250.255.34/authentication/*
 // @match       *://202.195.195.198/*
 // @match       *://202.195.206.36:8080/*
 // @match       *://202.195.206.37:8080/*
@@ -60,61 +58,72 @@ const { addFloatButton, waitValue, saveStr } = {
 };
 
 // Styles
-// document.lastChild.appendChild(document.createElement("style")).textContent = `
-// .personalinfo>.list_nav_box>iframe:first-child,browserPrompt{display:none;}
-// `.replace(/;/g, "!important;");
+document.lastChild.appendChild(document.createElement("style")).textContent = `
+body { overflow-x: auto; }
+#browserPrompt { display: none; }
+input.button { background-color: #07e; }
+.checked .iCheck-helper { background: none; border: solid #22645e; border-radius: 50%; opacity: 1; }
+`.replace(/;/g, "!important;");
 
 // Force page to scroll on x axis
 waitValue(() => document.readyState !== "loading").then(() => {
-  if (document.documentElement.offsetWidth >= 1280) return;
+  if (top !== self || document.documentElement.offsetWidth >= 1280) return;
   addFloatButton("Scroll X Axis", () => {
-    let v = document.documentElement.getAttribute("style") ?? "";
-    v += `width:1280px!important;min-width:1280px!important;overflow-x:scroll!important`;
-    document.documentElement.setAttribute("style", v);
+    document.documentElement.style.cssText +=
+      "min-width: 1280px !important; overflow-x: scroll !important";
   });
 });
 
 // Auto login
-waitValue(() => document.querySelector(".login_btn")).then((el) => el.click());
+if (location.pathname.endsWith("/login"))
+  setTimeout(() => document.querySelector(".login_btn").click(), 100);
 
-// Fix P.E. page left frame
-waitValue(() => leftFrame.document.readyState === "complete").then(() => {
-  leftFrame.document.querySelectorAll("[onclick]").forEach((el) => {
-    const v = el.getAttribute("onclick").replace("href(", "href=(");
-    el.setAttribute("onclick", v);
-  });
-});
+// Fix P.E. page left panel
+if (location.pathname.endsWith("/menu.asp")) {
+  setTimeout(() => {
+    for (const el of document.querySelectorAll("[onclick]")) {
+      const v = el.getAttribute("onclick").replace("href(", "href=(");
+      el.setAttribute("onclick", v);
+    }
+  }, 900);
+}
 
 // Health clock in
-waitValue(() => input_zwtw).then(() => {
+if (location.pathname.endsWith("/jkxxtb/jkxxcj.jsp")) {
   addFloatButton("Clock in", () => {
     input_tw.value = input_zwtw.value = 36;
     post.click();
   });
-});
+}
 
 // Schedule dump
-waitValue(() => kbtable).then((el) => {
+if (location.pathname.endsWith("/xskb_list.do")) {
   addFloatButton("Dump schedule", () => {
     saveStr(
       `schedule_${zc.value}_${Date.now().toString(36).slice(0, -2)}.html`,
       `<!DOCTYPE html><meta name="viewport" content="width=device-width">` +
-        el.outerHTML
+        kbtable.outerHTML
     );
   });
-});
+}
 
-// Evaluation of teaching
-waitValue(() => location.pathname.endsWith("/xspj_edit.do")).then(() => {
+// Teaching Evaluation
+if (location.pathname.endsWith("/xspj_edit.do")) {
   addFloatButton("Fill form", () => {
     for (const el of document.querySelectorAll("[type=radio]:first-child"))
       el.click();
     document.querySelector("[type=radio]:not(:first-child)").click();
   });
-});
+}
+
+// GPA Estimation
+// https://github.com/mikai233/fstar-client/blob/e387e2948f158968e01d0497375ef60faccc589e/lib/utils/utils.dart
+// if (location.pathname.endsWith("/cjcx_list")) {
+// addFloatButton("Estimate GPA", () => {});
+// }
 
 // Fix `window.showModalDialog`
-(this.unsafeWindow || self).showModalDialog = async (url, args, opt = "") => {
+(this.unsafeWindow || this).showModalDialog = async (url, args, opt = "") => {
   // Thanks for github.com/niutech/showModalDialog
   const dialog = document.body.appendChild(document.createElement("dialog"));
   dialog.style = `padding:0;${opt.replace(/dialog/gi, "")}`;
@@ -156,21 +165,30 @@ waitValue(() => location.pathname.endsWith("/xspj_edit.do")).then(() => {
 
 个人主页：my.just.edu.cn
 VPN2反代：vpn2.just.edu.cn
-Bing via VPN2：client.v.just.edu.cn/https/webvpn75e21a7d71bfef5014373fde6b3dc8d6/
-教务系统自动登录：jwgl.just.edu.cn:8080/sso.jsp
+360SO via VPN2：client.v.just.edu.cn/https/webvpnb153e15136e234229309c84507966ea4
+教务系统(自动登录)：jwgl.just.edu.cn:8080/sso.jsp
 后勤：hqgy.just.edu.cn/sg/wechat/index.jsp
 查寝分数：hqgy.just.edu.cn/sg/wechat/healthCheck.jsp
+健康打卡：ehall.just.edu.cn/default/work/jkd/jkxxtb/jkxxcj.jsp
 体育：tyxy.just.edu.cn
 网课：teach.just.edu.cn
 实验课成绩：202.195.195.198/sy/
 退出登录：ids2.just.edu.cn/cas/logout
 智慧树：http://portals.zhihuishu.com/just
-超星：http://just.fanya.chaoxing.com/
+超星：http://just.fanya.chaoxing.com
+安全微伴：https://weiban.mycourse.cn/pharos/login/jskjdx/21200002/loginByJskjdx.do
 
 教务系统内网：
 http://202.195.206.36:8080/jsxsd
 http://202.195.206.37:8080/jsxsd
 
+奇怪的管理界面：
 https://client.v.just.edu.cn/enlink/#/client/app
+
+VPN2 使用笔记：
+使用 `360SO via VPN2` 搜索要访问的网址，记得加上 `http / https` 前缀。
+搜索结果页出现“找不到该 URL，可以直接访问 `http://x.x`”后点击直接访问链接即可。
+若遇到“无效网关”等奇怪错误，请检查协议前缀是否正确，如 http 可能误写为 https。
+当前（20220110）VPN2 似乎不支持流式传输，因而下载大文件可能出错，记得校验 Hash。
 
 /* ================= */
