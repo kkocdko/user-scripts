@@ -3,7 +3,7 @@
 // @description Patches & tools for JUST Website.
 // @description:zh-CN 用于江苏科技大学网站的补丁与工具。
 // @namespace   https://greasyfork.org/users/197529
-// @version     0.1.28
+// @version     0.1.29
 // @author      kkocdko
 // @license     Unlicense
 // @match       *://*.just.edu.cn/*
@@ -57,6 +57,9 @@ const { addFloatButton, waitValue, saveStr } = {
   },
 };
 
+const urlMatch = /* match url prefix, supports webvpn */ ([s]) =>
+  location.href.match(/(?<=:..+)\/(?!http|webvpn).+/)[0].startsWith(s);
+
 // Styles
 document.lastChild.appendChild(document.createElement("style")).textContent = `
 body { overflow-x: auto; }
@@ -75,11 +78,11 @@ waitValue(() => document.readyState !== "loading").then(() => {
 });
 
 // Auto login
-if (location.pathname.endsWith("/login"))
+if (urlMatch`/cas/login`)
   setTimeout(() => document.querySelector(".login_btn").click(), 100);
 
 // Fix P.E. page left panel
-if (location.pathname.endsWith("/menu.asp")) {
+if (urlMatch`/menu.asp?menu`) {
   setTimeout(() => {
     for (const el of document.querySelectorAll("[onclick]")) {
       const v = el.getAttribute("onclick").replace("href(", "href=(");
@@ -89,7 +92,7 @@ if (location.pathname.endsWith("/menu.asp")) {
 }
 
 // Health clock in
-if (location.pathname.endsWith("/jkxxtb/jkxxcj.jsp")) {
+if (urlMatch`/default/work/jkd/jkxxtb/jkxxcj.jsp`) {
   addFloatButton("Clock in", () => {
     input_tw.value = input_zwtw.value = 36;
     post.click();
@@ -97,7 +100,7 @@ if (location.pathname.endsWith("/jkxxtb/jkxxcj.jsp")) {
 }
 
 // Schedule dump
-if (location.pathname.endsWith("/xskb_list.do")) {
+if (urlMatch`/jsxsd/xskb/xskb_list.do`) {
   addFloatButton("Dump schedule", () => {
     saveStr(
       `schedule_${zc.value}_${Date.now().toString(36).slice(0, -2)}.html`,
@@ -108,7 +111,7 @@ if (location.pathname.endsWith("/xskb_list.do")) {
 }
 
 // Teaching Evaluation
-if (location.pathname.endsWith("/xspj_edit.do")) {
+if (urlMatch`/jsxsd/xspj/xspj_edit.do`) {
   addFloatButton("Fill form", () => {
     for (const el of document.querySelectorAll("[type=radio]:first-child"))
       el.click();
