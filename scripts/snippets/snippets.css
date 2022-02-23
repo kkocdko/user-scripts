@@ -1,0 +1,17 @@
+[id$="Header"],
+#arc_toolbar_report,
+#v_desc ~ *,
+.right-container > :first-child ~ :not(#multi_page),
+.right-container ~ *,
+.bilibili-player-video-wrap > :not(.bilibili-player-video),
+.bilibili-player-video-wrap ~ * {
+  display: none;
+}
+.player-wrap,
+.player-wrap > *,
+.desc-info {
+  height: auto;
+}
+.left-container {
+  min-height: 101vh;
+}

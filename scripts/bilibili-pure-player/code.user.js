@@ -1,35 +1,40 @@
 // ==UserScript==
 // @name        Bilibili Pure Player Page
 // @name:zh-CN  Bilibili 纯净播放页
-// @description MUST be used with AD rules
-// @description:zh-CN 必须与广告屏蔽规则配套使用
+// @description Native & Pure
+// @description:zh-CN 原生 & 纯净
 // @namespace   https://greasyfork.org/users/197529
-// @version     0.1.0
+// @version     0.2.1
 // @author      kkocdko
 // @license     Unlicense
-// @match       *://*.bilibili.com/*
+// @match       *://*.bilibili.com/video/*
+// @run-at      document-start
 // ==/UserScript==
 "use strict";
-
-if (v_tag.offsetHeight !== 0) {
-  alert("[Bilibili Pure Player Page] user script MUST be used with AD rules!");
-  throw 1;
-}
-
 document.lastChild.appendChild(document.createElement("style")).textContent = `
-  #bilibili-player { height: auto; }
-  .bilibili-player-video { margin: 0; }
+[id$="Header"],
+#arc_toolbar_report,
+#v_desc ~ *,
+.right-container > :first-child ~ :not(#multi_page),
+.right-container ~ *,
+.bilibili-player-video-wrap > :not(.bilibili-player-video),
+.bilibili-player-video-wrap ~ * {
+  display: none;
+}
+.player-wrap,
+.player-wrap > *,
+.desc-info {
+  height: auto;
+}
+.left-container {
+  min-height: 101vh;
+}
 `.replace(/;/g, "!important;");
-
-let last;
-const once = () => {
+let once = () => {
+  once = () => {};
   const el = document.querySelector("video");
-  if (!el || last === el) return;
-  last = el;
-  el.addEventListener("click", () => el.click());
   el.controls = true;
+  el.onclick = (e) => e.preventDefault();
 };
-const container = document.querySelector("#bilibili-player");
-const options = { childList: true, subtree: true };
-new MutationObserver(once).observe(container, options);
-once();
+addEventListener("load", once);
+if (document.readyState === "complete") once();

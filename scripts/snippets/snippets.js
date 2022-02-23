@@ -79,6 +79,10 @@ const {} = {
     el.href = URL.createObjectURL(new Blob([str]));
     el.click();
   },
+  delAllCookie() /* 20220221-2238 */ {
+    for (const c of document.cookie.split("; "))
+      document.cookie = c.split("=")[0] + "=;max-age=0";
+  },
 };
 
 // User CSS Template
