@@ -55,8 +55,8 @@ const {} = {
       }, timeout);
     });
   },
-  timeStr() /* 20211114-1554 */ {
-    const zp = (n) => ("0" + n).substr(-2, 2);
+  timeStr() /* 20220227-1212 */ {
+    const zp = (n) => ("0" + n).substring(-2, 2);
     const d = new Date();
     return `${zp(d.getHours())}:${zp(d.getMinutes())}:${zp(d.getSeconds())}`;
   },
@@ -79,7 +79,7 @@ const {} = {
     el.href = URL.createObjectURL(new Blob([str]));
     el.click();
   },
-  delAllCookie() /* 20220221-2238 */ {
+  delAllCookies() /* 20220221-2238 */ {
     for (const c of document.cookie.split("; "))
       document.cookie = c.split("=")[0] + "=;max-age=0";
   },

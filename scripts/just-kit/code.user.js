@@ -3,7 +3,7 @@
 // @description Patches & tools for JUST Website.
 // @description:zh-CN 用于江苏科技大学网站的补丁与工具。
 // @namespace   https://greasyfork.org/users/197529
-// @version     0.1.29
+// @version     0.1.32
 // @author      kkocdko
 // @license     Unlicense
 // @match       *://*.just.edu.cn/*
@@ -32,23 +32,6 @@ const { addFloatButton, waitValue, saveStr } = {
     }
     return document.addFloatButton(text, onClick);
   },
-  waitValue(fn, interval = 200, timeout = 3000) /* 20220104-1405 */ {
-    return new Promise((resolve, reject) => {
-      const intervalHandle = setInterval(() => {
-        try {
-          const value = fn();
-          if (!value) return;
-          clearInterval(intervalHandle);
-          clearTimeout(timeoutHandle);
-          resolve(value);
-        } catch {}
-      }, interval);
-      const timeoutHandle = setTimeout(() => {
-        clearInterval(intervalHandle);
-        reject("waitValue: timeout");
-      }, timeout);
-    });
-  },
   saveStr(name, str) /* 20211203-1130 */ {
     const el = document.createElement("a");
     el.download = name;
@@ -62,24 +45,23 @@ const urlMatch = /* match url prefix, supports webvpn */ ([s]) =>
 
 // Styles
 document.lastChild.appendChild(document.createElement("style")).textContent = `
-body { overflow-x: auto; }
-#browserPrompt { display: none; }
 input.button { background-color: #07e; }
 .checked .iCheck-helper { background: none; border: solid #22645e; border-radius: 50%; opacity: 1; }
 `.replace(/;/g, "!important;");
 
 // Force page to scroll on x axis
-waitValue(() => document.readyState !== "loading").then(() => {
-  if (top !== self || document.documentElement.offsetWidth >= 1280) return;
-  addFloatButton("Scroll X Axis", () => {
-    document.documentElement.style.cssText +=
-      "min-width: 1280px !important; overflow-x: scroll !important";
-  });
-});
+if (
+  top === self &&
+  (urlMatch`/_s2/students_` || urlMatch`/TeachingCenterStudentWeb`)
+) {
+  document.documentElement.style.cssText +=
+    ";min-width: 1280px !important; overflow-x: auto !important;";
+}
 
 // Auto login
-if (urlMatch`/cas/login`)
+if (urlMatch`/cas/login`) {
   setTimeout(() => document.querySelector(".login_btn").click(), 100);
+}
 
 // Fix P.E. page left panel
 if (urlMatch`/menu.asp?menu`) {
@@ -103,8 +85,8 @@ if (urlMatch`/default/work/jkd/jkxxtb/jkxxcj.jsp`) {
 if (urlMatch`/jsxsd/xskb/xskb_list.do`) {
   addFloatButton("Dump schedule", () => {
     saveStr(
-      `schedule_${zc.value}_${Date.now().toString(36).slice(0, -2)}.html`,
-      `<!DOCTYPE html><meta name="viewport" content="width=device-width">` +
+      `schedule_${zc.value || 0}_${Date.now().toString(36).slice(0, -2)}.html`,
+      `<!DOCTYPE html><meta charset="utf-8"><meta name="viewport" content="width=device-width">` +
         kbtable.outerHTML
     );
   });
@@ -119,12 +101,6 @@ if (urlMatch`/jsxsd/xspj/xspj_edit.do`) {
   });
 }
 
-// GPA Estimation
-// https://github.com/mikai233/fstar-client/blob/e387e2948f158968e01d0497375ef60faccc589e/lib/utils/utils.dart
-// if (location.pathname.endsWith("/cjcx_list")) {
-// addFloatButton("Estimate GPA", () => {});
-// }
-
 // Fix `window.showModalDialog`
 (this.unsafeWindow || this).showModalDialog = async (url, args, opt = "") => {
   // Thanks for github.com/niutech/showModalDialog
@@ -138,6 +114,12 @@ if (urlMatch`/jsxsd/xspj/xspj_edit.do`) {
   iframe.contentWindow.close = () => dialog.remove();
   iframe.contentWindow.dialogArguments = args;
 };
+
+// GPA Estimation
+// https://github.com/mikai233/fstar-client/blob/e387e2948f158968e01d0497375ef60faccc589e/lib/utils/utils.dart
+// if (location.pathname.endsWith("/cjcx_list")) {
+// addFloatButton("Estimate GPA", () => {});
+// }
 
 // Free WLAN?
 // (this.unsafeWindow || self).XMLHttpRequest = new Proxy(XMLHttpRequest, {
@@ -171,7 +153,7 @@ VPN2反代：vpn2.just.edu.cn
 360SO via VPN2：client.v.just.edu.cn/https/webvpnb153e15136e234229309c84507966ea4
 教务系统(自动登录)：jwgl.just.edu.cn:8080/sso.jsp
 后勤：hqgy.just.edu.cn/sg/wechat/index.jsp
-查寝分数：hqgy.just.edu.cn/sg/wechat/healthCheck.jsp
+查寝得分：hqgy.just.edu.cn/sg/wechat/healthCheck.jsp
 健康打卡：ehall.just.edu.cn/default/work/jkd/jkxxtb/jkxxcj.jsp
 体育：tyxy.just.edu.cn
 网课：teach.just.edu.cn
