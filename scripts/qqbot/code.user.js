@@ -19,10 +19,7 @@ ws.onmessage = async (e) => {
   const enabled =
     e.post_type === "message" &&
     e.message_type === "group" &&
-    e.message.trim().startsWith("[CQ:at,qq=3423596160]") &&
-    [
-      201408600 /* 计协 */, 757224637 /* 两开花 */, 619263282 /* Note */,
-    ].includes(e.group_id);
+    e.message.trim().startsWith("[CQ:at,qq=3423596160]");
   if (!enabled) return;
   const say = (str) => {
     const req = {
@@ -33,9 +30,12 @@ ws.onmessage = async (e) => {
   };
   const msg = e.message.replace(/^\[.+?\]\s*/, "");
 
-  if (msg.startsWith("暑假倒计时")) {
+  if (["乌克兰", "俄罗斯", "俄乌"].some((s) => msg.includes(s))) {
+    say("嘘！");
+    return;
+  } else if (msg.startsWith("暑假倒计时")) {
     const v = dayjs.duration(dayjs("20220711").diff(dayjs()));
-    say(`距离 2022 年暑假还有 ${v.asSeconds()} 秒`);
+    say(`距离 2022 年暑假还有 ${v.asDays().toFixed(3)} 天`);
   } else if (msg.startsWith("高考倒计时")) {
     const v = dayjs.duration(dayjs("20220607 09:00").diff(dayjs()));
     say(`距离 2022 年高考还有 ${v.asDays().toFixed(3)} 天`);
@@ -67,7 +67,7 @@ ws.onmessage = async (e) => {
   } else if (replies.has(msg.split(" ").pop())) {
     say(replies.get(msg.split(" ").pop()));
   } else {
-    say(`未知指令: ${msg}`);
+    say(`未知指令: [${msg}]`);
   }
 };
 
