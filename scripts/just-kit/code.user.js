@@ -3,7 +3,7 @@
 // @description Patches & tools for JUST Website.
 // @description:zh-CN 用于江苏科技大学网站的补丁与工具。
 // @namespace   https://greasyfork.org/users/197529
-// @version     0.1.32
+// @version     0.1.47
 // @author      kkocdko
 // @license     Unlicense
 // @match       *://*.just.edu.cn/*
@@ -15,22 +15,20 @@
 // ==/UserScript==
 "use strict";
 
-const { addFloatButton, waitValue, saveStr } = {
-  addFloatButton(text, onClick) /* 20200707-1237 */ {
+const { addFloatButton, saveStr } = {
+  addFloatButton(text, onclick) /* 20220322-1526 */ {
     if (!document.addFloatButton) {
-      const container = document.body
-        .appendChild(document.createElement("div"))
-        .attachShadow({ mode: "open" });
-      container.innerHTML =
-        "<style>:host{position:fixed;top:3px;left:3px;z-index:2147483647;height:0}#i{display:none}*{float:left;margin:4px;padding:1em;outline:0;border:0;border-radius:5px;background:#1e88e5;box-shadow:0 1px 4px rgba(0,0,0,.1);color:#fff;font-size:14px;line-height:0;transition:.3s}:active{background:#42a5f5;box-shadow:0 2px 5px rgba(0,0,0,.2)}button:active{transition:0s}:checked~button{visibility:hidden;opacity:0;transform:translateY(-3em)}label{border-radius:50%}:checked~label{opacity:.3;transform:translateY(3em)}</style><input id=i type=checkbox><label for=i></label>";
-      document.addFloatButton = (text, onClick) => {
-        const button = document.createElement("button");
-        button.textContent = text;
-        button.addEventListener("click", onClick);
-        return container.appendChild(button);
+      const host = document.body.appendChild(document.createElement("div"));
+      const root = host.attachShadow({ mode: "open" });
+      root.innerHTML = `<style>:host{position:fixed;top:4px;left:4px;z-index:2147483647;height:0}#i{display:none}*{float:left;padding:1em;margin:4px;line-height:0;color:#fff;user-select:none;background:#28e;border-radius:8px;box-shadow:0 0 4px #aaa;transition:.3s}[for]~:active{background:#4af;transition:0s}:checked~*{opacity:.3;transform:translateY(-3em)}:checked+*{transform:translateY(3em)}</style><input id=i type=checkbox><label for=i>`;
+      document.addFloatButton = (text, onclick) => {
+        const el = document.createElement("label");
+        el.textContent = text;
+        el.addEventListener("click", onclick);
+        return root.appendChild(el);
       };
     }
-    return document.addFloatButton(text, onClick);
+    return document.addFloatButton(text, onclick);
   },
   saveStr(name, str) /* 20211203-1130 */ {
     const el = document.createElement("a");
@@ -46,7 +44,7 @@ const urlMatch = /* match url prefix, supports webvpn */ ([s]) =>
 // Styles
 document.lastChild.appendChild(document.createElement("style")).textContent = `
 input.button { background-color: #07e; }
-.checked .iCheck-helper { background: none; border: solid #22645e; border-radius: 50%; opacity: 1; }
+.iradio_square-green.checked { box-shadow: inset 0 0 4px; border-radius: 50%; }
 `.replace(/;/g, "!important;");
 
 // Force page to scroll on x axis
@@ -84,15 +82,17 @@ if (urlMatch`/default/work/jkd/jkxxtb/jkxxcj.jsp`) {
 // Schedule dump
 if (urlMatch`/jsxsd/xskb/xskb_list.do`) {
   addFloatButton("Dump schedule", () => {
-    saveStr(
-      `schedule_${zc.value || 0}_${Date.now().toString(36).slice(0, -2)}.html`,
-      `<!DOCTYPE html><meta charset="utf-8"><meta name="viewport" content="width=device-width">` +
-        kbtable.outerHTML
-    );
+    const date = Date.now().toString(36).slice(0, -2);
+    const name = `schedule_${zc.value || 0}_${date}.html`;
+    const prefix = `<!DOCTYPE html><meta charset="utf-8"><meta name="viewport" content="width=device-width"><style>body{margin:2px -1px;font-family:sans-serif}table{border:0}</style>`;
+    const content = prefix + kbtable.outerHTML;
+    document.documentElement.innerHTML = content;
+    document.title = name;
+    saveStr(name, content);
   });
 }
 
-// Teaching Evaluation
+// Teaching evaluation
 if (urlMatch`/jsxsd/xspj/xspj_edit.do`) {
   addFloatButton("Fill form", () => {
     for (const el of document.querySelectorAll("[type=radio]:first-child"))
@@ -102,18 +102,7 @@ if (urlMatch`/jsxsd/xspj/xspj_edit.do`) {
 }
 
 // Fix `window.showModalDialog`
-(this.unsafeWindow || this).showModalDialog = async (url, args, opt = "") => {
-  // Thanks for github.com/niutech/showModalDialog
-  const dialog = document.body.appendChild(document.createElement("dialog"));
-  dialog.style = `padding:0;${opt.replace(/dialog/gi, "")}`;
-  const iframe = dialog.appendChild(document.createElement("iframe"));
-  iframe.style = "width:100%;height:100%;border:0";
-  iframe.src = url;
-  dialog.showModal();
-  await new Promise((r) => (iframe.onload = r));
-  iframe.contentWindow.close = () => dialog.remove();
-  iframe.contentWindow.dialogArguments = args;
-};
+(this.unsafeWindow || this).showModalDialog = (url) => open(url);
 
 // GPA Estimation
 // https://github.com/mikai233/fstar-client/blob/e387e2948f158968e01d0497375ef60faccc589e/lib/utils/utils.dart
@@ -146,29 +135,32 @@ if (urlMatch`/jsxsd/xspj/xspj_edit.do`) {
 //   let a = `{"code":200,"message":"ok","data":{"reauth":true,"policy":{"pagenumb":"mondaypage","channels":[{"name":"中国移动","id":"2"},{"name":"中国电信","id":"3"},{"name":"中国联通","id":"4"}]}}}`;
 // }
 
+// http://www.gaoxiaokaoshi.com/Study/LibraryStudyList.aspx
+// const grid=document.body.appendChild(document.createElement('parallel-grid'))
+// grid.style="display:grid;grid:1fr 1fr 1fr 1fr/ 1fr 1fr 1fr;width:100vw;height:100vh"
+// showframe=(p_Name, p_Id)=>{grid.appendChild(document.createElement('iframe')).src="../Study/LibraryStudy.aspx?tmp=1&Id=" + p_Id + "&PlanId=" + ddlClass.value}
+
 /* ===== Notes ===== *
 
 个人主页：my.just.edu.cn
 VPN2反代：vpn2.just.edu.cn
 360SO via VPN2：client.v.just.edu.cn/https/webvpnb153e15136e234229309c84507966ea4
-教务系统(自动登录)：jwgl.just.edu.cn:8080/sso.jsp
-后勤：hqgy.just.edu.cn/sg/wechat/index.jsp
+教务管理：jwgl.just.edu.cn:8080/jsxsd/
+教务管理(单点登录)：jwgl.just.edu.cn:8080/sso.jsp
+教务管理(内网1)：202.195.206.36:8080/jsxsd
+教务管理(内网2)：202.195.206.37:8080/jsxsd
+后勤管理：hqgy.just.edu.cn/sg/wechat/index.jsp
 查寝得分：hqgy.just.edu.cn/sg/wechat/healthCheck.jsp
 健康打卡：ehall.just.edu.cn/default/work/jkd/jkxxtb/jkxxcj.jsp
 体育：tyxy.just.edu.cn
 网课：teach.just.edu.cn
 实验课成绩：202.195.195.198/sy/
 退出登录：ids2.just.edu.cn/cas/logout
-智慧树：http://portals.zhihuishu.com/just
-超星：http://just.fanya.chaoxing.com
-安全微伴：https://weiban.mycourse.cn/pharos/login/jskjdx/21200002/loginByJskjdx.do
-
-教务系统内网：
-http://202.195.206.36:8080/jsxsd
-http://202.195.206.37:8080/jsxsd
-
-奇怪的管理界面：
-https://client.v.just.edu.cn/enlink/#/client/app
+奇怪的管理界面：client.v.just.edu.cn/enlink/#/client/app
+智慧树：portals.zhihuishu.com/just
+超星：just.fanya.chaoxing.com
+安全微伴：weiban.mycourse.cn/pharos/login/jskjdx/21200002/loginByJskjdx.do
+国防教育：www.gaoxiaokaoshi.com
 
 VPN2 使用笔记：
 使用 `360SO via VPN2` 搜索要访问的网址，记得加上 `http / https` 前缀。

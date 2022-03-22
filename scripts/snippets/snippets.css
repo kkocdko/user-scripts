@@ -1,17 +1,33 @@
-[id$="Header"],
-#arc_toolbar_report,
-#v_desc ~ *,
-.right-container > :first-child ~ :not(#multi_page),
-.right-container ~ *,
-.bilibili-player-video-wrap > :not(.bilibili-player-video),
-.bilibili-player-video-wrap ~ * {
+:host {
+  position: fixed;
+  top: 4px;
+  left: 4px;
+  z-index: 2147483647;
+  height: 0;
+}
+#i {
   display: none;
 }
-.player-wrap,
-.player-wrap > *,
-.desc-info {
-  height: auto;
+* {
+  float: left;
+  padding: 1em;
+  margin: 4px;
+  line-height: 0;
+  color: #fff;
+  box-shadow: 0 0 0 1px #9997;
+  user-select: none;
+  background: #28e;
+  border-radius: 8px;
+  transition: 0.3s;
 }
-.left-container {
-  min-height: 101vh;
+[for] ~ :active {
+  background: #4af;
+  transition: 0s;
+}
+:checked ~ * {
+  opacity: 0.3;
+  transform: translateY(-3em);
+}
+:checked + * {
+  transform: translateY(3em);
 }
