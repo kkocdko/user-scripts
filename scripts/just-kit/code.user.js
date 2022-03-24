@@ -3,7 +3,7 @@
 // @description Patches & tools for JUST Website.
 // @description:zh-CN 用于江苏科技大学网站的补丁与工具。
 // @namespace   https://greasyfork.org/users/197529
-// @version     0.1.47
+// @version     0.1.49
 // @author      kkocdko
 // @license     Unlicense
 // @match       *://*.just.edu.cn/*
@@ -16,11 +16,11 @@
 "use strict";
 
 const { addFloatButton, saveStr } = {
-  addFloatButton(text, onclick) /* 20220322-1526 */ {
+  addFloatButton(text, onclick) /* 20220324-0950 */ {
     if (!document.addFloatButton) {
       const host = document.body.appendChild(document.createElement("div"));
       const root = host.attachShadow({ mode: "open" });
-      root.innerHTML = `<style>:host{position:fixed;top:4px;left:4px;z-index:2147483647;height:0}#i{display:none}*{float:left;padding:1em;margin:4px;line-height:0;color:#fff;user-select:none;background:#28e;border-radius:8px;box-shadow:0 0 4px #aaa;transition:.3s}[for]~:active{background:#4af;transition:0s}:checked~*{opacity:.3;transform:translateY(-3em)}:checked+*{transform:translateY(3em)}</style><input id=i type=checkbox><label for=i>`;
+      root.innerHTML = `<style>:host{position:fixed;top:4px;left:4px;z-index:2147483647;height:0}#i{display:none}*{float:left;padding:1em;margin:4px;line-height:0;color:#fff;user-select:none;background:#28e;border:1px solid #fffa;border-radius:8px;transition:.3s}[for]~:active{background:#4af;transition:0s}:checked~*{opacity:.3;transform:translateY(-3em)}:checked+*{transform:translateY(3em)}</style><input id=i type=checkbox><label for=i>`;
       document.addFloatButton = (text, onclick) => {
         const el = document.createElement("label");
         el.textContent = text;
@@ -58,7 +58,11 @@ if (
 
 // Auto login
 if (urlMatch`/cas/login`) {
-  setTimeout(() => document.querySelector(".login_btn").click(), 100);
+  setInterval(() => {
+    const el = document.querySelector(".login_btn");
+    el.click();
+    el.click = () => {};
+  }, 100);
 }
 
 // Fix P.E. page left panel
