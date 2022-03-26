@@ -1,5 +1,6 @@
 *.m4a
 *.mp3
+*.ogg
 *.wav
 *.flac
 *.ape
@@ -9,9 +10,11 @@
 *.flv
 *.mpeg
 *.webm
+*.m3u8
 *.jpg
 *.jpeg
 *.png
+*.apng
 *.bmp
 *.tiff
 *.gif
