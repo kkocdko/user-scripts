@@ -3,7 +3,7 @@
 // @description Patches & tools for JUST Website.
 // @description:zh-CN 用于江苏科技大学网站的补丁与工具。
 // @namespace   https://greasyfork.org/users/197529
-// @version     0.1.49
+// @version     0.1.52
 // @author      kkocdko
 // @license     Unlicense
 // @match       *://*.just.edu.cn/*
@@ -59,6 +59,7 @@ if (
 // Auto login
 if (urlMatch`/cas/login`) {
   setInterval(() => {
+    if (!password.value) return;
     const el = document.querySelector(".login_btn");
     el.click();
     el.click = () => {};
