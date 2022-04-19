@@ -8,16 +8,6 @@ const rules = module.exports.rules["order/properties-order"]
   .filter((e) => !e.includes(":"));
 
 const raw = `
-:host {
-  position: fixed;
-  top: 4px;
-  left: 4px;
-  z-index: 2147483647;
-  height: 0;
-}
-#i {
-  display: none;
-}
 * {
   float: left;
   padding: 1em;
@@ -29,19 +19,8 @@ const raw = `
   background: #28e;
   border-radius: 8px;
   transition: 0.3s;
+  font-size:14px;
 }
-[for] ~ :active {
-  background: #4af;
-  transition: 0s;
-}
-:checked ~ * {
-  opacity: 0.3;
-  transform: translateY(-3em);
-}
-:checked + * {
-  transform: translateY(3em);
-}
-
 `;
 
 let dist = "";
