@@ -3,7 +3,7 @@
 // @description Patches & tools for JUST Website.
 // @description:zh-CN 用于江苏科技大学网站的补丁与工具。
 // @namespace   https://greasyfork.org/users/197529
-// @version     0.1.59
+// @version     0.1.61
 // @author      kkocdko
 // @license     Unlicense
 // @match       *://*.just.edu.cn/*
@@ -76,33 +76,43 @@ if (urlMatch`/menu.asp?menu`) {
   }, 900);
 }
 
-// Health clock in (old)
-if (urlMatch`/default/work/jkd/jkxxtb/jkxxcj.jsp`) {
-  addFloatButton("Clock in", () => {
-    input_tw.value = input_zwtw.value = 36;
-    post.click();
-  });
-}
-
-// Health clock in
-if (urlMatch`/static/?health-clock-in`) {
+// Health check in
+if (urlMatch`/static/?health-check-in`) {
   document.head.innerHTML += `<meta name=viewport content="width=device-width"><style>body{margin:0}iframe{border:0;width:100%;height:100%}</style>`;
   document.body.innerHTML = `<iframe src=../jkdk.html></iframe>`;
-  document.title = "just-kit-health-clock-in";
+  document.title = "just-kit-health-check-in";
   const key = document.title + "-location";
-  addFloatButton("Clock in", () => {
+  addFloatButton("Check in", () => {
     const iframe = document.querySelector("iframe").contentWindow.document;
     const el = iframe.querySelector("input[placeholder$=定位]");
     el.value = localStorage[key];
     el._valueTracker.setValue(""); // github.com/facebook/react/issues/11488#issuecomment-347775628
     el.dispatchEvent(new Event("input", { bubbles: true }));
-    setTimeout(() => iframe.querySelector("form+*>*").click(), 99);
+    setTimeout(() => iframe.querySelector("form+*>*").click());
   });
   addFloatButton(`Location = ${localStorage[key]}`, function () {
     localStorage[key] = prompt(key, localStorage[key]);
     this.textContent = `Location = ${localStorage[key]}`;
   });
-  // encrypt = (v, k) =>CryptoJS.AES.encrypt(CryptoJS.enc.Utf8.parse(v), CryptoJS.MD5(k), {mode: CryptoJS.mode.ECB,padding: CryptoJS.pad.Pkcs7}).toString();
+  // {
+  //   const url = `http://dc.just.edu.cn/dfi/formData/saveFormSubmitDataEncryption`;
+  //   const authentication = `eyJ0eXAiOiJKV1Q...`;
+  //   const bodyRaw = `{"formWid":"a5e94ae...`;
+  //   await fetch('https://cdn.jsdelivr.net/npm/crypto-js@4/crypto-js.min.js').then(r=>r.text()).then(eval);
+  //   const encode=(str,key)=>btoa(CryptoJS.AES.encrypt(CryptoJS.enc.Utf8.parse(str),CryptoJS.MD5(key),{mode:CryptoJS.mode.ECB,padding:CryptoJS.pad.Pkcs7}).toString());
+  //   const body = encode(bodyRaw, "zntb666666666666");
+  //   const init = { method: "post", headers: { authentication }, body };
+  //   const ret = await fetch(url, init).then((v) => v.text());
+  //   console.log(ret);
+  // }
+}
+
+// Health check in (old)
+if (urlMatch`/default/work/jkd/jkxxtb/jkxxcj.jsp`) {
+  addFloatButton("Check in", () => {
+    input_tw.value = input_zwtw.value = 36;
+    post.click();
+  });
 }
 
 // Schedule dump
@@ -177,7 +187,7 @@ VPN2反代: vpn2.just.edu.cn
 教务管理(内网2): 202.195.206.37:8080/jsxsd
 后勤管理: hqgy.just.edu.cn/sg/wechat/index.jsp
 查寝得分: hqgy.just.edu.cn/sg/wechat/healthCheck.jsp
-健康打卡: dc.just.edu.cn/static/?health-clock-in
+健康打卡: dc.just.edu.cn/static/?health-check-in
 健康打卡(RAW): dc.just.edu.cn/jkdk.html
 健康打卡(旧): ehall.just.edu.cn/default/work/jkd/jkxxtb/jkxxcj.jsp
 体育: tyxy.just.edu.cn
