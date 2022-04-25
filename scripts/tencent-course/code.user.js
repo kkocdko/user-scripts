@@ -2,7 +2,7 @@
 // @name        Tencent Course
 // @namespace   https://greasyfork.org/users/197529
 // @match       *://ke.qq.com/webcourse/*
-// @version     0.0.2
+// @version     0.0.3
 // @noframes
 // ==/UserScript==
 "use strict";
@@ -25,13 +25,13 @@ const { addFloatButton } = {
 };
 
 addFloatButton().remove();
-const signIn = () => {
-  try {
-    document.querySelector(".sign-dialog .s-btn").click();
-    addFloatButton(new Date().toTimeString().split(" ")[0]);
-  } catch {}
-};
-setInterval(signIn, 1000 * 2);
+const trySignIn = (el) =>
+  (el = document.querySelector(".sign-dialog .s-btn")) && (el.click(), 1);
+setInterval(() => {
+  if (!trySignIn()) return;
+  addFloatButton(new Date().toTimeString().split(" ")[0]);
+  setTimeout(trySignIn, 2 * 1000);
+}, 5 * 1000);
 const iframe = document.body.appendChild(document.createElement("iframe"));
 iframe.src = location.href;
 iframe.style = "position:fixed;bottom:9px;left:9px;border:solid";
