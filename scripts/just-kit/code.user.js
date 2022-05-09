@@ -1,9 +1,10 @@
 // ==UserScript==
 // @name        JUST Kit
 // @description Patches & tools for JUST Website.
+// @description:en Patches & tools for JUST Website.
 // @description:zh-CN 用于江苏科技大学网站的补丁与工具。
 // @namespace   https://greasyfork.org/users/197529
-// @version     0.1.61
+// @version     0.1.62
 // @author      kkocdko
 // @license     Unlicense
 // @match       *://*.just.edu.cn/*
@@ -16,11 +17,11 @@
 "use strict";
 
 const { addFloatButton, saveStr } = {
-  addFloatButton(text, onclick) /* 20220419-1455 */ {
+  addFloatButton(text, onclick) /* 20220509-1936 */ {
     if (!document.addFloatButton) {
       const host = document.body.appendChild(document.createElement("div"));
       const root = host.attachShadow({ mode: "open" });
-      root.innerHTML = `<style>:host{position:fixed;top:4px;left:4px;z-index:2147483647;height:0}#i{display:none}*{float:left;padding:1em;margin:4px;font-size:14px;line-height:0;color:#fff;user-select:none;background:#28e;border:1px solid #fffa;border-radius:8px;transition:.3s}[for]~:active{background:#4af;transition:0s}:checked~*{opacity:.3;transform:translateY(-3em)}:checked+*{transform:translateY(3em)}</style><input id=i type=checkbox><label for=i>`;
+      root.innerHTML = `<style>:host{position:fixed;top:4px;left:4px;z-index:2147483647;height:0}#i{display:none}*{float:left;padding:0 1em;margin:4px;font-size:14px;line-height:2em;color:#fff;user-select:none;background:#28e;border:1px solid #fffa;border-radius:8px;transition:.3s}[for]~:active{filter:brightness(1.1);transition:0s}:checked~*{opacity:.3;transform:translateY(-3em)}:checked+*{transform:translateY(3em)}</style><input id=i type=checkbox><label for=i>&zwj;</label>`;
       document.addFloatButton = (text, onclick) => {
         const el = document.createElement("label");
         el.textContent = text;
@@ -93,25 +94,6 @@ if (urlMatch`/static/?health-check-in`) {
   addFloatButton(`Location = ${localStorage[key]}`, function () {
     localStorage[key] = prompt(key, localStorage[key]);
     this.textContent = `Location = ${localStorage[key]}`;
-  });
-  // {
-  //   const url = `http://dc.just.edu.cn/dfi/formData/saveFormSubmitDataEncryption`;
-  //   const authentication = `eyJ0eXAiOiJKV1Q...`;
-  //   const bodyRaw = `{"formWid":"a5e94ae...`;
-  //   await fetch('https://cdn.jsdelivr.net/npm/crypto-js@4/crypto-js.min.js').then(r=>r.text()).then(eval);
-  //   const encode=(str,key)=>btoa(CryptoJS.AES.encrypt(CryptoJS.enc.Utf8.parse(str),CryptoJS.MD5(key),{mode:CryptoJS.mode.ECB,padding:CryptoJS.pad.Pkcs7}).toString());
-  //   const body = encode(bodyRaw, "zntb666666666666");
-  //   const init = { method: "post", headers: { authentication }, body };
-  //   const ret = await fetch(url, init).then((v) => v.text());
-  //   console.log(ret);
-  // }
-}
-
-// Health check in (old)
-if (urlMatch`/default/work/jkd/jkxxtb/jkxxcj.jsp`) {
-  addFloatButton("Check in", () => {
-    input_tw.value = input_zwtw.value = 36;
-    post.click();
   });
 }
 

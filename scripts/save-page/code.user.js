@@ -1,10 +1,12 @@
 // ==UserScript==
 // @name        Save Page
+// @name:en     Save Page
 // @name:zh-CN  保存页面
 // @description Save page as single HTML file.
+// @description:en Save page as single HTML file.
 // @description:zh-CN 将页面保存为单个 HTML 文件。
 // @namespace   https://greasyfork.org/users/197529
-// @version     0.1.4
+// @version     0.1.5
 // @author      kkocdko
 // @license     Unlicense
 // @match       *://*/*
@@ -14,11 +16,11 @@
 "use strict";
 
 const { addFloatButton, fetchex } = {
-  addFloatButton(text, onclick) /* 20220419-1455 */ {
+  addFloatButton(text, onclick) /* 20220509-1936 */ {
     if (!document.addFloatButton) {
       const host = document.body.appendChild(document.createElement("div"));
       const root = host.attachShadow({ mode: "open" });
-      root.innerHTML = `<style>:host{position:fixed;top:4px;left:4px;z-index:2147483647;height:0}#i{display:none}*{float:left;padding:1em;margin:4px;font-size:14px;line-height:0;color:#fff;user-select:none;background:#28e;border:1px solid #fffa;border-radius:8px;transition:.3s}[for]~:active{background:#4af;transition:0s}:checked~*{opacity:.3;transform:translateY(-3em)}:checked+*{transform:translateY(3em)}</style><input id=i type=checkbox><label for=i>`;
+      root.innerHTML = `<style>:host{position:fixed;top:4px;left:4px;z-index:2147483647;height:0}#i{display:none}*{float:left;padding:0 1em;margin:4px;font-size:14px;line-height:2em;color:#fff;user-select:none;background:#28e;border:1px solid #fffa;border-radius:8px;transition:.3s}[for]~:active{filter:brightness(1.1);transition:0s}:checked~*{opacity:.3;transform:translateY(-3em)}:checked+*{transform:translateY(3em)}</style><input id=i type=checkbox><label for=i>&zwj;</label>`;
       document.addFloatButton = (text, onclick) => {
         const el = document.createElement("label");
         el.textContent = text;
@@ -28,18 +30,14 @@ const { addFloatButton, fetchex } = {
     }
     return document.addFloatButton(text, onclick);
   },
-  async fetchex(url, type) /* 20210904-1148 */ {
+  fetchex(url, type) /* 20220509-1838 */ {
     // @grant       GM_xmlhttpRequest
     if (self.GM_xmlhttpRequest)
-      return new Promise((resolve, reject) => {
-        GM_xmlhttpRequest({
-          url,
-          responseType: type,
-          onload: (e) => resolve(e.response),
-          onerror: reject,
-        });
+      return new Promise((resolve, onerror) => {
+        const onload = (e) => resolve(e.response);
+        GM_xmlhttpRequest({ url, responseType: type, onload, onerror });
       });
-    else return (await fetch(url))[type]();
+    else return fetch(url).then((v) => v[type]());
   },
 };
 

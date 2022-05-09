@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<style>
+  @media (prefers-color-scheme: dark) {
+    html {
+      background: #000;
+    }
+  }
+</style>
+<body></body>
+<script>
+  const { addFloatButton } = {
+    addFloatButton(text, onclick) /* 20220509-1936 */ {
+      if (!document.addFloatButton) {
+        const host = document.body.appendChild(document.createElement("div"));
+        const root = host.attachShadow({ mode: "open" });
+        root.innerHTML = `<style>:host{position:fixed;top:4px;left:4px;z-index:2147483647;height:0}#i{display:none}*{float:left;padding:0 1em;margin:4px;font-size:14px;line-height:2em;color:#fff;user-select:none;background:#28e;border:1px solid #fffa;border-radius:8px;transition:.3s}[for]~:active{filter:brightness(1.2);transition:0s}:checked~*{opacity:.3;transform:translateY(-3em)}:checked+*{transform:translateY(3em)}</style><input id=i type=checkbox><label for=i>&zwj;</label>`;
+        document.addFloatButton = (text, onclick) => {
+          const el = document.createElement("label");
+          el.textContent = text;
+          el.addEventListener("click", onclick);
+          return root.appendChild(el);
+        };
+      }
+      return document.addFloatButton(text, onclick);
+    },
+  };
+  addFloatButton("Hello world", () => {});
+</script>
