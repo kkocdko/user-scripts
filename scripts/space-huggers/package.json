@@ -1,0 +1,15 @@
+{
+  "name": "space-huggers",
+  "version": "1.0.0",
+  "description": "",
+  "main": "ws.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "type": "module",
+  "license": "ISC",
+  "dependencies": {
+    "ws": "^8.6.0"
+  }
+}
