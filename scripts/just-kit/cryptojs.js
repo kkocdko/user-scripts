@@ -3,6 +3,7 @@ globalThis.CryptoJS = { l: {} };
 CryptoJS.enc = {
   Utf8: {
     parse: (t) => {
+      t = unescape(encodeURIComponent(t)); // impl this in rust?
       let e = t.length,
         s = [];
       for (let i = 0; i < e; i++)
@@ -19,29 +20,14 @@ CryptoJS.pad = {
         i = s - (t.sigBytes % s),
         r = (i << 24) | (i << 16) | (i << 8) | i,
         n = [],
-        c = 0;
-      for (; c < i; c += 4) n.push(r);
+        j = 0;
+      for (; j < i; j += 4) n.push(r);
       t.concat(WordArray._c(n, i));
     },
   },
 };
 
-CryptoJS.mode = {
-  ECB: {
-    c7(t, e) {
-      return {
-        _c(t, e) {
-          this._c = t;
-          this._iv = e;
-          return this;
-        },
-        pb(t, e) {
-          this._c.v0(t, e);
-        },
-      }._c(t, e);
-    },
-  },
-};
+CryptoJS.mode = { ECB: {} };
 
 let WordArray = {
   e(t) {
@@ -59,36 +45,38 @@ let WordArray = {
     let t = this.e();
     return t._.apply(t, arguments), t;
   },
-  m1(t) {
-    for (let e in t) t.hasOwnProperty(e) && (this[e] = t[e]);
-    t.hasOwnProperty("toString") && (this.toString = t.toString);
-  },
   _: function (t, e) {
     Object.assign(this, WordArray);
     t = this.words = t || [];
     this.sigBytes = null != e ? e : 4 * t.length;
   },
   toString(t) {
-    return (t || Hex).st(this);
+    return t.st(this);
   },
   concat(t) {
-    let e = this.words,
-      s = t.words,
-      i = this.sigBytes,
-      h = t.sigBytes;
-    if ((this.cp(), i % 4))
+    this.cp();
+    let e = this.words;
+    let i = this.sigBytes;
+    let s = t.words;
+    let h = t.sigBytes;
+    if (i % 4 != 0) {
       for (let t = 0; t < h; t++) {
         let h = (s[t >>> 2] >>> (24 - (t % 4) * 8)) & 255;
         e[(i + t) >>> 2] |= h << (24 - ((i + t) % 4) * 8);
       }
-    else for (let t = 0; t < h; t += 4) e[(i + t) >>> 2] = s[t >>> 2];
-    return (this.sigBytes += h), this;
+    } else {
+      for (let t = 0; t < h; t += 4) {
+        e[(i + t) >>> 2] = s[t >>> 2];
+      }
+    }
+    this.sigBytes += h;
+    return this;
   },
   cp() {
-    let e = this.words,
-      s = this.sigBytes;
-    (e[s >>> 2] &= 4294967295 << (32 - (s % 4) * 8)),
-      (e.length = Math.ceil(s / 4));
+    let e = this.words;
+    let s = this.sigBytes;
+    e[s >>> 2] &= 4294967295 << (32 - (s % 4) * 8);
+    e.length = Math.ceil(s / 4);
   },
 };
 
@@ -146,24 +134,20 @@ let WordArray = {
       for (let e in t) t.hasOwnProperty(e) && (this[e] = t[e]);
       t.hasOwnProperty("toString") && (this.toString = t.toString);
     },
-    ap(t) {
-      this.twa.concat(t);
-      this.nb += t.sigBytes;
-    },
-    p8(e) {
+    p8(e = true) {
       let s,
-        i = this.twa,
-        h = i.words,
-        r = i.sigBytes,
-        c = this.be,
-        l = r / (4 * c);
-      l = e ? Math.ceil(l) : Math.max((0 | l) - this.m8, 0);
-      let o = l * c,
-        a = Math.min(4 * o, r);
+        l_twa = this.twa,
+        l_twa_words = l_twa.words,
+        l_twa_sigBytes = l_twa.sigBytes,
+        l_be = this.be,
+        l = l_twa_sigBytes / (4 * l_be);
+      l = Math.ceil(l);
+      let o = l * l_be,
+        a = Math.min(4 * o, l_twa_sigBytes);
       if (o) {
-        for (let t = 0; t < o; t += c) this.k2(h, t);
-        s = h.splice(0, o);
-        i.sigBytes -= a;
+        for (let i = 0; i < o; i += l_be) this.v0(l_twa_words, i);
+        s = l_twa_words.splice(0, o);
+        l_twa.sigBytes -= a;
       }
       return new WordArray._(s, a);
     },
@@ -174,23 +158,14 @@ let WordArray = {
       this.twa = new WordArray._();
       this.nb = 0;
       this._doReset();
-      let s = this.cfg.iv;
-      let i = this.cfg.mode;
-      this.md = CryptoJS.mode.ECB.c7.call(i, this, s && s.words);
-      this.md.c3 = CryptoJS.mode.ECB.c7;
       return this;
     },
     f5(t) {
-      this.ap(t);
-      return this.d9();
-    },
-    k2(t, e) {
-      this.md.pb(t, e);
-    },
-    d9() {
+      this.twa.concat(t);
+      this.nb += t.sigBytes;
       let e = this.cfg.padding;
       e.pad(this.twa, this.be);
-      let t = this.p8(true);
+      t = this.p8(true);
       return t;
     },
     _doReset() {
@@ -211,6 +186,7 @@ let WordArray = {
           t = l_k4[i - 1];
           if (i % sbm4 == 0) {
             t = (t << 8) | (t >>> 24);
+            // console.log(t)
             t =
               (h[t >>> 24] << 24) |
               (h[(t >>> 16) & 255] << 16) |
@@ -238,114 +214,103 @@ let WordArray = {
               g[h[255 & t]];
       }
     },
-    v0(t, e) {
-      let [s, i, w, r, z, b] = [this.k4, n, c, l, o, h];
-      {
-        let l = this.nr9,
-          o = t[e] ^ s[0],
-          a = t[e + 1] ^ s[1],
-          p = t[e + 2] ^ s[2],
-          f = t[e + 3] ^ s[3],
-          g = 4;
-        for (let t = 1; t < l; t++) {
-          let t =
-            i[o >>> 24] ^
-            w[(a >>> 16) & 255] ^
-            r[(p >>> 8) & 255] ^
-            z[255 & f] ^
-            s[g];
-          g += 1;
-          let e =
-            i[a >>> 24] ^
-            w[(p >>> 16) & 255] ^
-            r[(f >>> 8) & 255] ^
-            z[255 & o] ^
-            s[g];
-          g += 1;
-          let c =
-            i[p >>> 24] ^
-            w[(f >>> 16) & 255] ^
-            r[(o >>> 8) & 255] ^
-            z[255 & a] ^
-            s[g];
-          g += 1;
-          let l =
-            i[f >>> 24] ^
-            w[(o >>> 16) & 255] ^
-            r[(a >>> 8) & 255] ^
-            z[255 & p] ^
-            s[g];
-          g += 1;
-          o = t;
-          a = e;
-          p = c;
-          f = l;
-        }
-        let d =
-          ((b[o >>> 24] << 24) |
-            (b[(a >>> 16) & 255] << 16) |
-            (b[(p >>> 8) & 255] << 8) |
-            b[255 & f]) ^
-          s[g];
+    v0(l_twa_words, e) {
+      let l_k4 = this.k4;
+      let l_nr9 = this.nr9;
+      let k = l_twa_words[e] ^ l_k4[0];
+      let a = l_twa_words[e + 1] ^ l_k4[1];
+      let p = l_twa_words[e + 2] ^ l_k4[2];
+      let f = l_twa_words[e + 3] ^ l_k4[3];
+      let g = 4;
+      for (let j = 1; j < l_nr9; j++) {
+        let t =
+          n[k >>> 24] ^
+          c[(a >>> 16) & 255] ^
+          l[(p >>> 8) & 255] ^
+          o[255 & f] ^
+          l_k4[g];
         g += 1;
-        let x =
-          ((b[a >>> 24] << 24) |
-            (b[(p >>> 16) & 255] << 16) |
-            (b[(f >>> 8) & 255] << 8) |
-            b[255 & o]) ^
-          s[g];
+        let e =
+          n[a >>> 24] ^
+          c[(p >>> 16) & 255] ^
+          l[(f >>> 8) & 255] ^
+          o[255 & k] ^
+          l_k4[g];
         g += 1;
-        let u =
-          ((b[p >>> 24] << 24) |
-            (b[(f >>> 16) & 255] << 16) |
-            (b[(o >>> 8) & 255] << 8) |
-            b[255 & a]) ^
-          s[g];
+        let m =
+          n[p >>> 24] ^
+          c[(f >>> 16) & 255] ^
+          l[(k >>> 8) & 255] ^
+          o[255 & a] ^
+          l_k4[g];
         g += 1;
-        let y =
-          ((b[f >>> 24] << 24) |
-            (b[(o >>> 16) & 255] << 16) |
-            (b[(a >>> 8) & 255] << 8) |
-            b[255 & p]) ^
-          s[g];
+        let v =
+          n[f >>> 24] ^
+          c[(k >>> 16) & 255] ^
+          l[(a >>> 8) & 255] ^
+          o[255 & p] ^
+          l_k4[g];
         g += 1;
-        t[e] = d;
-        t[e + 1] = x;
-        t[e + 2] = u;
-        t[e + 3] = y;
+        k = t;
+        a = e;
+        p = m;
+        f = v;
       }
+      let te0 =
+        ((h[k >>> 24] << 24) |
+          (h[(a >>> 16) & 255] << 16) |
+          (h[(p >>> 8) & 255] << 8) |
+          h[255 & f]) ^
+        l_k4[g];
+      g += 1;
+      let te1 =
+        ((h[a >>> 24] << 24) |
+          (h[(p >>> 16) & 255] << 16) |
+          (h[(f >>> 8) & 255] << 8) |
+          h[255 & k]) ^
+        l_k4[g];
+      g += 1;
+      let te2 =
+        ((h[p >>> 24] << 24) |
+          (h[(f >>> 16) & 255] << 16) |
+          (h[(k >>> 8) & 255] << 8) |
+          h[255 & a]) ^
+        l_k4[g];
+      g += 1;
+      let te3 =
+        ((h[f >>> 24] << 24) |
+          (h[(k >>> 16) & 255] << 16) |
+          (h[(a >>> 8) & 255] << 8) |
+          h[255 & p]) ^
+        l_k4[g];
+      g += 1;
+      l_twa_words[e + 0] = te0;
+      l_twa_words[e + 1] = te1;
+      l_twa_words[e + 2] = te2;
+      l_twa_words[e + 3] = te3;
     },
     encrypt(message, key, cfg) {
       let encryptor = AES.c7(key, cfg);
-      let ciphertext = encryptor.f5(message);
-      //   console.dir(ciphertext);
-      //   process.exit();
-      return st({ ct6: ciphertext });
+      let l_twa = encryptor.f5(message);
 
-      function st(t) {
-        return t.ct6.toString({
-          st(t) {
-            let e,
-              s,
-              i = t.words,
-              h = t.sigBytes,
-              r = [],
-              n =
-                "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/=";
-            for (t.cp(), t = 0; t < h; t += 3) {
-              s =
-                (((i[t >>> 2] >>> (24 - (t % 4) * 8)) & 255) << 16) |
-                (((i[(t + 1) >>> 2] >>> (24 - ((t + 1) % 4) * 8)) & 255) << 8) |
-                ((i[(t + 2) >>> 2] >>> (24 - ((t + 2) % 4) * 8)) & 255);
-              for (e = 0; e < 4 && t + 0.75 * e < h; e++)
-                r.push(n.charAt((s >>> (6 * (3 - e))) & 63));
-            }
-            let c = n.charAt(64);
-            if (c) for (; r.length % 4; ) r.push(c);
-            return r.join("");
-          },
-        });
+      let s;
+      let words = l_twa.words;
+      let sigBytes = l_twa.sigBytes;
+      let r = [];
+      let n =
+        "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/=";
+      l_twa.cp();
+      for (let i = 0; i < sigBytes; i += 3) {
+        s =
+          (((words[i >>> 2] >>> (24 - (i % 4) * 8)) & 255) << 16) |
+          (((words[(i + 1) >>> 2] >>> (24 - ((i + 1) % 4) * 8)) & 255) << 8) |
+          ((words[(i + 2) >>> 2] >>> (24 - ((i + 2) % 4) * 8)) & 255);
+        for (let j = 0; j < 4 && i + 0.75 * j < sigBytes; j++)
+          r.push(n.charAt((s >>> (6 * (3 - j))) & 63));
       }
+      let c = n.charAt(64);
+      if (c) for (; r.length % 4; ) r.push(c);
+      return r.join("");
     },
   };
   CryptoJS.AES = AES;
@@ -362,4 +327,4 @@ const encrypt = (str) => {
   const cfg = { mode: CryptoJS.mode.ECB, padding: CryptoJS.pad.Pkcs7 };
   return btoa(CryptoJS.AES.encrypt(message, key, cfg).toString());
 };
-// console.log(encrypt(`{abcde json:{ on:null}}`));
+// console.log(encrypt(`{"data":{"v":123}}`));

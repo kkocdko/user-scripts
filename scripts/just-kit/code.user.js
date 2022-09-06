@@ -4,7 +4,7 @@
 // @description:en Patches & tools for JUST Website.
 // @description:zh-CN 用于江苏科技大学网站的补丁与工具。
 // @namespace   https://greasyfork.org/users/197529
-// @version     0.1.62
+// @version     0.1.65
 // @author      kkocdko
 // @license     Unlicense
 // @match       *://*.just.edu.cn/*
@@ -163,11 +163,12 @@ if (urlMatch`/jsxsd/xspj/xspj_edit.do`) {
 个人主页: my.just.edu.cn
 VPN2反代: vpn2.just.edu.cn
 360SO VPN2: client.v.just.edu.cn/https/webvpnb153e15136e234229309c84507966ea4
-教务管理: jwgl.just.edu.cn:8080/jsxsd/
-教务管理(单点登录): jwgl.just.edu.cn:8080/sso.jsp
-教务管理(内网1): 202.195.206.36:8080/jsxsd
-教务管理(内网2): 202.195.206.37:8080/jsxsd
-后勤管理: hqgy.just.edu.cn/sg/wechat/index.jsp
+教务: jwgl.just.edu.cn:8080/jsxsd/
+教务(单点登录): jwgl.just.edu.cn:8080/sso.jsp
+教务(内网1): 202.195.206.36:8080/jsxsd
+教务(内网2): 202.195.206.37:8080/jsxsd
+财务: 218.3.134.246/WFManager/login.jsp
+后勤: hqgy.just.edu.cn/sg/wechat/index.jsp
 查寝得分: hqgy.just.edu.cn/sg/wechat/healthCheck.jsp
 健康打卡: dc.just.edu.cn/static/?health-check-in
 健康打卡(RAW): dc.just.edu.cn/jkdk.html
@@ -183,6 +184,8 @@ VPN2反代: vpn2.just.edu.cn
 国防教育: www.gaoxiaokaoshi.com
 
 关于 [ VPN2 ] : 
+就如 URI 中所写的那样，VPN2 只是一个类似反向代理的玩意。
+由于学校网站配置千奇百怪，有时会遇到只有在校园网中才能访问的情况。这时可以使用 VPN2。
 使用 `360SO via VPN2` 搜索要访问的网址。记得加上 `http / https` 前缀。
 搜索结果页出现“找不到该 URL，可以直接访问 `http://x.x`”后点击直接访问链接即可。
 遇“无效网关”等奇怪错误时，请检查协议前缀是否正确，如 http 可能误写为 https。
@@ -191,5 +194,15 @@ VPN2反代: vpn2.just.edu.cn
 关于 [ 健康打卡 ] :
 新版（20220420）健康打卡报表使用 Hash Router，各跳转关系十分混乱且不稳定。
 为简化实现，当且仅当访问上文指定的地址时才可使用一键打卡功能。
+直接 Post 请求进行打卡的实现在本目录下的 health-check-in.js 中，感兴趣的可以尝试。
+
+如果 [ 教务系统提示 非法访问 ] :
+相信自己，你并没有做错什么。这时候你可以清除 Cookie，SessionStorage 等数据。
+当然 Cookie 会自动过期，所以和跳大神治麻疹一样，随便用点什么“独门秘籍”，过一阵子也就自己好了。
+
+如果 [ 密码错误 ] :
+只需将 [ just123456, 123456, <身份证后六位> ] 排列组合即可。
+
+关于 [ 校园网 ] :
 
 /* ================= */
