@@ -42,6 +42,7 @@ const checkIn = async (id, password) => {
       RADIO_L1RTT90Y: "正常",
       RADIO_L11NMCAC: "绿码", // 健康码状态:绿码|黄码|红码
       RADIO_L11NMCAF: "绿码", // 行程码状态:绿码|黄码|橙码|红码
+      RADIO_L8BCMSNF: "低风险区", // 所在地区疫情风险等级:常态化防控区域|低风险区|中风险区|高风险区
       RADIO_L3O2U7WJ: "否",
       RADIO_L11NMCAJ: "否",
       INPUT_L11NMCAO: "36",
@@ -72,5 +73,8 @@ for (const entry of list) checkIn(...entry.split(" "));
 # get encrypted password
 open page http://jwgl.just.edu.cn:8080/sso.jsp
 js: username.value='hi';checkPassLogin();console.log(password.value)
+
+# get form fields
+http://dc.just.edu.cn/dfi/formOpen/loadFormListBySUrl?sUrl=zGO2n4p7
 
 */
