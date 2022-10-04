@@ -33,8 +33,6 @@ const checkIn = async (id, password) => {
   )
     .then((v) => v.json())
     .then((v) => v.data.submitToken);
-  // get current form fields
-  // http://dc.just.edu.cn/dfi/formOpen/loadFormListBySUrl?sUrl=zGO2n4p7
   const data = {
     dataMap: {
       INPUT_L11NMC9H: id.toString(), // 学工号
@@ -68,12 +66,21 @@ const list = [
   `222210711219 <password>`, // kkocdko self
 ];
 for (const entry of list) checkIn(...entry.split(" "));
-// token = `sessionStorage.jwToken` on http://dc.just.edu.cn
-// search `formData/saveFormSubmitDataEncryption` in `umi.js`, dump data
 /*
+
+token = `sessionStorage.jwToken` on http://dc.just.edu.cn
+
+# dump data
+search `formData/saveFormSubmitDataEncryption` in `umi.js`
 
 # get encrypted password
 open page http://jwgl.just.edu.cn:8080/sso.jsp , input the username and password
 js: checkPassLogin();console.log(password.value)
+
+# get current form fields
+http://dc.just.edu.cn/dfi/formOpen/loadFormListBySUrl?sUrl=zGO2n4p7
+
+# view result
+http://dc.just.edu.cn/#/v2/formReportDetail/zGO2n4p7
 
 */
