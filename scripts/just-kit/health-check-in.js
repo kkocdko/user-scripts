@@ -74,8 +74,8 @@ token = `sessionStorage.jwToken` on http://dc.just.edu.cn
 search `formData/saveFormSubmitDataEncryption` in `umi.js`
 
 # get encrypted password
-open page http://jwgl.just.edu.cn:8080/sso.jsp , input the username and password
-js: checkPassLogin();console.log(password.value)
+open page https://ids2.just.edu.cn/cas/login , input the username and password
+don't press login button, js: checkPassLogin();console.log(password.value)
 
 # get current form fields
 http://dc.just.edu.cn/dfi/formOpen/loadFormListBySUrl?sUrl=zGO2n4p7
