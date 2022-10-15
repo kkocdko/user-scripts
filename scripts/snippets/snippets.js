@@ -77,6 +77,11 @@ const {} = {
     for (const c of document.cookie.split("; "))
       document.cookie = c.split("=")[0] + "=;max-age=0";
   },
+  load([u]) /* 20221015-1031 */ {
+    const el = document.head.appendChild(document.createElement("script"));
+    el.src = u;
+    return new Promise((r) => (el.onload = r));
+  },
 };
 
 // User CSS Template
