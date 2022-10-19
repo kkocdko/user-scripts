@@ -27,7 +27,7 @@ const cfg = {
     "/ch0103/13",
   ].map((v) => (v.endsWith("/") ? v : v + "/")),
   userId: document.querySelector("#userToolbar>li")?.textContent,
-  isDev: window.ojcnrgDev || true,
+  isDev: window.ojcnrgDev,
 };
 if (!document.querySelector(".account-link") && !cfg.isDev)
   throw alert("login required");
