@@ -4,7 +4,7 @@
 // @description:en Generate homework report PDF automatically.
 // @description:zh-CN 自动生成作业报告 PDF。
 // @namespace   https://greasyfork.org/users/197529
-// @version     0.1.1
+// @version     0.1.3
 // @author      kkocdko
 // @license     Unlicense
 // @match       *://noi.openjudge.cn/*
@@ -26,32 +26,15 @@ const cfg = {
     "/ch0103/09",
     "/ch0103/13",
   ].map((v) => (v.endsWith("/") ? v : v + "/")),
-  userId: document.querySelector("#userToolbar>li").textContent,
-  compress: !window.ojcnrgDev,
+  userId: document.querySelector("#userToolbar>li")?.textContent,
+  isDev: window.ojcnrgDev || true,
 };
-if (!document.querySelector(".account-link"))
-  throw alert("login and reload page please");
+if (!document.querySelector(".account-link") && !cfg.isDev)
+  throw alert("login required");
 document.lastChild.appendChild(document.createElement("style")).textContent = `
-body::before{
-  content: "";
-  position: fixed;
-  filter: drop-shadow(0 0 6px #37b);
-  left: 20px;
-  top: 20px;
-  width: 10vmin;
-  height: 10vmin;
-  border: 10px solid #fff;
-  border-radius: 50%;
-  border-top-color: #0000;
-  z-index: 2000;
-  transition: 15s linear;
-  transform: rotate(0deg);
-}
-body.ojcnrg::before{
-  transform: rotate(3600deg);
-}
-`.replace(/;/g, "!important;");
-setTimeout(() => document.body.classList.add("ojcnrg"), 1000);
+body::before{ content: ""; position: fixed; left: 40px; top: 40px; width: 6vmin; height: 6vmin; border: 8px solid #37b; border-radius: 25%; z-index: 2000; animation: spin 12s linear infinite; }
+@keyframes spin { 100% { transform: rotate(3600deg); } }
+`;
 const { load } = {
   load([u]) /* 20221015-1031 */ {
     const el = document.head.appendChild(document.createElement("script"));
@@ -72,17 +55,10 @@ const { load } = {
       normal: `https://cdn.jsdelivr.net/npm/@fontsource/noto-sans-mono@4.5.11/files/noto-sans-mono-latin-400-normal.woff`,
     },
   });
-  pdfMake.addTableLayouts({
-    liteLayout: {
-      hLineWidth: () => 1,
-      vLineWidth: () => 1,
-      hLineColor: () => "#aaa",
-      vLineColor: () => "#aaa",
-    },
-  });
   const pdfDefinition = {
     defaultStyle: { font: "Noto Sans" },
-    compress: cfg.compress,
+    compress: !cfg.isDev,
+    info: { title: new Date().toLocaleString("zh-CN") },
     pageMargins: [50, 50, 50, 50],
     content: [
       {
@@ -152,7 +128,7 @@ const { load } = {
     {
       text: code
         .split("\n")
-        .map((s) => "\u200B    " + s)
+        .map((s) => `\u200B  ${s}`)
         .join("\n"),
       font: "Noto Sans Mono",
       fontSize: 10,
@@ -165,20 +141,23 @@ const { load } = {
       margin: [0, 12, 0, 8],
     },
     {
-      layout: "liteLayout",
-      fontSize: 8,
       table: {
-        headerRows: 1,
         widths: [55, "*", "auto", 20, 36, 34, "auto", "auto", 36],
         body: [
           "提交人,题目,结果,分数,内存,时间,代码长度,语言,提交时间".split(","),
           record,
         ],
       },
+      fontSize: 8,
+      layout: {
+        hLineWidth: () => 0.5,
+        vLineWidth: () => 0.5,
+        hLineColor: () => "#aaa",
+        vLineColor: () => "#aaa",
+      },
     },
   ];
   const tasks = cfg.problems.map(async (path, idx) => {
-    if (window.ojcnrgDev) return;
     const [, ch, problemId] = path.split("/");
     const queryUrl = `/${ch}/status/?problemNumber=${problemId}&userName=${cfg.userId}`;
     const queryPage = await fetch(queryUrl).then((r) => r.text());
@@ -193,6 +172,7 @@ const { load } = {
       if (v) record.push(v);
       s = s.slice(idx).trim();
     }
+    record[1] = { text: record[1], link: location.origin + queryUrl };
     const solutionUrl = entry.match(/(?<=language"><a href=")[^"]+/)[0];
     const solutionPage = await fetch(solutionUrl).then((r) => r.text());
     const codeExactor = document.createElement("p");
@@ -201,11 +181,11 @@ const { load } = {
     return genProblemSection(idx + 1, path, code, record);
   });
   for (const sections of await Promise.all(tasks))
-    for (const section of sections) pdfDefinition.content.push(section);
+    pdfDefinition.content = pdfDefinition.content.concat(sections);
   const pdf = pdfMake.createPdf(pdfDefinition);
-  if (window.ojcnrgDev) return pdf.download(cfg.userId);
+  if (!cfg.isDev) return pdf.download(cfg.userId);
   const iframe = document.body.appendChild(document.createElement("iframe"));
-  iframe.style = `border: none; outline: none; position: fixed; left: 0; top: 0; height: 100vh; width: 100vw;`;
+  iframe.style = `border:none;position:fixed;left:0;top:0;height:100vh;width:100vw;z-index:3000`;
   iframe.src = URL.createObjectURL(await pdf.getBlob());
 })();
 
