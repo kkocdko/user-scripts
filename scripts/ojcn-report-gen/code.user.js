@@ -11,111 +11,219 @@
 // ==/UserScript==
 "use strict";
 
-setTimeout(() => location.reload(), 2000);
-// https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.es.min.js
-
-const { addFloatButton, load } = {
-  addFloatButton(text, onclick) /* 20220509-1936 */ {
-    if (!document.addFloatButton) {
-      const host = document.body.appendChild(document.createElement("div"));
-      const root = host.attachShadow({ mode: "open" });
-      root.innerHTML = `<style>:host{position:fixed;top:4px;left:4px;z-index:2147483647;height:0}#i{display:none}*{float:left;padding:0 1em;margin:4px;font-size:14px;line-height:2em;color:#fff;user-select:none;background:#28e;border:1px solid #fffa;border-radius:8px;transition:.3s}[for]~:active{filter:brightness(1.1);transition:0s}:checked~*{opacity:.3;transform:translateY(-3em)}:checked+*{transform:translateY(3em)}</style><input id=i type=checkbox><label for=i>&zwj;</label>`;
-      document.addFloatButton = (text, onclick) => {
-        const el = document.createElement("label");
-        el.textContent = text;
-        el.addEventListener("click", onclick);
-        return root.appendChild(el);
-      };
-    }
-    return document.addFloatButton(text, onclick);
-  },
+const cfg = {
+  homeworkId: 1,
+  studentName: "无名氏",
+  problems: [
+    "/ch0101/02",
+    "/ch0101/04",
+    "/ch0101/08",
+    "/ch0101/09",
+    "/ch0103/03",
+    "/ch0103/05",
+    "/ch0103/06",
+    "/ch0103/08",
+    "/ch0103/09",
+    "/ch0103/13",
+  ].map((v) => (v.endsWith("/") ? v : v + "/")),
+  userId: document.querySelector("#userToolbar>li").textContent,
+  compress: !window.ojcnrgDev,
+};
+if (!document.querySelector(".account-link"))
+  throw alert("login and reload page please");
+document.lastChild.appendChild(document.createElement("style")).textContent = `
+body::before{
+  content: "";
+  position: fixed;
+  filter: drop-shadow(0 0 6px #37b);
+  left: 20px;
+  top: 20px;
+  width: 10vmin;
+  height: 10vmin;
+  border: 10px solid #fff;
+  border-radius: 50%;
+  border-top-color: #0000;
+  z-index: 2000;
+  transition: 15s linear;
+  transform: rotate(0deg);
+}
+body.ojcnrg::before{
+  transform: rotate(3600deg);
+}
+`.replace(/;/g, "!important;");
+setTimeout(() => document.body.classList.add("ojcnrg"), 1000);
+const { load } = {
   load([u]) /* 20221015-1031 */ {
     const el = document.head.appendChild(document.createElement("script"));
     el.src = u;
     return new Promise((r) => (el.onload = r));
   },
 };
-
 (async () => {
-  await load`https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.3.0-beta.2/pdfmake.min.js`;
+  await load`https://cdn.jsdelivr.net/npm/pdfmake@0.3.0-beta.3/build/pdfmake.min.js`;
   pdfMake.addFonts({
-    Roboto: {
-      normal: `https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.3.0-beta.2/fonts/Roboto/Roboto-Regular.ttf`,
-      bold: `https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.3.0-beta.2/fonts/Roboto/Roboto-Medium.ttf`,
+    "Noto Sans": {
+      // normal: `https://cdn.jsdelivr.net/npm/@fontsource/noto-sans@4.5.11/files/noto-sans-latin-400-normal.woff`,
+      normal: `https://cdn.jsdelivr.net/npm/@fontsource/noto-sans-sc@4.5.12/files/noto-sans-sc-chinese-simplified-400-normal.woff`,
+      italics: `https://cdn.jsdelivr.net/npm/@fontsource/noto-sans@4.5.11/files/noto-sans-latin-400-italic.woff`,
+      bold: `https://cdn.jsdelivr.net/npm/@fontsource/noto-sans@4.5.11/files/noto-sans-latin-700-normal.woff`,
     },
-
-    // https://cdn.jsdelivr.net/npm/@fontsource/noto-sans-sc@4.5.12/files/noto-sans-sc-all-400-normal.woff
+    "Noto Sans Mono": {
+      normal: `https://cdn.jsdelivr.net/npm/@fontsource/noto-sans-mono@4.5.11/files/noto-sans-mono-latin-400-normal.woff`,
+    },
   });
-  const pid = "01";
-  const dd = {
-    defaultStyle: { font: "Roboto" },
+  pdfMake.addTableLayouts({
+    liteLayout: {
+      hLineWidth: () => 1,
+      vLineWidth: () => 1,
+      hLineColor: () => "#aaa",
+      vLineColor: () => "#aaa",
+    },
+  });
+  const pdfDefinition = {
+    defaultStyle: { font: "Noto Sans" },
+    compress: cfg.compress,
+    pageMargins: [50, 50, 50, 50],
     content: [
       {
-        text: `Homework ${pid}`,
-        fontSize: 18,
+        text: `Homework ${cfg.homeworkId.toString().padStart(2, "0")}`,
+        fontSize: 17,
         bold: true,
         alignment: "center",
-        margin: [0, 28, 0, 24],
+        margin: [0, 16, 0, 0],
       },
-
-      // {
-      //   text: [
-      //     {
-      //       text: "Student ID: ",
-      //       fontSize: 12,
-      //       bold: true,
-      //     },
-      //     { text: "Text ", color: "green" },
-      //     {
-      //       text: "Name: ",
-      //       fontSize: 12,
-      //       bold: true,
-      //     },
-      //     { text: "Text ", color: "blue" },
-      //   ],
-      // },
       {
         layout: "noBorders",
         fontSize: 12,
+        lineHeight: 1.1,
         table: {
           headerRows: 1,
-          widths: ["auto", 150, "auto", 150],
-
+          widths: ["auto", 140, "auto", 140],
           body: [
             [
+              { text: "Student ID:", bold: true, margin: [32, 1, 10, 0] },
               {
-                text: "Student ID:",
-                bold: true,
-                margin: [32, 0, 10, 0],
-              },
-              {
-                text: "  212210711114".padEnd(20, " "),
+                text: `  ${cfg.userId}`.padEnd(20, " "),
                 decoration: "underline",
               },
+              { text: "Name:", bold: true, margin: [32, 1, 10, 0] },
               {
-                text: "Name:",
-                bold: true,
-                margin: [32, 0, 10, 0],
-              },
-              {
-                text: "  KK".padEnd(20, " "),
+                text: `  ${cfg.studentName}`.padEnd(20, " "),
                 decoration: "underline",
               },
             ],
           ],
         },
-      },
-      {
-        text: `Problem ${pid}`,
-        fontSize: 16,
-        bold: true,
-        margin: [0, 0, 0, 18],
+        margin: [0, 18, 0, 4],
       },
     ],
-    footer: (cur, len) => ({ text: `${cur} / ${len}`, alignment: "center" }),
+    footer: (cur, len) => ({
+      text: `${cur} / ${len}`,
+      alignment: "center",
+      fontSize: 10,
+      margin: [0, 8, 0, 0],
+    }),
   };
-  const pdf = pdfMake.createPdf(dd);
-  // pdf.download();
-  const iframe = document.querySelector("iframe");
+  const genProblemSection = (i, path, code, record) => [
+    {
+      text: `Problem ${i.toString().padStart(2, "0")}`,
+      fontSize: 12,
+      bold: true,
+      margin: [0, 24, 0, 12],
+    },
+    {
+      text: [
+        { text: "Description: ", bold: true },
+        { text: "Read the problem at " },
+        { text: `http://noi.openjudge.cn${path}`, italics: true },
+        { text: ", try to make your program " },
+        { text: "accept", italics: true },
+        { text: " by the OJ system." },
+      ],
+      fontSize: 11,
+    },
+    {
+      text: `My Program:`,
+      fontSize: 11,
+      decoration: "underline",
+      decorationStyle: "double",
+      margin: [0, 12, 0, 8],
+    },
+    {
+      text: code
+        .split("\n")
+        .map((s) => "\u200B    " + s)
+        .join("\n"),
+      font: "Noto Sans Mono",
+      fontSize: 10,
+    },
+    {
+      text: `My Result:`,
+      fontSize: 11,
+      decoration: "underline",
+      decorationStyle: "double",
+      margin: [0, 12, 0, 8],
+    },
+    {
+      layout: "liteLayout",
+      fontSize: 8,
+      table: {
+        headerRows: 1,
+        widths: [55, "*", "auto", 20, 36, 34, "auto", "auto", 36],
+        body: [
+          "提交人,题目,结果,分数,内存,时间,代码长度,语言,提交时间".split(","),
+          record,
+        ],
+      },
+    },
+  ];
+  const tasks = cfg.problems.map(async (path, idx) => {
+    if (window.ojcnrgDev) return;
+    const [, ch, problemId] = path.split("/");
+    const queryUrl = `/${ch}/status/?problemNumber=${problemId}&userName=${cfg.userId}`;
+    const queryPage = await fetch(queryUrl).then((r) => r.text());
+    const table = queryPage.split(/<\/?table>/g)[1];
+    const entry = table.split(/<\/?tr>/).find((v) => v.includes("Accepted"));
+    const record = [];
+    for (let s = entry; s !== ""; ) {
+      if (s.startsWith("<")) s = s.slice(s.indexOf(">"));
+      let idx = s.indexOf("<");
+      if (idx === -1) break;
+      let v = s.slice(1, idx).trim();
+      if (v) record.push(v);
+      s = s.slice(idx).trim();
+    }
+    const solutionUrl = entry.match(/(?<=language"><a href=")[^"]+/)[0];
+    const solutionPage = await fetch(solutionUrl).then((r) => r.text());
+    const codeExactor = document.createElement("p");
+    codeExactor.innerHTML = solutionPage.match(/<pre(.|\n)+?<\/pre>/)[0];
+    const code = codeExactor.textContent;
+    return genProblemSection(idx + 1, path, code, record);
+  });
+  for (const sections of await Promise.all(tasks))
+    for (const section of sections) pdfDefinition.content.push(section);
+  const pdf = pdfMake.createPdf(pdfDefinition);
+  if (window.ojcnrgDev) return pdf.download(cfg.userId);
+  const iframe = document.body.appendChild(document.createElement("iframe"));
+  iframe.style = `border: none; outline: none; position: fixed; left: 0; top: 0; height: 100vh; width: 100vw;`;
   iframe.src = URL.createObjectURL(await pdf.getBlob());
 })();
+
+// document.lastChild.appendChild(document.createElement("style")).textContent = `
+// table{
+//   width: 100vw;
+//   background: #fff;
+//   position: fixed;
+//   top: 0;
+//   left: 0;
+//   z-index: 99999;
+//   box-shadow:0 0 0 20px #fff;
+// }
+// tr:not(:first-child){
+//   opacity:0;
+// }
+// #footer{display:none;}
+// `.replace(/;/g, "!important;");
+
+// ~/misc/apps/miniserve -p 9973 --header cache-control:max-age=3 /home/kkocdko/misc/code/user-scripts/scripts/ojcn-report-gen
+// http://127.0.0.1:9973/index.html
