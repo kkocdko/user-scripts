@@ -1,10 +1,8 @@
 // ==UserScript==
 // @name        OJCN Report Gen
-// @description Generate homework report PDF automatically.
-// @description:en Generate homework report PDF automatically.
-// @description:zh-CN 自动生成作业报告 PDF。虽然大家并不想理我。
+// @description 自动生成作业报告 (docx)。虽然大家并不想理我。
 // @namespace   https://greasyfork.org/users/197529
-// @version     0.1.6
+// @version     0.2.4
 // @author      kkocdko
 // @license     Unlicense
 // @match       *://noi.openjudge.cn/*
@@ -12,139 +10,40 @@
 "use strict";
 
 const cfg = {
-  homeworkId: 1,
+  homeworkId: 2,
   studentName: "Ninja",
   problems: [
-    "ch0101/02",
-    "ch0101/04",
-    "ch0101/08",
-    "ch0101/09",
-    "ch0103/03",
-    "ch0103/05",
-    "ch0103/06",
-    "ch0103/08",
-    "ch0103/09",
-    "ch0103/13",
+    "ch0104/01",
+    "ch0104/03",
+    "ch0104/07",
+    "ch0104/08",
+    "ch0104/09",
+    "ch0104/14",
+    "ch0104/15",
+    "ch0104/16",
+    "ch0104/18",
+    "ch0104/19",
   ],
   userId: document.querySelector("#userToolbar>li")?.textContent,
-  isDev: window.ojcnrgDev ,
 };
-if (!cfg.isDev && !document.querySelector(".account-link"))
-  throw alert("login required");
-if (!cfg.isDev && !cfg.studentName === "Ninja")
+if (!document.querySelector(".account-link")) throw alert("login required");
+if (!cfg.studentName === "Ninja")
   throw alert("please modify the script to fit your personal info");
 document.lastChild.appendChild(document.createElement("style")).textContent = `
 body::before { content: ""; position: fixed; left: 40px; top: 40px; padding: 20px; border: 8px solid #37b; border-radius: 25%; z-index: 2000; animation: spin 12s linear; }
 @keyframes spin { 100% { transform: rotate(3600deg) } }
 `;
-const cdn = "https://cdn.jsdelivr.net";
 const tasks = [];
 const tasksExtend = (a, f = (v) => v) => a.map((v, i) => tasks.push(f(v, i)));
-tasksExtend([import(`${cdn}/npm/pdfmake@0.3.0-beta.3/build/pdfmake.min.js`)]);
-const pdfDefinition = {
-  defaultStyle: { font: "initial" },
-  compress: !cfg.isDev,
-  info: { title: new Date().toLocaleString("zh-CN") },
-  pageMargins: [50, 50, 50, 50],
-  content: [
-    {
-      text: `Homework ${cfg.homeworkId.toString().padStart(2, "0")}`,
-      fontSize: 17,
-      bold: true,
-      alignment: "center",
-      margin: [0, 16, 0, 0],
-    },
-    {
-      layout: "noBorders",
-      fontSize: 12,
-      lineHeight: 1.1,
-      table: {
-        headerRows: 1,
-        widths: ["auto", 140, "auto", 140],
-        body: [
-          [
-            { text: "Student ID:", bold: true, margin: [32, 1, 10, 0] },
-            {
-              text: `     ${cfg.userId}`.padEnd(24, " "),
-              decoration: "underline",
-            },
-            { text: "Name:", bold: true, margin: [32, 1, 10, 0] },
-            {
-              text: `     ${cfg.studentName}`.padEnd(29, " "),
-              decoration: "underline",
-            },
-          ],
-        ],
-      },
-      margin: [0, 18, 0, 4],
-    },
-  ],
-  footer: (cur, len) => ({
-    text: `${cur} / ${len}`,
-    alignment: "center",
-    fontSize: 10,
-    margin: [0, 8, 0, 0],
+tasksExtend([
+  new Promise((r) => {
+    const el = document.body.appendChild(document.createElement("script"));
+    el.src = `https://cdn.jsdelivr.net/npm/docx@7.6.0/build/index.min.js`;
+    el.onload = r; // import(`https://cdn.jsdelivr.net/npm/docx@7.6.0/build/index.min.js`)
   }),
-};
-const genProblemSection = (i, path, code, record) => [
-  {
-    text: `Problem ${i.toString().padStart(2, "0")}`,
-    fontSize: 12,
-    bold: true,
-    margin: [0, 24, 0, 12],
-  },
-  {
-    text: [
-      { text: "Description: ", bold: true },
-      { text: "Read the problem at " },
-      { text: `http://noi.openjudge.cn/${path}/`, italics: true },
-      { text: ", try to make your program " },
-      { text: "accept", italics: true },
-      { text: " by the OJ system." },
-    ],
-    fontSize: 11,
-  },
-  {
-    text: `My Program:`,
-    fontSize: 11,
-    decoration: "underline",
-    decorationStyle: "double",
-    margin: [0, 12, 0, 8],
-  },
-  {
-    text: code
-      .split("\n")
-      .map((s) => `\u200B  ${s}`)
-      .join("\n"),
-    font: "monospace",
-    fontSize: 10,
-  },
-  {
-    text: `My Result:`,
-    fontSize: 11,
-    decoration: "underline",
-    decorationStyle: "double",
-    margin: [0, 12, 0, 8],
-  },
-  {
-    table: {
-      widths: [55, "*", "auto", 20, 36, 34, "auto", "auto", 36],
-      body: [
-        "提交人,题目,结果,分数,内存,时间,代码长度,语言,提交时间".split(","),
-        record,
-      ],
-    },
-    fontSize: 8,
-    layout: {
-      hLineWidth: () => 0.5,
-      vLineWidth: () => 0.5,
-      hLineColor: () => "#aaa",
-      vLineColor: () => "#aaa",
-    },
-  },
-];
+]);
+const results = cfg.problems.map(() => null);
 tasksExtend(cfg.problems, async (path, idx) => {
-  const sectionIdx = pdfDefinition.content.push({}) - 1;
   const [ch, subId] = path.split("/");
   const queryUrl = `/${ch}/status/?problemNumber=${subId}&userName=${cfg.userId}`;
   const queryPage = await fetch(queryUrl).then((r) => r.text());
@@ -165,31 +64,268 @@ tasksExtend(cfg.problems, async (path, idx) => {
   const codeExactor = document.createElement("p");
   codeExactor.innerHTML = solutionPage.match(/<pre(.|\n)+?<\/pre>/)[0];
   const code = codeExactor.textContent;
-  const section = genProblemSection(idx + 1, path, code, record);
-  pdfDefinition.content[sectionIdx] = section;
+  results[idx] = { path, code, record };
 });
-const pdfFonts = {
-  initial: {
-    // normal: `${cdn}/npm/@fontsource/noto-sans@4.5.11/files/noto-sans-latin-400-normal.woff`,
-    normal: `${cdn}/npm/@fontsource/noto-sans-sc@4.5.12/files/noto-sans-sc-chinese-simplified-400-normal.woff`,
-    italics: `${cdn}/npm/@fontsource/noto-sans@4.5.11/files/noto-sans-latin-400-italic.woff`,
-    bold: `${cdn}/npm/@fontsource/noto-sans@4.5.11/files/noto-sans-latin-700-normal.woff`,
-  },
-  monospace: {
-    normal: `${cdn}/npm/@fontsource/noto-sans-mono@4.5.11/files/noto-sans-mono-latin-400-normal.woff`,
-  },
-};
-tasksExtend([
-  ...Object.values(pdfFonts.initial).map((v) => fetch(v)),
-  fetch(pdfFonts.monospace.normal),
-]);
 Promise.all(tasks).then(async () => {
-  pdfMake.addFonts(pdfFonts);
-  const pdf = pdfMake.createPdf(pdfDefinition);
-  if (!cfg.isDev) return pdf.download(cfg.userId);
-  const iframe = document.body.appendChild(document.createElement("iframe"));
-  iframe.style = `border:none;position:fixed;left:0;top:0;height:100vh;width:100vw;z-index:3000`;
-  iframe.src = URL.createObjectURL(await pdf.getBlob());
+  const {
+    Document,
+    Packer,
+    Paragraph,
+    ExternalHyperlink,
+    TextRun,
+    AlignmentType,
+    TableCell,
+    Footer,
+    PageNumber,
+    Table,
+    WidthType,
+    PageNumberSeparator,
+    UnderlineType,
+    BorderStyle,
+    TableRow,
+  } = docx;
+  const genProblemPart = ({ num, path, code, record }) => [
+    new Paragraph({
+      spacing: { before: 500, after: 200 },
+      children: [
+        new TextRun({
+          text: `Problem ${num.toString().padStart(2, "0")}`,
+          bold: true,
+          size: 24,
+          font: "Arial",
+        }),
+      ],
+    }),
+    new Paragraph({
+      spacing: { before: 200, line: 300 },
+      children: [
+        new TextRun({
+          text: "Description: ",
+          font: "Times New Roman",
+          size: 21,
+          bold: true,
+        }),
+        new TextRun({
+          text: "Read the problem at ",
+          font: "Times New Roman",
+          size: 21,
+        }),
+        new TextRun({
+          text: `http://noi.openjudge.cn/${path}/`,
+          font: "Times New Roman",
+          size: 21,
+          italics: true,
+        }),
+        new TextRun({
+          text: ", try to make your program ",
+          font: "Times New Roman",
+          size: 21,
+        }),
+        new TextRun({
+          text: "accepted",
+          font: "Times New Roman",
+          size: 21,
+          italics: true,
+        }),
+        new TextRun({
+          text: " by the OJ system.",
+          font: "Times New Roman",
+          size: 21,
+        }),
+      ],
+    }),
+    new Paragraph({
+      spacing: { before: 150, after: 150 },
+      children: [
+        new TextRun({
+          text: "My Program:",
+          font: "Segoe UI Semibold",
+          size: 21,
+          underline: { type: UnderlineType.DOUBLE },
+        }),
+      ],
+    }),
+    ...code.split("\n").map(
+      (text) =>
+        new Paragraph({
+          spacing: { line: 280 },
+          indent: { left: 400 },
+          alignment: AlignmentType.LEFT,
+          children: [new TextRun({ text, font: "Consolas", size: 21 })],
+        })
+    ),
+    new Paragraph({
+      spacing: { before: 150, after: 150 },
+      children: [
+        new TextRun({
+          text: "My Result:",
+          font: "Segoe UI Semibold",
+          size: 21,
+          underline: { type: UnderlineType.DOUBLE },
+        }),
+      ],
+    }),
+    new Table({
+      rows: [
+        new TableRow({
+          children: "提交人|题目|结果|分数|内存|时间|代码长度|语言"
+            .split("|")
+            .map(
+              (field, i) =>
+                new TableCell({
+                  width: {
+                    size: [1500, 3300, 800, 600, 800, 800, 1100, 600][i],
+                    type: WidthType.DXA,
+                  },
+                  shading: { fill: "E0EAF1" },
+                  margins: { top: 0, bottom: 0, left: 100, right: 100 },
+                  borders: {
+                    top: { style: BorderStyle.SINGLE, color: "DDDDDD" },
+                    right: { style: BorderStyle.SINGLE, color: "DDDDDD" },
+                    bottom: { style: BorderStyle.SINGLE, color: "DDDDDD" },
+                    left: { style: BorderStyle.SINGLE, color: "DDDDDD" },
+                  },
+                  children: [
+                    new Paragraph({
+                      children: [
+                        new TextRun({
+                          text: field.split(",")[0],
+                          font: "Microsoft YaHei",
+                          size: 16,
+                        }),
+                      ],
+                    }),
+                  ],
+                })
+            ),
+        }),
+        new TableRow({
+          children: record.slice(0, 8).map(
+            (entry, i) =>
+              new TableCell({
+                width: {
+                  size: [1500, 3300, 800, 600, 800, 800, 1100, 600][i],
+                  type: WidthType.DXA,
+                },
+                margins: { top: 0, bottom: 0, left: 100, right: 100 },
+                borders: {
+                  top: { style: BorderStyle.SINGLE, color: "DDDDDD" },
+                  right: { style: BorderStyle.SINGLE, color: "DDDDDD" },
+                  bottom: { style: BorderStyle.SINGLE, color: "DDDDDD" },
+                  left: { style: BorderStyle.SINGLE, color: "DDDDDD" },
+                },
+                children: [
+                  new Paragraph({
+                    children: [
+                      entry.text
+                        ? new ExternalHyperlink({
+                            children: [
+                              new TextRun({
+                                text: entry.text,
+                                font: "Microsoft YaHei",
+                                size: 16,
+                              }),
+                            ],
+                            link: entry.link,
+                          })
+                        : new TextRun({
+                            text: entry,
+                            font: "Microsoft YaHei",
+                            size: 16,
+                          }),
+                    ],
+                  }),
+                ],
+              })
+          ),
+        }),
+      ],
+    }),
+  ];
+  const doc = new Document({
+    sections: [
+      {
+        properties: {
+          page: {
+            margin: { top: "2cm", right: "2cm", bottom: "2cm", left: "2cm" },
+            pageNumbers: { start: 1, separator: PageNumberSeparator.COLON },
+          },
+        },
+        footers: {
+          default: new Footer({
+            children: [
+              new Paragraph({
+                alignment: AlignmentType.CENTER,
+                children: [
+                  new TextRun({
+                    children: [
+                      PageNumber.CURRENT,
+                      " / ",
+                      PageNumber.TOTAL_PAGES,
+                    ],
+                    font: "Microsoft YaHei",
+                    size: 18,
+                  }),
+                ],
+              }),
+            ],
+          }),
+        },
+        children: [
+          new Paragraph({
+            spacing: { before: 200, after: 200 },
+            alignment: AlignmentType.CENTER,
+            children: [
+              new TextRun({
+                text: `Homework ${cfg.homeworkId.toString().padStart(2, "0")}`,
+                bold: true,
+                size: 32,
+                font: "Microsoft YaHei",
+              }),
+            ],
+          }),
+          new Paragraph({
+            spacing: { before: 400, after: 720 },
+            children: [
+              new TextRun({
+                text: "Student ID:   ",
+                bold: true,
+                size: 28,
+                font: "Calibri",
+              }),
+              new TextRun({
+                text: `\t\t212210711114`.padEnd(16, "\t"),
+                bold: true,
+                size: 28,
+                font: "Times New Roman",
+                underline: { type: UnderlineType.SINGLE },
+              }),
+              new TextRun({
+                text: "   Name:   ",
+                bold: true,
+                size: 28,
+                font: "Calibri",
+              }),
+              new TextRun({
+                text: `\t\t ${cfg.studentName}`.padEnd(8, "\t"),
+                bold: true,
+                size: 28,
+                font: "宋体",
+                underline: { type: UnderlineType.SINGLE },
+              }),
+            ],
+            alignment: AlignmentType.CENTER,
+          }),
+          ...results.flatMap((v, i) => genProblemPart({ num: i + 1, ...v })),
+        ],
+      },
+    ],
+  });
+  const blob = await Packer.toBlob(doc);
+  const saveLink = document.createElement("a");
+  saveLink.download = `${cfg.userId}.docx`;
+  saveLink.href = URL.createObjectURL(blob);
+  saveLink.click();
 });
 
 // document.lastChild.appendChild(document.createElement("style")).textContent = `
@@ -197,6 +333,5 @@ Promise.all(tasks).then(async () => {
 // tr:not(:first-child){ opacity:0; }
 // #footer { display:none; }
 // `.replace(/;/g, "!important;");
-
 // ~/misc/apps/miniserve -p 9973 --header cache-control:max-age=3 /home/kkocdko/misc/code/user-scripts/scripts/ojcn-report-gen
 // http://127.0.0.1:9973/index.html
