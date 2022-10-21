@@ -27,7 +27,7 @@ const cfg = {
     "ch0103/13",
   ],
   userId: document.querySelector("#userToolbar>li")?.textContent,
-  isDev: window.ojcnrgDev,
+  isDev: window.ojcnrgDev ,
 };
 if (!cfg.isDev && !document.querySelector(".account-link"))
   throw alert("login required");
@@ -65,12 +65,12 @@ const pdfDefinition = {
           [
             { text: "Student ID:", bold: true, margin: [32, 1, 10, 0] },
             {
-              text: `   ${cfg.userId}`.padEnd(20, " "),
+              text: `     ${cfg.userId}`.padEnd(24, " "),
               decoration: "underline",
             },
             { text: "Name:", bold: true, margin: [32, 1, 10, 0] },
             {
-              text: `   ${cfg.studentName}`.padEnd(25, " "),
+              text: `     ${cfg.studentName}`.padEnd(29, " "),
               decoration: "underline",
             },
           ],
