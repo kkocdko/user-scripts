@@ -2,7 +2,7 @@
 // @name        OJCN Report Gen
 // @description 自动生成作业报告 (docx)。虽然大家并不想理我。
 // @namespace   https://greasyfork.org/users/197529
-// @version     0.2.5
+// @version     0.2.6
 // @author      kkocdko
 // @license     Unlicense
 // @match       *://noi.openjudge.cn/*
@@ -11,7 +11,7 @@
 
 const cfg = {
   homeworkId: 2, // 作业序号
-  studentName: "Ninja", // 姓名
+  studentName: "无名氏", // 姓名
   problems: [
     // 题目列表（通常无需修改）
     "ch0104/01",
@@ -28,7 +28,7 @@ const cfg = {
   userId: document.querySelector("#userToolbar>li")?.textContent,
 };
 // if (!document.querySelector(".account-link")) throw alert("login required");
-if (!cfg.studentName === "Ninja")
+if (!cfg.studentName === "无名氏")
   throw alert("please modify the script to fit your personal info");
 document.lastChild.appendChild(document.createElement("style")).textContent = `
 body::before { content: ""; position: fixed; left: 40px; top: 40px; padding: 20px; border: 8px solid #37b; border-radius: 25%; z-index: 2000; animation: spin 12s linear; }
@@ -79,6 +79,7 @@ Promise.all(tasks).then(async () => {
     Table,
     WidthType,
     PageNumberSeparator,
+    ShadingType,
     UnderlineType,
     BorderStyle,
     TableRow,
@@ -173,7 +174,7 @@ Promise.all(tasks).then(async () => {
               (field, i) =>
                 new TableCell({
                   width: {
-                    size: [1500, 3300, 800, 600, 800, 800, 1100, 600][i],
+                    size: [1500, 3500, 800, 600, 800, 800, 900, 600][i],
                     type: WidthType.DXA,
                   },
                   margins: { top: 0, bottom: 0, left: 100, right: 100 },
@@ -203,7 +204,7 @@ Promise.all(tasks).then(async () => {
             (entry, i) =>
               new TableCell({
                 width: {
-                  size: [1500, 3300, 800, 600, 800, 800, 1100, 600][i], // sync with upper code
+                  size: [1500, 3500, 800, 600, 800, 800, 900, 600][i], // sync with upper code
                   type: WidthType.DXA,
                 },
                 margins: { top: 0, bottom: 0, left: 100, right: 100 },
@@ -223,6 +224,7 @@ Promise.all(tasks).then(async () => {
                                 text: entry.text,
                                 font: "Microsoft YaHei",
                                 size: 16,
+                                color: "3070B0",
                               }),
                             ],
                             link: entry.target,
@@ -293,7 +295,7 @@ Promise.all(tasks).then(async () => {
                 font: "Calibri",
               }),
               new TextRun({
-                text: `\t\t212210711114`.padEnd(16, "\t"),
+                text: `\t\t${cfg.userId}\t\t`,
                 bold: true,
                 size: 28,
                 font: "Times New Roman",
@@ -306,11 +308,16 @@ Promise.all(tasks).then(async () => {
                 font: "Calibri",
               }),
               new TextRun({
-                text: `\t\t ${cfg.studentName}`.padEnd(8, "\t"),
+                text: `\t\t  ${cfg.studentName} \t\t`,
                 bold: true,
                 size: 28,
                 font: "宋体",
                 underline: { type: UnderlineType.SINGLE },
+              }),
+              new TextRun({
+                text: " ",
+                size: 28,
+                font: "Calibri",
               }),
             ],
             alignment: AlignmentType.CENTER,
