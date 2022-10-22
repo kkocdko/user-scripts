@@ -2,7 +2,7 @@
 // @name        OJCN Report Gen
 // @description 自动生成作业报告 (docx)。虽然大家并不想理我。
 // @namespace   https://greasyfork.org/users/197529
-// @version     0.2.4
+// @version     0.2.5
 // @author      kkocdko
 // @license     Unlicense
 // @match       *://noi.openjudge.cn/*
@@ -10,9 +10,10 @@
 "use strict";
 
 const cfg = {
-  homeworkId: 2,
-  studentName: "Ninja",
+  homeworkId: 2, // 作业序号
+  studentName: "Ninja", // 姓名
   problems: [
+    // 题目列表（通常无需修改）
     "ch0104/01",
     "ch0104/03",
     "ch0104/07",
@@ -26,24 +27,14 @@ const cfg = {
   ],
   userId: document.querySelector("#userToolbar>li")?.textContent,
 };
-if (!document.querySelector(".account-link")) throw alert("login required");
+// if (!document.querySelector(".account-link")) throw alert("login required");
 if (!cfg.studentName === "Ninja")
   throw alert("please modify the script to fit your personal info");
 document.lastChild.appendChild(document.createElement("style")).textContent = `
 body::before { content: ""; position: fixed; left: 40px; top: 40px; padding: 20px; border: 8px solid #37b; border-radius: 25%; z-index: 2000; animation: spin 12s linear; }
 @keyframes spin { 100% { transform: rotate(3600deg) } }
 `;
-const tasks = [];
-const tasksExtend = (a, f = (v) => v) => a.map((v, i) => tasks.push(f(v, i)));
-tasksExtend([
-  new Promise((r) => {
-    const el = document.body.appendChild(document.createElement("script"));
-    el.src = `https://cdn.jsdelivr.net/npm/docx@7.6.0/build/index.min.js`;
-    el.onload = r; // import(`https://cdn.jsdelivr.net/npm/docx@7.6.0/build/index.min.js`)
-  }),
-]);
-const results = cfg.problems.map(() => null);
-tasksExtend(cfg.problems, async (path, idx) => {
+const tasks = cfg.problems.map(async (path, idx) => {
   const [ch, subId] = path.split("/");
   const queryUrl = `/${ch}/status/?problemNumber=${subId}&userName=${cfg.userId}`;
   const queryPage = await fetch(queryUrl).then((r) => r.text());
@@ -58,7 +49,7 @@ tasksExtend(cfg.problems, async (path, idx) => {
     if (v) record.push(v);
     s = s.slice(idx).trim();
   }
-  record[1] = { text: record[1], link: location.origin + queryUrl };
+  record[1] = { text: record[1], target: location.origin + queryUrl };
   const solutionUrl = entry.match(/(?<=language"><a href=")[^"]+/)[0];
   const solutionPage = await fetch(solutionUrl).then((r) => r.text());
   const codeExactor = document.createElement("p");
@@ -66,6 +57,14 @@ tasksExtend(cfg.problems, async (path, idx) => {
   const code = codeExactor.textContent;
   results[idx] = { path, code, record };
 });
+tasks.push(
+  new Promise((r) => {
+    const el = document.body.appendChild(document.createElement("script"));
+    el.src = `https://cdn.jsdelivr.net/npm/docx@7.6.0/build/index.min.js`;
+    el.onload = r; // import(`https://cdn.jsdelivr.net/npm/docx@7.6.0/build/index.min.js`)
+  })
+);
+const results = cfg.problems.map(() => null);
 Promise.all(tasks).then(async () => {
   const {
     Document,
@@ -177,7 +176,6 @@ Promise.all(tasks).then(async () => {
                     size: [1500, 3300, 800, 600, 800, 800, 1100, 600][i],
                     type: WidthType.DXA,
                   },
-                  shading: { fill: "E0EAF1" },
                   margins: { top: 0, bottom: 0, left: 100, right: 100 },
                   borders: {
                     top: { style: BorderStyle.SINGLE, color: "DDDDDD" },
@@ -185,11 +183,12 @@ Promise.all(tasks).then(async () => {
                     bottom: { style: BorderStyle.SINGLE, color: "DDDDDD" },
                     left: { style: BorderStyle.SINGLE, color: "DDDDDD" },
                   },
+                  shading: { fill: "E0EAF1" },
                   children: [
                     new Paragraph({
                       children: [
                         new TextRun({
-                          text: field.split(",")[0],
+                          text: field,
                           font: "Microsoft YaHei",
                           size: 16,
                         }),
@@ -204,7 +203,7 @@ Promise.all(tasks).then(async () => {
             (entry, i) =>
               new TableCell({
                 width: {
-                  size: [1500, 3300, 800, 600, 800, 800, 1100, 600][i],
+                  size: [1500, 3300, 800, 600, 800, 800, 1100, 600][i], // sync with upper code
                   type: WidthType.DXA,
                 },
                 margins: { top: 0, bottom: 0, left: 100, right: 100 },
@@ -217,7 +216,7 @@ Promise.all(tasks).then(async () => {
                 children: [
                   new Paragraph({
                     children: [
-                      entry.text
+                      entry.target
                         ? new ExternalHyperlink({
                             children: [
                               new TextRun({
@@ -226,7 +225,7 @@ Promise.all(tasks).then(async () => {
                                 size: 16,
                               }),
                             ],
-                            link: entry.link,
+                            link: entry.target,
                           })
                         : new TextRun({
                             text: entry,
