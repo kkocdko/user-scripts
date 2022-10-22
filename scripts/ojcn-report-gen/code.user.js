@@ -2,7 +2,7 @@
 // @name        OJCN Report Gen
 // @description 自动生成作业报告 (docx)。虽然大家并不想理我。
 // @namespace   https://greasyfork.org/users/197529
-// @version     0.2.6
+// @version     0.2.7
 // @author      kkocdko
 // @license     Unlicense
 // @match       *://noi.openjudge.cn/*
@@ -27,13 +27,13 @@ const cfg = {
   ],
   userId: document.querySelector("#userToolbar>li")?.textContent,
 };
-// if (!document.querySelector(".account-link")) throw alert("login required");
-if (!cfg.studentName === "无名氏")
-  throw alert("please modify the script to fit your personal info");
+if (!document.querySelector(".account-link")) throw alert("login required");
+if (!cfg.studentName === "无名氏") throw alert("please modify the config");
 document.lastChild.appendChild(document.createElement("style")).textContent = `
 body::before { content: ""; position: fixed; left: 40px; top: 40px; padding: 20px; border: 8px solid #37b; border-radius: 25%; z-index: 2000; animation: spin 12s linear; }
 @keyframes spin { 100% { transform: rotate(3600deg) } }
 `;
+const results = cfg.problems.map(() => null);
 const tasks = cfg.problems.map(async (path, idx) => {
   const [ch, subId] = path.split("/");
   const queryUrl = `/${ch}/status/?problemNumber=${subId}&userName=${cfg.userId}`;
@@ -54,8 +54,7 @@ const tasks = cfg.problems.map(async (path, idx) => {
   const solutionPage = await fetch(solutionUrl).then((r) => r.text());
   const codeExactor = document.createElement("p");
   codeExactor.innerHTML = solutionPage.match(/<pre(.|\n)+?<\/pre>/)[0];
-  const code = codeExactor.textContent;
-  results[idx] = { path, code, record };
+  results[idx] = { path, code: codeExactor.textContent, record };
 });
 tasks.push(
   new Promise((r) => {
@@ -64,25 +63,23 @@ tasks.push(
     el.onload = r; // import(`https://cdn.jsdelivr.net/npm/docx@7.6.0/build/index.min.js`)
   })
 );
-const results = cfg.problems.map(() => null);
 Promise.all(tasks).then(async () => {
   const {
-    Document,
-    Packer,
-    Paragraph,
-    ExternalHyperlink,
-    TextRun,
     AlignmentType,
-    TableCell,
-    Footer,
-    PageNumber,
-    Table,
-    WidthType,
-    PageNumberSeparator,
-    ShadingType,
-    UnderlineType,
     BorderStyle,
+    Document,
+    ExternalHyperlink,
+    Footer,
+    Packer,
+    PageNumber,
+    PageNumberSeparator,
+    Paragraph,
+    Table,
+    TableCell,
     TableRow,
+    TextRun,
+    UnderlineType,
+    WidthType,
   } = docx;
   const genProblemPart = ({ num, path, code, record }) => [
     new Paragraph({
@@ -295,8 +292,7 @@ Promise.all(tasks).then(async () => {
                 font: "Calibri",
               }),
               new TextRun({
-                text: `\t\t${cfg.userId}\t\t`,
-                bold: true,
+                text: `\t\t ${cfg.userId}\t\t`,
                 size: 28,
                 font: "Times New Roman",
                 underline: { type: UnderlineType.SINGLE },
@@ -309,15 +305,9 @@ Promise.all(tasks).then(async () => {
               }),
               new TextRun({
                 text: `\t\t  ${cfg.studentName} \t\t`,
-                bold: true,
                 size: 28,
                 font: "宋体",
                 underline: { type: UnderlineType.SINGLE },
-              }),
-              new TextRun({
-                text: " ",
-                size: 28,
-                font: "Calibri",
               }),
             ],
             alignment: AlignmentType.CENTER,
@@ -327,10 +317,9 @@ Promise.all(tasks).then(async () => {
       },
     ],
   });
-  const blob = await Packer.toBlob(doc);
   const saveLink = document.createElement("a");
   saveLink.download = `${cfg.userId}.docx`;
-  saveLink.href = URL.createObjectURL(blob);
+  saveLink.href = URL.createObjectURL(await Packer.toBlob(doc));
   saveLink.click();
 });
 
