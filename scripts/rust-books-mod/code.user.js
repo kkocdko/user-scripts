@@ -2,7 +2,7 @@
 // @name        Rust Books Mod
 // @match       *://doc.rust-lang.org/*
 // @match       *://docs.rs/*
-// @version     0.2
+// @version     0.2.2
 // ==/UserScript==
 "use strict";
 
@@ -19,19 +19,11 @@ const { sleep, waitUntil } = {
   },
 };
 
-// docs.rs
-document.lastChild.appendChild(document.createElement("style")).textContent = `
-html {
-  --color-background: #000;
-  --main-background-color: #000;
-  --sidebar-background-color: #000;
-  --code-block-background-color: #000;
-  --scrollbar-track-background-color: transparent;
-  --scrollbar-thumb-background-color: #7777;
-  --scrollbar-color: #7777 #7777;
-}
-`.replace(/;/g, "!important;");
 waitUntil(() => document.readyState === "complete").then(async () => {
+  // books
+  document.querySelector("#ayu.theme")?.click();
+
+  // docs
   if (document.documentElement.dataset.theme === "ayu") return;
   document.querySelector("#settings-menu").click();
   await sleep(300);
@@ -40,9 +32,15 @@ waitUntil(() => document.readyState === "complete").then(async () => {
   document.querySelector("#settings-menu").click();
 });
 
-// doc.rust-lang.org and other books
-document.querySelector("#ayu.theme")?.click();
 document.lastChild.appendChild(document.createElement("style")).textContent = `
+/* docs */
+*{background:#0000;}
+html{background:#000;}
+.result-name,.module-item>a,.sidebar .mod,.sidebar .enum,.sidebar .trait,.sidebar .type{font-family:monospace;}
+::-webkit-scrollbar { display:none; }
+.nav-container { position: relative; }
+
+/* books */
 .ayu {
   --fg: #eee;
   --bg: #000;
