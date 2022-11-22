@@ -4,7 +4,7 @@
 // @description Native & Pure
 // @description:zh-CN 原生 & 纯净
 // @namespace   https://greasyfork.org/users/197529
-// @version     0.3.2
+// @version     0.3.4
 // @author      kkocdko
 // @license     Unlicense
 // @match       *://*.bilibili.com/video/*
@@ -19,12 +19,13 @@ document.lastChild.appendChild(document.createElement("style")).textContent = `
 #v_desc > [report-id=abstract_spread],
 .right-container-inner > :first-child ~ :not(.base-video-sections-v1),
 .right-container ~ *,
+.up-info_right > .btn-panel,
 .bpx-player-video-area > :not(.bpx-player-video-perch),
 .bpx-player-sending-area {
   display: none;
 }
 html {overflow:hidden;}
-#bilibili-player,#playerWrap,.bpx-player-container,.desc-info{height:unset;}
+#bilibili-player,#playerWrap,.bpx-player-container,.desc-info,video{height:unset;outline:none;}
 .bpx-player-video-wrap{border:none;outline:none;}
 .left-container {min-height: 101vh;}
 `.replace(/;/g, "!important;");
