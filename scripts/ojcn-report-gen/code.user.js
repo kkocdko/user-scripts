@@ -2,7 +2,7 @@
 // @name        OJCN Report Gen
 // @description 自动生成作业报告 (docx)。虽然大家并不想理我。
 // @namespace   https://greasyfork.org/users/197529
-// @version     0.2.7
+// @version     0.2.13
 // @author      kkocdko
 // @license     Unlicense
 // @match       *://noi.openjudge.cn/*
@@ -10,20 +10,18 @@
 "use strict";
 
 const cfg = {
-  homeworkId: 2, // 作业序号
   studentName: "无名氏", // 姓名
+  homeworkId: 3, // 作业序号
   problems: [
-    // 题目列表（通常无需修改）
-    "ch0104/01",
-    "ch0104/03",
-    "ch0104/07",
-    "ch0104/08",
-    "ch0104/09",
-    "ch0104/14",
-    "ch0104/15",
-    "ch0104/16",
-    "ch0104/18",
-    "ch0104/19",
+    "ch0000/00",
+    "ch0000/00",
+    "ch0000/00",
+    "ch0000/00",
+    "ch0000/00",
+    "ch0000/00",
+    "ch0000/00",
+    "ch0000/00",
+    "ch0000/00",
   ],
   userId: document.querySelector("#userToolbar>li")?.textContent,
 };
@@ -57,11 +55,7 @@ const tasks = cfg.problems.map(async (path, idx) => {
   results[idx] = { path, code: codeExactor.textContent, record };
 });
 tasks.push(
-  new Promise((r) => {
-    const el = document.body.appendChild(document.createElement("script"));
-    el.src = `https://cdn.jsdelivr.net/npm/docx@7.6.0/build/index.min.js`;
-    el.onload = r; // import(`https://cdn.jsdelivr.net/npm/docx@7.6.0/build/index.min.js`)
-  })
+  import(`https://cdn.jsdelivr.net/npm/docx@7.7.0/build/index.min.js`)
 );
 Promise.all(tasks).then(async () => {
   const {

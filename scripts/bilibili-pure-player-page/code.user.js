@@ -4,7 +4,7 @@
 // @description Native & Pure
 // @description:zh-CN 原生 & 纯净
 // @namespace   https://greasyfork.org/users/197529
-// @version     0.2.1
+// @version     0.3.2
 // @author      kkocdko
 // @license     Unlicense
 // @match       *://*.bilibili.com/video/*
@@ -12,23 +12,21 @@
 // ==/UserScript==
 "use strict";
 document.lastChild.appendChild(document.createElement("style")).textContent = `
+.bili-mini-mask,
 [id$="Header"],
 #arc_toolbar_report,
 #v_desc ~ *,
-.right-container > :first-child ~ :not(#multi_page),
+#v_desc > [report-id=abstract_spread],
+.right-container-inner > :first-child ~ :not(.base-video-sections-v1),
 .right-container ~ *,
-.bilibili-player-video-wrap > :not(.bilibili-player-video),
-.bilibili-player-video-wrap ~ * {
+.bpx-player-video-area > :not(.bpx-player-video-perch),
+.bpx-player-sending-area {
   display: none;
 }
-.player-wrap,
-.player-wrap > *,
-.desc-info {
-  height: auto;
-}
-.left-container {
-  min-height: 101vh;
-}
+html {overflow:hidden;}
+#bilibili-player,#playerWrap,.bpx-player-container,.desc-info{height:unset;}
+.bpx-player-video-wrap{border:none;outline:none;}
+.left-container {min-height: 101vh;}
 `.replace(/;/g, "!important;");
 let once = () => {
   once = () => {};
@@ -38,3 +36,14 @@ let once = () => {
 };
 addEventListener("load", once);
 if (document.readyState === "complete") once();
+
+// ==UserScript==
+// @name        Bilibili Edgeless
+// @namespace   Violentmonkey Scripts
+// @match       *://*.bilibili.com/video/*
+// @version     1.0
+// @run-at      document-start
+// ==/UserScript==
+// document.lastChild.appendChild(document.createElement("style")).textContent = `
+// #bilibili-player,#playerWrap,.bpx-player-container{height:unset;}
+// `.replace(/;/g, "!important;");

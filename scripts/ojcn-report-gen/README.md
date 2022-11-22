@@ -6,10 +6,10 @@
 
 ```js
 const cfg = {
-  homeworkId: 2, // 作业序号
-  studentName: "Ninja", // 姓名
+  studentName: "无名氏", // 姓名
+  // 其他选项通常无需修改
+  homeworkId: 3,
   problems: [
-    // 题目列表（通常无需修改）
     "ch0104/01",
     "ch0104/03",
 ```
