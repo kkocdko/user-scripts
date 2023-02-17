@@ -1,7 +1,7 @@
-// https://cdn.jsdelivr.net/npm/stylelint-config-recess-order@3.0.0/index.js
+// https://cdn.jsdelivr.net/npm/stylelint-config-recess-order@4.0.0/groups.js
 const module = {};
 eval(await (await fetch(location)).text());
-const rules = module.exports.rules["order/properties-order"]
+const rules = module.exports
   .flatMap((o) => o.properties)
   .filter((e) => !e.includes(":"));
 document.body.innerHTML = `<style>body{display:grid;gap:8px;height:calc(100vh - 20px)}</style><textarea id=$i></textarea><textarea id=$o readonly></textarea>`;
