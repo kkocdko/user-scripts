@@ -4,7 +4,7 @@
 // @description:en Patches & tools for JUST Website.
 // @description:zh-CN 用于江苏科技大学网站的补丁与工具。
 // @namespace   https://greasyfork.org/users/197529
-// @version     0.1.65
+// @version     0.2.2
 // @author      kkocdko
 // @license     Unlicense
 // @match       *://*.just.edu.cn/*
@@ -107,6 +107,84 @@ if (urlMatch`/jsxsd/xskb/xskb_list.do`) {
     document.documentElement.innerHTML = content;
     document.title = name;
     saveStr(name, content);
+  });
+}
+
+// Schedule dump
+if (urlMatch`/jwglxt/kbcx/xskbcx_cxXskbcxIndex.html`) {
+  addFloatButton("Better schedule", () => {
+    let v = Math.floor(
+      (Date.now() - new Date("2023-02-20 00:00:00 +8").getTime()) /
+        1000 /
+        3600 /
+        24 /
+        7 +
+        1
+    );
+    v = +prompt("Week = ", v);
+
+    if (v !== 0)
+      document
+        .querySelectorAll("#kblist_table .glyphicon-calendar")
+        .forEach((el) => {
+          let arr = [...el.nextSibling.textContent.matchAll(/\d+-?\d*/g)]
+            .map((v) => v[0])
+            .map((t) => (t.includes("-") ? t : t + "-" + t))
+            .map((v) => v.split("-").map((n) => +n));
+          for (const [from, to] of arr) {
+            if (from <= v && v <= to) {
+              return;
+            }
+          }
+          el.parentNode.parentNode.parentNode.parentNode.parentNode.remove();
+        });
+    document
+      .querySelectorAll(
+        "#kblist_table>tbody>tr:not(:first-child)>td:first-child"
+      )
+      .forEach((el) => {
+        el.setAttribute("rowspan", "1");
+      });
+    document.querySelectorAll(".timetable .week").forEach((el) => {
+      el.textContent = el.textContent.slice(2);
+    });
+    document.querySelector("#kblist_table .pull-left").nextSibling.remove();
+    document.querySelector("#kblist_table .pull-left").nextSibling.remove();
+    document.querySelector('button[href="#table2"]').click();
+    document
+      .querySelectorAll(
+        "#kblist_table .glyphicon-tower, #kblist_table .glyphicon-home"
+      )
+      .forEach((el) => {
+        el.nextSibling.remove();
+        el.remove();
+      });
+    document.querySelectorAll("#kblist_table .glyphicon").forEach((el) => {
+      el.remove();
+    });
+    document.querySelectorAll("#kblist_table td p>font").forEach((el) => {
+      el.textContent = el.textContent.replace(/^.*?[:：]/, " ");
+    });
+    document.querySelectorAll(".timetable .week").forEach((el) => {
+      el.parentNode.width = 24;
+    });
+    document.querySelectorAll(".timetable .festival").forEach((el) => {
+      el.parentNode.width = 34;
+    });
+    document.lastChild.appendChild(
+      document.createElement("style")
+    ).textContent = `
+.timetable .timetable_con {    padding: 4px 4px;    overflow: hidden;}
+.table-bordered,.table>tbody+tbody {border:none;}
+.table-bordered>thead>tr>th, .table-bordered>tbody>tr>th, .table-bordered>tfoot>tr>th, .table-bordered>thead>tr>td, .table-bordered>tbody>tr>td, .table-bordered>tfoot>tr>td {  border:1px solid #555;  border-width: 1px 0 0 0;}
+.timetable .week,.timetable .festival{color:#000;}
+.timetable .festival{white-space: nowrap;}
+.timetable .timetable_con .title {  width: 14em;  margin-right: 2em;  white-space: nowrap;  overflow: hidden;  text-overflow: ellipsis;}
+.table>thead>tr>th, .table>tbody>tr>th, .table>tfoot>tr>th, .table>thead>tr>td, .table>tbody>tr>td, .table>tfoot>tr>td {  padding: 0;}
+#table2{  background: #fff;  position: fixed;  left: 0;  top: 0;  width: 100vw;  overflow: scroll;  height: 100vh;}
+#table2 font[color="blue"]{color: #000;}*{   font-weight: normal; font-size:16px;font-family: sans-serif;}
+.timetable .week{padding:0 4px 0 0;}
+`.replace(/;/g, "!important;");
   });
 }
 
