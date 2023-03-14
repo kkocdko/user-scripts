@@ -82,6 +82,11 @@ const {} = {
     el.src = u;
     return new Promise((r) => (el.onload = r));
   },
+  css([s]) /* 20230314-2128 */ {
+    document.lastChild.appendChild(
+      document.createElement("style")
+    ).textContent = s.replace(/;/g, "!important;");
+  },
 };
 
 // User CSS Template
