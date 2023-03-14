@@ -4,7 +4,7 @@
 // @description:en Patches & tools for JUST Website.
 // @description:zh-CN 用于江苏科技大学网站的补丁与工具。
 // @namespace   https://greasyfork.org/users/197529
-// @version     0.2.2
+// @version     0.2.3
 // @author      kkocdko
 // @license     Unlicense
 // @match       *://*.just.edu.cn/*
@@ -136,14 +136,18 @@ if (urlMatch`/jwglxt/kbcx/xskbcx_cxXskbcxIndex.html`) {
               return;
             }
           }
-          el.parentNode.parentNode.parentNode.parentNode.parentNode.remove();
+          const cur = el.parentNode.parentNode.parentNode.parentNode;
+          console.log(cur);
+          return;
+          if (cur.parentNode?.nextSibling?.children?.[0]?.rowSpan) cur.remove();
+          else cur.parentNode.remove();
         });
     document
       .querySelectorAll(
         "#kblist_table>tbody>tr:not(:first-child)>td:first-child"
       )
       .forEach((el) => {
-        el.setAttribute("rowspan", "1");
+        // el.setAttribute("rowspan", "1");
       });
     document.querySelectorAll(".timetable .week").forEach((el) => {
       el.textContent = el.textContent.slice(2);
@@ -261,7 +265,7 @@ VPN2反代: vpn2.just.edu.cn
 安全微伴: weiban.mycourse.cn/pharos/login/jskjdx/21200002/loginByJskjdx.do
 国防教育: www.gaoxiaokaoshi.com
 
-关于 [ VPN2 ] : 
+关于 [ VPN2 ] :
 就如 URI 中所写的那样，VPN2 只是一个类似反向代理的玩意。
 由于学校网站配置千奇百怪，有时会遇到只有在校园网中才能访问的情况。这时可以使用 VPN2。
 使用 `360SO via VPN2` 搜索要访问的网址。记得加上 `http / https` 前缀。
