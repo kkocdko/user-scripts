@@ -2,7 +2,7 @@
 // @name        Many Mods
 // @description Many many small modify for many sites.
 // @namespace   https://greasyfork.org/users/197529
-// @version     1.0.2
+// @version     1.0.5
 // @author      kkocdko
 // @license     Unlicense
 // @match       *://*/*
@@ -189,6 +189,60 @@ if ((location.host + location.pathname).startsWith("pandas.pydata.org/docs")) {
     }
     .bd-header:not(:hover) {
       opacity: 0;
+    }
+  `;
+}
+
+// Redux (for React) Docs
+if (location.host === "react-redux.js.org") {
+  css`
+    [class^="codeBlockTitle_"],
+    [class^="codeBlockContent_"] > * {
+      filter: invert(1) hue-rotate(180deg);
+      background: #000;
+    }
+    .docusaurus-highlight-code-line {
+      background: #000;
+    }
+  `;
+}
+
+// Onedrive
+if (location.host === "onedrive.live.com") {
+  css`
+    #O365_NavHeader * {
+      background: #fff;
+      color: #000;
+    }
+  `;
+}
+
+// WeChat Web
+if (location.host === "wx.qq.com" || location.host === "wx2.qq.com") {
+  css`
+    .download_entry,
+    .copyright {
+      display: none;
+    }
+
+    body {
+      background: none;
+      overflow: hidden;
+    }
+
+    .main {
+      height: 100vh;
+      min-height: unset;
+      padding: 0;
+    }
+
+    .main_inner {
+      max-width: unset;
+      border-radius: 0;
+    }
+
+    .nav_view {
+      top: 154px;
     }
   `;
 }
