@@ -2,7 +2,7 @@
 // @name        Many Mods
 // @description Many many small modify for many sites.
 // @namespace   https://greasyfork.org/users/197529
-// @version     1.0.5
+// @version     1.0.11
 // @author      kkocdko
 // @license     Unlicense
 // @match       *://*/*
@@ -215,6 +215,28 @@ if (location.host === "onedrive.live.com") {
       color: #000;
     }
   `;
+}
+
+// GitHub
+if (location.host === "github.com") {
+  const a = () => css`
+    body {
+      --color-fg-default: #fff;
+      --color-canvas-default: #000;
+      --color-page-header-bg: #000;
+      --color-canvas-subtle: #000;
+      --color-btn-bg: #000;
+      --color-border-default: #777;
+      --color-btn-border: #777;
+      --color-border-muted: #777;
+      --color-canvas-overlay: #000;
+      --color-header-bg: #000;
+      --color-fg-muted: hsl(212deg 9% 74%);
+      --color-accent-fg: hsl(215deg 56% 66%);
+    }
+  `;
+  setTimeout(() => a(), 700);
+  a();
 }
 
 // WeChat Web
