@@ -2,7 +2,7 @@
 // @name        Many Mods
 // @description Many many small modify for many sites.
 // @namespace   https://greasyfork.org/users/197529
-// @version     1.0.11
+// @version     1.0.12
 // @author      kkocdko
 // @license     Unlicense
 // @match       *://*/*
@@ -218,7 +218,7 @@ if (location.host === "onedrive.live.com") {
 }
 
 // GitHub
-if (location.host === "github.com") {
+if (location.host === "github.com" || location.host === "gist.github.com") {
   const a = () => css`
     body {
       --color-fg-default: #fff;
