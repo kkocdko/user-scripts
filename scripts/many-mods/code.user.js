@@ -2,7 +2,7 @@
 // @name        Many Mods
 // @description Many many small modify for many sites.
 // @namespace   https://greasyfork.org/users/197529
-// @version     1.0.12
+// @version     1.0.14
 // @author      kkocdko
 // @license     Unlicense
 // @match       *://*/*
@@ -213,6 +213,30 @@ if (location.host === "onedrive.live.com") {
     #O365_NavHeader * {
       background: #fff;
       color: #000;
+    }
+  `;
+}
+
+// CSDN
+if (location.host === "blog.csdn.net") {
+  css`
+    code {
+      background: #fff;
+      color: #000;
+      box-shadow: 0 0 0 1px #999;
+    }
+    * {
+      user-select: unset;
+    }
+  `;
+}
+
+// CodeMao
+if (location.host === "turtle.codemao.cn") {
+  css`
+    header,
+    .cm-editor {
+      background: #fff;
     }
   `;
 }
