@@ -2,7 +2,7 @@
 // @name        Many Mods
 // @description Many many small modify for many sites.
 // @namespace   https://greasyfork.org/users/197529
-// @version     1.0.14
+// @version     1.0.16
 // @author      kkocdko
 // @license     Unlicense
 // @match       *://*/*
@@ -291,4 +291,24 @@ if (location.host === "wx.qq.com" || location.host === "wx2.qq.com") {
       top: 154px;
     }
   `;
+}
+
+// Deepl
+if (location.host === "www.deepl.com") {
+  css`
+    .lmt__docTrans-tab-container {
+      display: none;
+    }
+    #dl_translator {
+      margin: 0;
+      padding: 0;
+    }
+    .lmt__textarea_container {
+      padding: 8px;
+    }
+  `;
+}
+
+// New Bing
+if (location.host === "www.bing.com") {
 }
