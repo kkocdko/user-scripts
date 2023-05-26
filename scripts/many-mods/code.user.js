@@ -2,7 +2,7 @@
 // @name        Many Mods
 // @description Many many small modify for many sites.
 // @namespace   https://greasyfork.org/users/197529
-// @version     1.0.16
+// @version     1.0.18
 // @author      kkocdko
 // @license     Unlicense
 // @match       *://*/*
@@ -258,6 +258,13 @@ if (location.host === "github.com" || location.host === "gist.github.com") {
       --color-fg-muted: hsl(212deg 9% 74%);
       --color-accent-fg: hsl(215deg 56% 66%);
     }
+    .search-results-page {
+      background: #000;
+    }
+    .search-title,
+    .search-title * {
+      color: #fff;
+    }
   `;
   setTimeout(() => a(), 700);
   a();
@@ -311,4 +318,43 @@ if (location.host === "www.deepl.com") {
 
 // New Bing
 if (location.host === "www.bing.com") {
+}
+
+// OpenWRT LuCI Docs
+if (location.host === "openwrt.github.io") {
+  css`
+    .navigation {
+      background-color: #000;
+      filter: invert(1);
+    }
+    ::-webkit-scrollbar {
+      width: 8px;
+      background-color: #000;
+    }
+    ::-webkit-scrollbar-corner {
+      background-color: #000;
+    }
+  `;
+}
+
+// OpenWRT Local
+if (location.host === "192.168.1.1") {
+  css`
+    @media (prefers-color-scheme: dark) {
+      header > .fill {
+        filter: invert(1);
+        background: #000;
+        box-shadow: 0 1px #777;
+      }
+    }
+  `;
+}
+
+// OpenWRT Local
+if (location.host === "gorm.io") {
+  css`
+    figure.highlight {
+      overflow: auto;
+    }
+  `;
 }
