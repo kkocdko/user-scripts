@@ -7,15 +7,26 @@
 // @exclude-match  *://localhost:8109/*
 // @exclude-match  *://127.0.0.1:9005/*
 // @exclude-match  *://127.0.0.1:8080/*
+// @exclude-match  *://127.0.0.1:8889/*
 // @exclude-match  *://127.0.0.1:9261/*
 // @exclude-match  *://127.0.0.1:4000/*
+// @exclude-match  *://127.0.0.1:9246/*
 // @exclude-match  *://127.0.0.1:9325/*
 // @exclude-match  *://127.0.0.1:9304/*
 // @exclude-match  *://127.0.0.1:8090/*
 // @exclude-match  *://127.0.0.1:9453/*
 // @exclude-match  *://124.222.123.153:9304/*
+// @exclude-match  *://html5.gamedistribution.com/*
+// @exclude-match  *://*.babylonjs.com/*
+// @exclude-match  *://*.go.dev/*
 // @exclude-match  *://obsproject.com/*
+// @exclude-match  *://mirrorz.org/*
+// @exclude-match  *://codesandbox.io/*
+// @exclude-match  *://slint-ui.com/*
+// @exclude-match  *://nas.iot4im.com:13001/*
+// @exclude-match  *://nas.iot4im.com:14001/*
 // @exclude-match  *://mirror.nju.edu.cn/*
+// @exclude-match  *://colab.research.google.com/*
 // @exclude-match  *://danielyxie.github.io/bitburner/*
 // @exclude-match  *://turtle.codemao.cn/*
 // @exclude-match  *://8.219.185.10:9304/*
@@ -65,5 +76,6 @@
 document.lastChild.appendChild(document.createElement("style")).textContent = `
 html,body,header,footer{background:#fff!important;}
 html{filter:invert(1) hue-rotate(180deg)!important;}
+body>pre:first-child:last-child{color:#000!important;}
 `;
 // *{background-color:#fff!important;}
