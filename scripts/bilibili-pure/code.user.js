@@ -4,21 +4,22 @@
 // @description Pure & Native
 // @description:zh-CN 纯净 & 原生
 // @namespace   https://greasyfork.org/users/197529
-// @version     0.4.2
+// @version     0.5.1
 // @author      kkocdko
 // @license     Unlicense
 // @match       *://*.bilibili.com/robots.txt
 // @match       *://*.bilibili.com/video/*
-// @run-at      document-start
 // ==/UserScript==
 "use strict";
 
+if (location.host === "m.bilibili.com")
+  throw alert("Bilibili Pure dosen't supports m.bilibili.com domain.");
+
 if (location.pathname !== "/robots.txt") {
-  // TODO: use origin part info and cid
-  const bvid = location.href.match(/BV.+?(?=(\?|\/|$))/)[0];
-  // localStorage.blPureData = JSON.stringify(__playinfo__.data.dash);
-  // __INITIAL_STATE__.p;
-  location = "https://www.bilibili.com/robots.txt#" + bvid;
+  localStorage.bpTitle = __INITIAL_STATE__.videoData.title;
+  localStorage.bpBvid = __INITIAL_STATE__.bvid;
+  localStorage.bpDash = JSON.stringify(__playinfo__.data.dash);
+  location = "https://www.bilibili.com/robots.txt#" + __INITIAL_STATE__.bvid;
   throw "jump to clean page";
 }
 
@@ -26,7 +27,7 @@ document.head.insertAdjacentHTML(
   "beforeend",
   `
   <meta name="viewport" content="width=device-width">
-  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+  <!-- <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate"> -->
   <style>
     body { display: flex; justify-content: center; align-items: center; margin: 0; height: 100vh; overflow: hidden; }
     body > :not(video) { display: none; }
@@ -37,35 +38,22 @@ document.head.insertAdjacentHTML(
 
 // TODO: show parts and serials list
 (async () => {
-  const [bvid, partid] = location.hash.slice(1).split(",");
-  const opusInfoUrl = `https://api.bilibili.com/x/web-interface/view?bvid=${bvid}`;
-  const opusInfo = (await fetch(opusInfoUrl).then((r) => r.json())).data;
-  document.title = opusInfo.title + " - Bilibili Pure";
-  // const cid = opusInfo.pages[(partid ?? 1) - 1].cid;
-  // const playInfoUrl = `https://api.bilibili.com/x/player/wbi/playurl?avid=${opusInfo.aid}&bvid=${bvid}&cid=${cid}&qn=16&fnver=0&fnval=4048&fourk=1&session=4be331b4864f323a30ed1b4d4b354c38&w_rid=a936d63d4113211db5e98cfe643de29a&wts=1674949149`;
-  // const playInfo = (await fetch(playInfoUrl).then((r) => r.json())).data.dash;
-  // if (!localStorage.blPureData)
-  //   location = `https://www.bilibili.com/video/${bvid}`;
-  // const playInfo = JSON.parse(localStorage.blPureData);
-  // localStorage.blPureData = "";
-  const pageUrl = `https://www.bilibili.com/video/${bvid}`;
-  const page = await fetch(pageUrl).then((v) => v.text());
-  const pageI1 = page.indexOf("__playinfo__=");
-  const pageI2 = page.indexOf("</script>", pageI1);
-  const playInfoText = page.slice(pageI1 + "__playinfo__=".length, pageI2);
-  const playInfo = eval("(" + playInfoText + ")").data.dash;
-  // console.log(eval("(" + playInfoText + ")"));
-  const minOf = (arr, f = (e) => e) => {
+  if (!localStorage.bpTitle) return;
+  document.title = localStorage.bpTitle;
+  localStorage.bpTitle = undefined;
+  const bvid = localStorage.bpBvid;
+  localStorage.bpBvid = undefined;
+  history.pushState(null, null, `https://www.bilibili.com/video/${bvid}`);
+  const dash = JSON.parse(localStorage.bpDash);
+  localStorage.bpDash = undefined;
+
+  const min = (arr, f = (e) => e) => {
     let ret = null;
     for (const e of arr) if (ret === null || f(e) < f(ret)) ret = e;
     return ret;
-  };
-
-  // TODO: HD
-  const aInfo = minOf(playInfo.audio, (e) => e.bandwidth);
-  const vInfo = minOf(playInfo.video, (e) =>
-    e.codecid === 7 ? -e.width : 9e9
-  );
+  }; // TODO: HD
+  const aInfo = min(dash.audio, (e) => e.bandwidth);
+  const vInfo = min(dash.video, (e) => (e.codecid === 7 ? -e.width : 9e9));
 
   const audio = document.createElement("audio");
   audio.src = aInfo.baseUrl;
@@ -87,20 +75,16 @@ document.head.insertAdjacentHTML(
   let lastLostSync = 0;
   const sync = () => {
     const diff = Math.abs(audio.currentTime - video.currentTime); // unit: seconds
-    if (diff > 0.2) {
-      let now = Date.now();
-      // too big
-      if (diff > 0.5) {
-        console.log(diff, "big drop");
-        audio.currentTime = video.currentTime;
-      }
-      // is last detect also lostsync?
-      else if (now - lastLostSync < 750) {
-        console.log(diff, "double miss");
-        audio.currentTime = video.currentTime;
-      }
-      lastLostSync = now;
+    if (diff <= 0.2) return;
+    const now = Date.now();
+    let reason = "";
+    if (diff > 0.5) reason = "big_drop";
+    if (now - lastLostSync < 750) reason = "double_miss";
+    if (reason) {
+      console.log(`[bp] sync, reason = ${reason}, diff = ${diff}`);
+      audio.currentTime = video.currentTime;
     }
+    lastLostSync = now;
   };
   video.onseeked = () => {
     sync();
