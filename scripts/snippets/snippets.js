@@ -89,6 +89,38 @@ const {} = {
   },
 };
 
+/**
+ * Race URLs and fetch the earlist responsed (may not be fastest) URL to `Blob`.
+ * @param {...string} urls
+ * @returns {Promise<Blob>}
+ */
+const race = (...urls) => {
+  const ctrls = urls.map(() => new AbortController());
+  return Promise.any(
+    urls.map(async (url, i) => {
+      const r = await fetch(url, { signal: ctrls[i].signal });
+      if (!r.ok) throw Error("response not ok");
+      ctrls.forEach((c, j) => j !== i && c.abort());
+      console.log(url);
+      return r.blob();
+    })
+  );
+};
+
+race(
+  "https://cdn.jsdelivr.net/npm/@fontsource/noto-serif-sc@5.0.3/files/noto-serif-sc-chinese-simplified-300-normal.woff2",
+  "https://unpkg.com/@fontsource/noto-serif-sc@5.0.3/files/noto-serif-sc-chinese-simplified-400-normal.woff2",
+  "https://npm.elemecdn.com/@fontsource/noto-serif-sc@5.0.3/files/noto-serif-sc-chinese-simplified-400-normal.woff2",
+  "https://registry.npmmirror.com/@fontsource/noto-serif-sc/5.0.3/files/files/noto-serif-sc-chinese-simplified-400-normal.woff2"
+).then((v) => URL.createObjectURL(v));
+
+// modify px size
+let a = "";
+let b = a.replace(/[\d\.]+?(?=px)(?!=\w)/g, (v) => {
+  return Math.round(+v * 1.05 * 100) / 100;
+});
+console.log(b);
+
 // User CSS Template
 document.lastChild.appendChild(document.createElement("style")).textContent = `
 

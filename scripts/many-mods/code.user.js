@@ -2,7 +2,7 @@
 // @name        Many Mods
 // @description Many many small modify for many sites.
 // @namespace   https://greasyfork.org/users/197529
-// @version     1.0.18
+// @version     1.0.19
 // @author      kkocdko
 // @license     Unlicense
 // @match       *://*/*
@@ -350,11 +350,29 @@ if (location.host === "192.168.1.1") {
   `;
 }
 
-// OpenWRT Local
+// GORM Docs
 if (location.host === "gorm.io") {
   css`
     figure.highlight {
       overflow: auto;
+    }
+  `;
+}
+
+// MUI Docs
+if (location.host === "mui.com") {
+  css`
+    #__next > div,
+    nav[aria-label="documentation"] > .MuiDrawer-root > div {
+      background: #000;
+    }
+    #__next > div > header {
+      position: absolute;
+    }
+    .MuiCode-root pre,
+    [id^="demo-:"] {
+      background: #000;
+      border: 2px solid #355678dd;
     }
   `;
 }
