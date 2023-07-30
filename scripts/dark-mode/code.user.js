@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name        Dark Mode
 // @match       *://*/*
-// @version     0.1.13
+// @version     0.1.14
 // @author      kkocdko
 // @license     Unlicense
 // @exclude-match  *://localhost:8109/*
@@ -13,18 +13,37 @@
 // @exclude-match  *://127.0.0.1:9246/*
 // @exclude-match  *://127.0.0.1:9325/*
 // @exclude-match  *://127.0.0.1:9304/*
+// @exclude-match  *://127.0.0.1:9391/*
+// @exclude-match  *://127.0.0.1:9538/*
+// @exclude-match  *://192.168.0.247/*
+// @exclude-match  *://192.168.0.248/*
+// @exclude-match  *://192.168.0.244/*
+// @exclude-match  *://11.22.33.44/*
 // @exclude-match  *://127.0.0.1:8090/*
+// @exclude-match  *://localhost:8129/*
 // @exclude-match  *://127.0.0.1:9453/*
+// @exclude-match  *://47.114.114.68:13002/*
+// @exclude-match  *://172.17.7.*/*
+// @exclude-match  *://godbolt.org/*
+// @exclude-match  *://netplan.readthedocs.io/*
 // @exclude-match  *://124.222.123.153:9304/*
 // @exclude-match  *://html5.gamedistribution.com/*
 // @exclude-match  *://*.babylonjs.com/*
+// @exclude-match  *://online-go.com/*
+// @exclude-match  *://*.web.dev/*
+// @exclude-match  *://rust-lang.github.io/*
 // @exclude-match  *://*.go.dev/*
+// @exclude-match  *://oledera.samsungdisplay.com/*
 // @exclude-match  *://obsproject.com/*
 // @exclude-match  *://mirrorz.org/*
 // @exclude-match  *://codesandbox.io/*
+// @exclude-match  *://*.lhr.life/*
+// @exclude-match  *://caniuse.com/*
+// @exclude-match  *://*.cdnjs.com/*
 // @exclude-match  *://slint-ui.com/*
 // @exclude-match  *://nas.iot4im.com:13001/*
 // @exclude-match  *://nas.iot4im.com:14001/*
+// @exclude-match  *://*.y8.com/*
 // @exclude-match  *://mirror.nju.edu.cn/*
 // @exclude-match  *://colab.research.google.com/*
 // @exclude-match  *://danielyxie.github.io/bitburner/*

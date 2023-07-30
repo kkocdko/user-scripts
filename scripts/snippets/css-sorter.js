@@ -1,4 +1,4 @@
-// https://cdn.jsdelivr.net/npm/stylelint-config-recess-order@4.0.0/groups.js
+// https://cdn.jsdelivr.net/npm/stylelint-config-recess-order@4.2.0/groups.js
 const module = {};
 eval(await (await fetch(location)).text());
 const rules = module.exports
