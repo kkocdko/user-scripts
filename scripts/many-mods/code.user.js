@@ -18,10 +18,10 @@ const { css } = {
   },
 };
 
-const { hostname, pathname } = location;
+const { host, pathname } = location;
 
 // React Docs
-if (hostname === "beta.reactjs.org") {
+if (host === "beta.reactjs.org") {
   css`
     .sp-editor {
       height: auto;
@@ -34,7 +34,7 @@ if (hostname === "beta.reactjs.org") {
 }
 
 // Katex
-if (hostname === "katex.org") {
+if (host === "katex.org") {
   css`
     .demo {
       /* filter: invert(1); */
@@ -53,7 +53,7 @@ if (hostname === "katex.org") {
 }
 
 // Luogu
-if (hostname === "www.luogu.com.cn") {
+if (host === "www.luogu.com.cn") {
   let timer = null;
   new MutationObserver(() => {
     clearTimeout(timer);
@@ -91,8 +91,8 @@ if (hostname === "www.luogu.com.cn") {
 }
 
 // V2EX
-if (hostname === "v2ex.com" || hostname === "www.v2ex.com") {
-  if (hostname === "www.v2ex.com") hostname = "v2ex.com";
+if (host === "v2ex.com" || host === "www.v2ex.com") {
+  if (host === "www.v2ex.com") host = "v2ex.com";
   css`
     #Wrapper {
       --component-margin: 0;
@@ -111,7 +111,7 @@ if (hostname === "v2ex.com" || hostname === "www.v2ex.com") {
 }
 
 // rCore Tutoral
-if (hostname === "rcore-os.github.io" || hostname === "rcore-os.cn") {
+if (host === "rcore-os.github.io" || host === "rcore-os.cn") {
   css`
     html {
       font-size: 1.1em;
@@ -146,7 +146,7 @@ if (hostname === "rcore-os.github.io" || hostname === "rcore-os.cn") {
 }
 
 // TexPage
-if (hostname === "texpage.com" || hostname.endsWith(".texpage.com")) {
+if (host === "texpage.com" || host.endsWith(".texpage.com")) {
   css`
     .pdfViewer {
       background: #0000;
@@ -156,7 +156,7 @@ if (hostname === "texpage.com" || hostname.endsWith(".texpage.com")) {
 }
 
 // Matlab Online
-if (hostname === "matlab.mathworks.com") {
+if (host === "matlab.mathworks.com") {
   css`
     div.dijitTabContainerTop#dijit_layout_TabContainer_0 * {
       background: #0000;
@@ -166,7 +166,7 @@ if (hostname === "matlab.mathworks.com") {
 }
 
 // Python Docs
-if (hostname === "docs.python.org") {
+if (host === "docs.python.org") {
   css`
     html {
       background: #fff;
@@ -184,7 +184,7 @@ if (hostname === "docs.python.org") {
 }
 
 // Pandas Docs
-if ((hostname + pathname).startsWith("pandas.pydata.org/docs")) {
+if ((host + pathname).startsWith("pandas.pydata.org/docs")) {
   css`
     * {
       background: #000;
@@ -196,7 +196,7 @@ if ((hostname + pathname).startsWith("pandas.pydata.org/docs")) {
 }
 
 // Redux (for React) Docs
-if (hostname === "react-redux.js.org") {
+if (host === "react-redux.js.org") {
   css`
     [class^="codeBlockTitle_"],
     [class^="codeBlockContent_"] > * {
@@ -210,7 +210,7 @@ if (hostname === "react-redux.js.org") {
 }
 
 // Onedrive
-if (hostname === "onedrive.live.com") {
+if (host === "onedrive.live.com") {
   css`
     #O365_NavHeader * {
       background: #fff;
@@ -220,7 +220,7 @@ if (hostname === "onedrive.live.com") {
 }
 
 // CSDN
-if (hostname === "blog.csdn.net") {
+if (host === "blog.csdn.net") {
   css`
     code {
       background: #fff;
@@ -234,7 +234,7 @@ if (hostname === "blog.csdn.net") {
 }
 
 // CodeMao
-if (hostname === "turtle.codemao.cn") {
+if (host === "turtle.codemao.cn") {
   css`
     header,
     .cm-editor {
@@ -244,7 +244,7 @@ if (hostname === "turtle.codemao.cn") {
 }
 
 // GitHub
-if (hostname === "github.com" || hostname === "gist.github.com") {
+if (host === "github.com" || host === "gist.github.com") {
   const a = () => css`
     body {
       --color-fg-default: #fff;
@@ -273,7 +273,7 @@ if (hostname === "github.com" || hostname === "gist.github.com") {
 }
 
 // WeChat Web
-if (hostname === "wx.qq.com" || hostname === "wx2.qq.com") {
+if (host === "wx.qq.com" || host === "wx2.qq.com") {
   css`
     .download_entry,
     .copyright {
@@ -303,7 +303,7 @@ if (hostname === "wx.qq.com" || hostname === "wx2.qq.com") {
 }
 
 // Deepl
-if (hostname === "www.deepl.com") {
+if (host === "www.deepl.com") {
   css`
     body > :not(.dl_translator_page_container),
     [data-testid="translator-character-limit-proad"] {
@@ -318,11 +318,11 @@ if (hostname === "www.deepl.com") {
 }
 
 // New Bing
-if (hostname === "www.bing.com") {
+if (host === "www.bing.com") {
 }
 
 // OpenWRT LuCI Docs
-if (hostname === "openwrt.github.io") {
+if (host === "openwrt.github.io") {
   css`
     .navigation {
       background-color: #000;
@@ -339,7 +339,7 @@ if (hostname === "openwrt.github.io") {
 }
 
 // OpenWRT Local
-if (hostname === "192.168.1.1") {
+if (host === "192.168.1.1") {
   css`
     @media (prefers-color-scheme: dark) {
       header > .fill {
@@ -352,7 +352,7 @@ if (hostname === "192.168.1.1") {
 }
 
 // GORM Docs
-if (hostname === "gorm.io") {
+if (host === "gorm.io") {
   css`
     figure.highlight {
       overflow: auto;
@@ -361,7 +361,7 @@ if (hostname === "gorm.io") {
 }
 
 // MUI Docs
-if (hostname === "mui.com") {
+if (host === "mui.com") {
   css`
     #__next > div,
     nav[aria-label="documentation"] > .MuiDrawer-root > div {
@@ -379,7 +379,7 @@ if (hostname === "mui.com") {
 }
 
 // Bing Login
-if (hostname === "login.live.com") {
+if (host === "login.live.com") {
   css`
     .template-section.main-section {
       background: #fff;
