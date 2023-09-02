@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name        Dark Mode
 // @match       *://*/*
-// @version     0.1.14
+// @version     0.1.13
 // @author      kkocdko
 // @license     Unlicense
 // @exclude-match  *://localhost:8109/*
@@ -15,6 +15,7 @@
 // @exclude-match  *://127.0.0.1:9304/*
 // @exclude-match  *://127.0.0.1:9391/*
 // @exclude-match  *://127.0.0.1:9538/*
+// @exclude-match  *://127.0.0.1:9423/*
 // @exclude-match  *://192.168.0.247/*
 // @exclude-match  *://192.168.0.248/*
 // @exclude-match  *://192.168.0.244/*
@@ -28,6 +29,7 @@
 // @exclude-match  *://netplan.readthedocs.io/*
 // @exclude-match  *://124.222.123.153:9304/*
 // @exclude-match  *://html5.gamedistribution.com/*
+// @exclude-match  *://skydom.pecpoc.com/*
 // @exclude-match  *://*.babylonjs.com/*
 // @exclude-match  *://online-go.com/*
 // @exclude-match  *://*.web.dev/*
@@ -35,8 +37,10 @@
 // @exclude-match  *://*.go.dev/*
 // @exclude-match  *://oledera.samsungdisplay.com/*
 // @exclude-match  *://obsproject.com/*
+// @exclude-match  *://*.xda-developers.com/*
 // @exclude-match  *://mirrorz.org/*
 // @exclude-match  *://codesandbox.io/*
+// @exclude-match  *://live.bilibili.com/*
 // @exclude-match  *://*.lhr.life/*
 // @exclude-match  *://caniuse.com/*
 // @exclude-match  *://*.cdnjs.com/*
@@ -45,6 +49,7 @@
 // @exclude-match  *://nas.iot4im.com:14001/*
 // @exclude-match  *://*.y8.com/*
 // @exclude-match  *://mirror.nju.edu.cn/*
+// @exclude-match  *://nnethercote.github.io/perf-book/*
 // @exclude-match  *://colab.research.google.com/*
 // @exclude-match  *://danielyxie.github.io/bitburner/*
 // @exclude-match  *://turtle.codemao.cn/*
@@ -74,7 +79,10 @@
 // @exclude-match  *://www.google.com/*
 // @exclude-match  *://*.youtube.com/*
 // @exclude-match  *://esbuild.github.io/*
+// @exclude-match  *://flutter.github.io/*
+// @exclude-match  *://gallery.flutter.dev/*
 // @exclude-match  *://happy0316.top/*
+// @exclude-match  *://*.bilibili.com/*
 // @exclude-match  *://parceljs.org/*
 // @exclude-match  *://instant.1point3acres.com/*
 // @exclude-match  *://www.webrtc-experiment.com/*
@@ -82,6 +90,7 @@
 // @exclude-match  *://cdn.jsdelivr.net/*
 // @exclude-match  *://stackoverflow.com/*
 // @exclude-match  *://doc.rust-lang.org/*
+// @exclude-match  *://kkocdko.site/toy/*
 // @exclude-match  *://shapezio.fandom.com/*
 // @exclude-match  *://www.bilibili.com/robots.txt
 // @run-at      document-start
