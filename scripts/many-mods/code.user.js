@@ -18,8 +18,10 @@ const { css } = {
   },
 };
 
+const { hostname, pathname } = location;
+
 // React Docs
-if (location.host === "beta.reactjs.org") {
+if (hostname === "beta.reactjs.org") {
   css`
     .sp-editor {
       height: auto;
@@ -32,7 +34,7 @@ if (location.host === "beta.reactjs.org") {
 }
 
 // Katex
-if (location.host === "katex.org") {
+if (hostname === "katex.org") {
   css`
     .demo {
       /* filter: invert(1); */
@@ -51,7 +53,7 @@ if (location.host === "katex.org") {
 }
 
 // Luogu
-if (location.host === "www.luogu.com.cn") {
+if (hostname === "www.luogu.com.cn") {
   let timer = null;
   new MutationObserver(() => {
     clearTimeout(timer);
@@ -89,8 +91,8 @@ if (location.host === "www.luogu.com.cn") {
 }
 
 // V2EX
-if (location.host === "v2ex.com" || location.host === "www.v2ex.com") {
-  if (location.host === "www.v2ex.com") location.host = "v2ex.com";
+if (hostname === "v2ex.com" || hostname === "www.v2ex.com") {
+  if (hostname === "www.v2ex.com") hostname = "v2ex.com";
   css`
     #Wrapper {
       --component-margin: 0;
@@ -109,7 +111,7 @@ if (location.host === "v2ex.com" || location.host === "www.v2ex.com") {
 }
 
 // rCore Tutoral
-if (location.host === "rcore-os.github.io" || location.host === "rcore-os.cn") {
+if (hostname === "rcore-os.github.io" || hostname === "rcore-os.cn") {
   css`
     html {
       font-size: 1.1em;
@@ -144,7 +146,7 @@ if (location.host === "rcore-os.github.io" || location.host === "rcore-os.cn") {
 }
 
 // TexPage
-if (location.host === "texpage.com" || location.host.endsWith(".texpage.com")) {
+if (hostname === "texpage.com" || hostname.endsWith(".texpage.com")) {
   css`
     .pdfViewer {
       background: #0000;
@@ -154,7 +156,7 @@ if (location.host === "texpage.com" || location.host.endsWith(".texpage.com")) {
 }
 
 // Matlab Online
-if (location.host === "matlab.mathworks.com") {
+if (hostname === "matlab.mathworks.com") {
   css`
     div.dijitTabContainerTop#dijit_layout_TabContainer_0 * {
       background: #0000;
@@ -164,7 +166,7 @@ if (location.host === "matlab.mathworks.com") {
 }
 
 // Python Docs
-if (location.host === "docs.python.org") {
+if (hostname === "docs.python.org") {
   css`
     html {
       background: #fff;
@@ -182,7 +184,7 @@ if (location.host === "docs.python.org") {
 }
 
 // Pandas Docs
-if ((location.host + location.pathname).startsWith("pandas.pydata.org/docs")) {
+if ((hostname + pathname).startsWith("pandas.pydata.org/docs")) {
   css`
     * {
       background: #000;
@@ -194,7 +196,7 @@ if ((location.host + location.pathname).startsWith("pandas.pydata.org/docs")) {
 }
 
 // Redux (for React) Docs
-if (location.host === "react-redux.js.org") {
+if (hostname === "react-redux.js.org") {
   css`
     [class^="codeBlockTitle_"],
     [class^="codeBlockContent_"] > * {
@@ -208,7 +210,7 @@ if (location.host === "react-redux.js.org") {
 }
 
 // Onedrive
-if (location.host === "onedrive.live.com") {
+if (hostname === "onedrive.live.com") {
   css`
     #O365_NavHeader * {
       background: #fff;
@@ -218,7 +220,7 @@ if (location.host === "onedrive.live.com") {
 }
 
 // CSDN
-if (location.host === "blog.csdn.net") {
+if (hostname === "blog.csdn.net") {
   css`
     code {
       background: #fff;
@@ -232,7 +234,7 @@ if (location.host === "blog.csdn.net") {
 }
 
 // CodeMao
-if (location.host === "turtle.codemao.cn") {
+if (hostname === "turtle.codemao.cn") {
   css`
     header,
     .cm-editor {
@@ -242,7 +244,7 @@ if (location.host === "turtle.codemao.cn") {
 }
 
 // GitHub
-if (location.host === "github.com" || location.host === "gist.github.com") {
+if (hostname === "github.com" || hostname === "gist.github.com") {
   const a = () => css`
     body {
       --color-fg-default: #fff;
@@ -271,7 +273,7 @@ if (location.host === "github.com" || location.host === "gist.github.com") {
 }
 
 // WeChat Web
-if (location.host === "wx.qq.com" || location.host === "wx2.qq.com") {
+if (hostname === "wx.qq.com" || hostname === "wx2.qq.com") {
   css`
     .download_entry,
     .copyright {
@@ -301,27 +303,26 @@ if (location.host === "wx.qq.com" || location.host === "wx2.qq.com") {
 }
 
 // Deepl
-if (location.host === "www.deepl.com") {
+if (hostname === "www.deepl.com") {
   css`
-    .lmt__docTrans-tab-container {
+    body > :not(.dl_translator_page_container),
+    [data-testid="translator-character-limit-proad"] {
       display: none;
     }
     #dl_translator {
-      margin: 0;
       padding: 0;
-    }
-    .lmt__textarea_container {
-      padding: 8px;
+      margin: -4px -12px 0;
+      width: calc(100vw + 24px);
     }
   `;
 }
 
 // New Bing
-if (location.host === "www.bing.com") {
+if (hostname === "www.bing.com") {
 }
 
 // OpenWRT LuCI Docs
-if (location.host === "openwrt.github.io") {
+if (hostname === "openwrt.github.io") {
   css`
     .navigation {
       background-color: #000;
@@ -338,7 +339,7 @@ if (location.host === "openwrt.github.io") {
 }
 
 // OpenWRT Local
-if (location.host === "192.168.1.1") {
+if (hostname === "192.168.1.1") {
   css`
     @media (prefers-color-scheme: dark) {
       header > .fill {
@@ -351,7 +352,7 @@ if (location.host === "192.168.1.1") {
 }
 
 // GORM Docs
-if (location.host === "gorm.io") {
+if (hostname === "gorm.io") {
   css`
     figure.highlight {
       overflow: auto;
@@ -360,7 +361,7 @@ if (location.host === "gorm.io") {
 }
 
 // MUI Docs
-if (location.host === "mui.com") {
+if (hostname === "mui.com") {
   css`
     #__next > div,
     nav[aria-label="documentation"] > .MuiDrawer-root > div {
@@ -373,6 +374,15 @@ if (location.host === "mui.com") {
     [id^="demo-:"] {
       background: #000;
       border: 2px solid #355678dd;
+    }
+  `;
+}
+
+// Bing Login
+if (hostname === "login.live.com") {
+  css`
+    .template-section.main-section {
+      background: #fff;
     }
   `;
 }
