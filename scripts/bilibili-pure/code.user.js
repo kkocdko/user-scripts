@@ -7,37 +7,61 @@
 // @version     0.5.1
 // @author      kkocdko
 // @license     Unlicense
+// @grant       GM_xmlhttpRequest
 // @match       *://*.bilibili.com/robots.txt
 // @match       *://*.bilibili.com/video/*
 // ==/UserScript==
 "use strict";
 
-if (location.host === "m.bilibili.com")
-  throw alert("Bilibili Pure dosen't supports m.bilibili.com domain.");
-
-if (location.pathname !== "/robots.txt") {
-  localStorage.bpTitle = __INITIAL_STATE__.videoData.title;
-  localStorage.bpBvid = __INITIAL_STATE__.bvid;
-  localStorage.bpDash = JSON.stringify(__playinfo__.data.dash);
-  location = "https://www.bilibili.com/robots.txt#" + __INITIAL_STATE__.bvid;
-  throw "jump to clean page";
-}
-
-document.head.insertAdjacentHTML(
-  "beforeend",
-  `
-  <meta name="viewport" content="width=device-width">
-  <!-- <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate"> -->
-  <style>
-    body { display: flex; justify-content: center; align-items: center; margin: 0; height: 100vh; overflow: hidden; }
-    body > :not(video) { display: none; }
-    video { max-width: 100%; max-height: 100%; outline: none; }
-  </style>
-  `
-);
-
-// TODO: show parts and serials list
 (async () => {
+  if (location.hostname === "m.bilibili.com") {
+    stop();
+    const bvid = location.pathname.slice("/video/".length);
+    /** @type string */
+    const html = await new Promise((resolve) =>
+      GM_xmlhttpRequest({
+        headers: {
+          Referer: "www.bilibili.com",
+          "User-Agent":
+            "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/112.0.0.0 Safari/537.36 Edg/112.0.1722.48",
+        },
+        url: `https://www.bilibili.com/video/${bvid}`,
+        onload: (response) => resolve(response.response),
+      })
+    );
+    let i0, i1;
+    i0 = html.indexOf("window.__INITIAL_STATE__=");
+    i1 = html.indexOf("</script>", i0);
+    eval(html.slice(i0, i1));
+    i0 = html.indexOf("window.__playinfo__=");
+    i1 = html.indexOf("</script>", i0);
+    eval(html.slice(i0, i1));
+  }
+
+  if (location.pathname !== "/robots.txt") {
+    localStorage.bpTitle = __INITIAL_STATE__.videoData.title;
+    localStorage.bpBvid = __INITIAL_STATE__.bvid;
+    localStorage.bpDash = JSON.stringify(__playinfo__.data.dash);
+    // console.log(localStorage.bpTitle, localStorage.bpBvid, localStorage.bpDash);
+    location = "https://www.bilibili.com/robots.txt#" + __INITIAL_STATE__.bvid;
+    throw "jump to clean page";
+  }
+
+  document.head.insertAdjacentHTML(
+    "beforeend",
+    `
+    <meta name="viewport" content="width=device-width">
+    <!-- <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate"> -->
+    <style>
+      body { display: flex; justify-content: center; align-items: center; margin: 0; height: 100vh; overflow: hidden; }
+      body > :not(video) { display: none; }
+      video { max-width: 100%; max-height: 100%; outline: none; }
+    </style>
+    `
+  );
+
+  // TODO: show parts and serials list
+
   if (!localStorage.bpTitle) return;
   document.title = localStorage.bpTitle;
   localStorage.bpTitle = undefined;
