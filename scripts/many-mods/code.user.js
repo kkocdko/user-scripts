@@ -92,7 +92,7 @@ if (host === "www.luogu.com.cn") {
 
 // V2EX
 if (host === "v2ex.com" || host === "www.v2ex.com") {
-  if (host === "www.v2ex.com") host = "v2ex.com";
+  if (host === "www.v2ex.com") location.host = "v2ex.com";
   css`
     #Wrapper {
       --component-margin: 0;

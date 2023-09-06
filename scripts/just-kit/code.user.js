@@ -4,7 +4,7 @@
 // @description:en Patches & tools for JUST Website.
 // @description:zh-CN 用于江苏科技大学网站的补丁与工具。
 // @namespace   https://greasyfork.org/users/197529
-// @version     0.2.3
+// @version     0.2.4
 // @author      kkocdko
 // @license     Unlicense
 // @match       *://*.just.edu.cn/*
@@ -59,12 +59,13 @@ if (
 
 // Auto login
 if (urlMatch`/cas/login`) {
-  setInterval(() => {
-    if (!rememberPassword.checked) return;
-    const el = document.querySelector(".login_btn");
-    el.click();
-    el.click = () => {};
-  }, 100);
+  // cause account freezed
+  // setInterval(() => {
+  //   if (!rememberPassword.checked) return;
+  //   const el = document.querySelector(".login_btn");
+  //   el.click();
+  //   el.click = () => {};
+  // }, 100);
 }
 
 // Fix P.E. page left panel
@@ -114,16 +115,17 @@ if (urlMatch`/jsxsd/xskb/xskb_list.do`) {
 if (urlMatch`/jwglxt/kbcx/xskbcx_cxXskbcxIndex.html`) {
   addFloatButton("Better schedule", () => {
     let v = Math.floor(
-      (Date.now() - new Date("2023-02-20 00:00:00 +8").getTime()) /
+      (Date.now() - new Date("2023-09-04 00:00:00 +8").getTime()) /
         1000 /
         3600 /
         24 /
         7 +
         1
     );
-    v = +prompt("Week = ", v);
+    // v = +prompt("Week = ", v);
 
     if (v !== 0)
+    if (false)
       document
         .querySelectorAll("#kblist_table .glyphicon-calendar")
         .forEach((el) => {
