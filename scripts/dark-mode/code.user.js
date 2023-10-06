@@ -23,13 +23,17 @@
 // @exclude-match  *://127.0.0.1:8090/*
 // @exclude-match  *://localhost:8129/*
 // @exclude-match  *://127.0.0.1:9453/*
+// @exclude-match  *://127.0.0.1:9327/*
 // @exclude-match  *://47.114.114.68:13002/*
 // @exclude-match  *://172.17.7.*/*
+// @exclude-match  *://forum.suse.org.cn/*
 // @exclude-match  *://godbolt.org/*
+// @exclude-match  *://ianlecorbeau.github.io/blog/*
 // @exclude-match  *://netplan.readthedocs.io/*
 // @exclude-match  *://124.222.123.153:9304/*
 // @exclude-match  *://html5.gamedistribution.com/*
 // @exclude-match  *://skydom.pecpoc.com/*
+// @exclude-match  *://*.codeium.com/*
 // @exclude-match  *://*.babylonjs.com/*
 // @exclude-match  *://online-go.com/*
 // @exclude-match  *://*.web.dev/*
@@ -46,6 +50,7 @@
 // @exclude-match  *://*.cdnjs.com/*
 // @exclude-match  *://slint-ui.com/*
 // @exclude-match  *://nas.iot4im.com:13001/*
+// @exclude-match  *://docs.python.org/*
 // @exclude-match  *://nas.iot4im.com:14001/*
 // @exclude-match  *://*.y8.com/*
 // @exclude-match  *://mirror.nju.edu.cn/*

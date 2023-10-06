@@ -114,7 +114,7 @@ if (urlMatch`/jsxsd/xskb/xskb_list.do`) {
 // Schedule dump
 if (urlMatch`/jwglxt/kbcx/xskbcx_cxXskbcxIndex.html`) {
   addFloatButton("Better schedule", () => {
-    let v = Math.floor(
+    let week = Math.floor(
       (Date.now() - new Date("2023-09-04 00:00:00 +8").getTime()) /
         1000 /
         3600 /
@@ -122,9 +122,10 @@ if (urlMatch`/jwglxt/kbcx/xskbcx_cxXskbcxIndex.html`) {
         7 +
         1
     );
+    alert(`Week = ${week}`)
     // v = +prompt("Week = ", v);
 
-    if (v !== 0)
+    if (week !== 0)
     if (false)
       document
         .querySelectorAll("#kblist_table .glyphicon-calendar")
@@ -134,7 +135,7 @@ if (urlMatch`/jwglxt/kbcx/xskbcx_cxXskbcxIndex.html`) {
             .map((t) => (t.includes("-") ? t : t + "-" + t))
             .map((v) => v.split("-").map((n) => +n));
           for (const [from, to] of arr) {
-            if (from <= v && v <= to) {
+            if (from <= week && week <= to) {
               return;
             }
           }

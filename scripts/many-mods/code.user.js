@@ -168,17 +168,19 @@ if (host === "matlab.mathworks.com") {
 // Python Docs
 if (host === "docs.python.org") {
   css`
-    html {
-      background: #fff;
-      text-shadow: 0 0 0;
-      filter: invert(100%) hue-rotate(180deg);
-      font-size: 20px;
-    }
-    body {
-      margin: 0 10px;
+    html,
+    body,
+    .sphinxsidebar {
+      background: #000;
     }
     body > :not(.document) {
       display: none;
+    }
+    div.body .highlight {
+      background: none;
+    }
+    div.body {
+      font-size: 16px;
     }
   `;
 }
