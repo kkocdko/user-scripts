@@ -12,6 +12,9 @@
 // @match       *://*.bilibili.com/video/*
 // ==/UserScript==
 "use strict";
+// https://www.bilibili.com/video/BV1aN41197wq
+
+Object.assign(indexedDB, { open: 0, databases: 0 });
 
 (async () => {
   if (location.hostname === "m.bilibili.com") {
@@ -54,7 +57,6 @@
     <!-- <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate"> -->
     <style>
       body { display: flex; justify-content: center; align-items: center; margin: 0; height: 100vh; overflow: hidden; }
-      body > :not(video) { display: none; }
       video { max-width: 100%; max-height: 100%; outline: none; }
     </style>
     `
@@ -69,7 +71,7 @@
   localStorage.bpBvid = undefined;
   history.pushState(null, null, `https://www.bilibili.com/video/${bvid}`);
   const dash = JSON.parse(localStorage.bpDash);
-  localStorage.bpDash = undefined;
+  // localStorage.bpDash = undefined;
 
   const min = (arr, f = (e) => e) => {
     let ret = null;
