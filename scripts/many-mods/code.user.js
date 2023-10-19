@@ -2,7 +2,7 @@
 // @name        Many Mods
 // @description Many many small modify for many sites.
 // @namespace   https://greasyfork.org/users/197529
-// @version     1.0.19
+// @version     1.0.20
 // @author      kkocdko
 // @license     Unlicense
 // @match       *://*/*
@@ -247,7 +247,7 @@ if (host === "turtle.codemao.cn") {
 
 // GitHub
 if (host === "github.com" || host === "gist.github.com") {
-  const a = () => css`
+  (matchMedia("(prefers-color-scheme:dark)").matches ? css : () => {})`
     body {
       --color-fg-default: #fff;
       --color-canvas-default: #000;
@@ -270,8 +270,6 @@ if (host === "github.com" || host === "gist.github.com") {
       color: #fff;
     }
   `;
-  setTimeout(() => a(), 700);
-  a();
 }
 
 // WeChat Web
@@ -306,6 +304,7 @@ if (host === "wx.qq.com" || host === "wx2.qq.com") {
 
 // Deepl
 if (host === "www.deepl.com") {
+  throw 1;
   css`
     body > :not(.dl_translator_page_container),
     [data-testid="translator-character-limit-proad"] {
