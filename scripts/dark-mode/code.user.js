@@ -1,10 +1,10 @@
 // ==UserScript==
 // @name        Dark Mode
-// @match       *://*/*
-// @version     0.1.13
+// @version     0.1.15
 // @author      kkocdko
 // @license     Unlicense
-// @exclude-match  *://localhost:8109/*
+// @match       *://*/*
+// @exclude-match  *://127.0.0.1:8109/*
 // @exclude-match  *://127.0.0.1:9005/*
 // @exclude-match  *://127.0.0.1:8080/*
 // @exclude-match  *://127.0.0.1:8889/*
@@ -28,6 +28,19 @@
 // @exclude-match  *://172.17.7.*/*
 // @exclude-match  *://forum.suse.org.cn/*
 // @exclude-match  *://godbolt.org/*
+// @exclude-match  *://*.atlasos.net/*
+// @exclude-match  *://ariakit.org/*
+// @exclude-match  *://xanmod.org/*
+// @exclude-match  *://without.boats/*
+// @exclude-match  *://mirrors.tuna.tsinghua.edu.cn/*
+// @exclude-match  *://discord.com/*
+// @exclude-match  *://ark-ui.com/*
+// @exclude-match  *://xdaforums.com/*
+// @exclude-match  *://replit.com/*
+// @exclude-match  *://*.moment.co/*
+// @exclude-match  *://predr.ag/*
+// @exclude-match  *://vscode.dev/*
+// @exclude-match  *://*.nextweb.fun/*
 // @exclude-match  *://ianlecorbeau.github.io/blog/*
 // @exclude-match  *://netplan.readthedocs.io/*
 // @exclude-match  *://124.222.123.153:9304/*
@@ -47,6 +60,7 @@
 // @exclude-match  *://live.bilibili.com/*
 // @exclude-match  *://*.lhr.life/*
 // @exclude-match  *://caniuse.com/*
+// @exclude-match  *://*.reddit.com/*
 // @exclude-match  *://*.cdnjs.com/*
 // @exclude-match  *://slint-ui.com/*
 // @exclude-match  *://nas.iot4im.com:13001/*
@@ -81,6 +95,7 @@
 // @exclude-match  *://*.github.dev/*
 // @exclude-match  *://download-directory.github.io/*
 // @exclude-match  *://web.telegram.org/*
+// @exclude-match  *://developer.mozilla.org/*
 // @exclude-match  *://www.google.com/*
 // @exclude-match  *://*.youtube.com/*
 // @exclude-match  *://esbuild.github.io/*
@@ -91,24 +106,25 @@
 // @exclude-match  *://parceljs.org/*
 // @exclude-match  *://instant.1point3acres.com/*
 // @exclude-match  *://www.webrtc-experiment.com/*
-// @exclude-match  *://developer.mozilla.org/*
+// @exclude-match  *://live.mdnplay.dev/*
+// @exclude-match  *://*.mdn.mozilla.net/*
 // @exclude-match  *://cdn.jsdelivr.net/*
 // @exclude-match  *://stackoverflow.com/*
+// @exclude-match  *://nb.nextweb.fun/*
 // @exclude-match  *://doc.rust-lang.org/*
 // @exclude-match  *://kkocdko.site/toy/*
+// @exclude-match  *://ecs-workbench.aliyun.com/*
 // @exclude-match  *://shapezio.fandom.com/*
 // @exclude-match  *://www.bilibili.com/robots.txt
 // @run-at      document-start
+// @inject-into content
 // ==/UserScript==
 
-// @inject-into content
-// document.documentElement.style.background="#000";
-// document.documentElement.style.backgroundColor="#000";
-// document.body.style.background="#000";
-// document.body.style.backgroundColor="#000";
+document.documentElement.style.background = "#000";
+document.documentElement.style.backgroundColor = "#000";
 document.lastChild.appendChild(document.createElement("style")).textContent = `
-html,body,header,footer{background:#fff!important;}
-html{filter:invert(1) hue-rotate(180deg)!important;}
+body,header,footer{background:#fff!important;background-color:#fff!important;}
+body{filter:invert(1) hue-rotate(180deg) brightness(1.2)!important;}
 body>pre:first-child:last-child{color:#000!important;}
 `;
 // *{background-color:#fff!important;}
