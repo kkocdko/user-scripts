@@ -10,13 +10,27 @@
 // ==/UserScript==
 "use strict";
 
-// Only contains custom style and other tiny changes that wouldn't shock users
+// Only contains custom style and other tiny function that wouldn't shock users
 
-const { css } = {
+const { css, addFloatButton } = {
   css([s]) /* 20230314-2128 */ {
     document.lastChild.appendChild(
       document.createElement("style")
     ).textContent = s.replace(/;/g, "!important;");
+  },
+  addFloatButton(text, onclick) /* 20220509-1936 */ {
+    if (!document.addFloatButton) {
+      const host = document.body.appendChild(document.createElement("div"));
+      const root = host.attachShadow({ mode: "open" });
+      root.innerHTML = `<style>:host{position:fixed;top:4px;left:4px;z-index:2147483647;height:0}#i{display:none}*{float:left;padding:0 1em;margin:4px;font-size:14px;line-height:2em;color:#fff;user-select:none;background:#28e;border:1px solid #fffa;border-radius:8px;transition:.3s}[for]~:active{filter:brightness(1.1);transition:0s}:checked~*{opacity:.3;transform:translateY(-3em)}:checked+*{transform:translateY(3em)}</style><input id=i type=checkbox><label for=i>&zwj;</label>`;
+      document.addFloatButton = (text, onclick) => {
+        const el = document.createElement("label");
+        el.textContent = text;
+        el.addEventListener("click", onclick);
+        return root.appendChild(el);
+      };
+    }
+    return document.addFloatButton(text, onclick);
   },
 };
 const globalThis = this.unsafeWindow || this;
@@ -402,4 +416,48 @@ if (host === "login.live.com") {
       background: #fff;
     }
   `;
+}
+
+// For math page, add KaTeX
+if (host === "www.cnblogs.com" && pathname.startsWith("/Paranoid5/")) {
+  document.head.insertAdjacentHTML(
+    "beforeend",
+    `<link rel="stylesheet" href="https://registry.npmmirror.com/katex/0.16.9/files/dist/katex.min.css">`
+  );
+  fetch("https://registry.npmmirror.com/katex/0.16.9/files/dist/katex.min.js")
+    .then((v) => v.text())
+    .then((v) => {
+      eval(v);
+      for (const el of document.querySelectorAll(".math")) {
+        const expr = el.textContent.trim().replace(/^\\\(|\\\)$/g, "");
+        console.log(expr);
+        try {
+          katex.render(expr, el);
+        } catch (_) {}
+      }
+    });
+}
+
+if (host === "registry.npmmirror.com") {
+  // https://registry.npmmirror.com/katex/0.16.9/files/
+  // document.body.
+  // addFloatButton("Files List", async () => {
+  //   let [, pkg, ver, ver2] = location.pathname.split("/");
+  //   if (pkg?.startsWith("@")) {
+  //     pkg = pkg + "/" + ver;
+  //     ver = ver2;
+  //   }
+  //   if (!/^[\.\d]+$/.test(ver)) {
+  //     location = `${location.origin}/${pkg}/latest/files/`;
+  //     return;
+  //   }
+  //   const url = `${location.origin}/${pkg}/${ver}/files/`;
+  //   const r = await (await fetch(url)).json();
+  //   console.log(r);
+  //   // const ver = p1?.startsWith("@")
+  //   //   ? await fetch(`${location.origin}/${p1}/${p2}`)
+  //   //       .then((v) => v.json())
+  //   //       .then((v) => v["dist-tags"].latest)
+  //   //   : pkgp2;
+  // });
 }
