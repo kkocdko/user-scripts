@@ -418,24 +418,33 @@ if (host === "login.live.com") {
   `;
 }
 
-// For math page, add KaTeX
-if (host === "www.cnblogs.com" && pathname.startsWith("/Paranoid5/")) {
-  document.head.insertAdjacentHTML(
-    "beforeend",
-    `<link rel="stylesheet" href="https://registry.npmmirror.com/katex/0.16.9/files/dist/katex.min.css">`
-  );
-  fetch("https://registry.npmmirror.com/katex/0.16.9/files/dist/katex.min.js")
-    .then((v) => v.text())
-    .then((v) => {
-      eval(v);
-      for (const el of document.querySelectorAll(".math")) {
-        const expr = el.textContent.trim().replace(/^\\\(|\\\)$/g, "");
-        console.log(expr);
-        try {
-          katex.render(expr, el);
-        } catch (_) {}
-      }
-    });
+// For math pages, load KaTeX
+if (
+  (host.endsWith(".wikipedia.org") && document.querySelector("math")) ||
+  (host.endsWith(".cnblogs.com") && document.querySelector(".math")) ||
+  (host === "zhuanlan.zhihu.com" && document.querySelector(".ztext-math"))
+) {
+  const t = ([s]) => fetch(s).then((v) => v.text());
+  const p4js = t`https://registry.npmmirror.com/katex/0.16.9/files/dist/katex.min.js`;
+  const p4css = t`https://registry.npmmirror.com/katex/0.16.9/files/dist/katex.min.css`;
+  (async () => {
+    const q = ".mwe-math-element>img,.math,.ztext-math";
+    const es = document.querySelectorAll(q);
+    eval(await p4js);
+    for (const e of es) {
+      const code = (e.textContent || e.alt).trim().replace(/^\\\(|\\\)$/g, "");
+      e.katexResult = katex.renderToString(code, { throwOnError: false });
+    }
+    const el = document.createElement("style");
+    el.textContent = await p4css;
+    document.documentElement.appendChild(el);
+    for (const e of es)
+      if (e.tagName === "IMG") e.outerHTML = e.katexResult;
+      else e.innerHTML = e.katexResult;
+  })();
+  // https://zhuanlan.zhihu.com/p/429815465
+  // https://zhuanlan.zhihu.com/p/557873619
+  // https://www.cnblogs.com/Paranoid5/p/15112393.html
 }
 
 if (host === "registry.npmmirror.com") {
