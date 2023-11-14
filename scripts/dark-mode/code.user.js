@@ -125,6 +125,6 @@ document.documentElement.style.backgroundColor = "#000";
 document.lastChild.appendChild(document.createElement("style")).textContent = `
 body,header,footer{background:#fff!important;background-color:#fff!important;}
 body{filter:invert(1) hue-rotate(180deg) brightness(1.2)!important;}
-body>pre:first-child:last-child{color:#000!important;}
+body>pre:first-child{color:#000!important;}
 `;
 // *{background-color:#fff!important;}
