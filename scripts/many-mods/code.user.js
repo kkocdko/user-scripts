@@ -2,13 +2,15 @@
 // @name        Many Mods
 // @description Many many small modify for many sites.
 // @namespace   https://greasyfork.org/users/197529
-// @version     1.0.20
+// @version     1.0.22
 // @author      kkocdko
 // @license     Unlicense
 // @match       *://*/*
 // @run-at      document-start
 // ==/UserScript==
 "use strict";
+
+// Only contains custom style and other tiny changes that wouldn't shock users
 
 const { css } = {
   css([s]) /* 20230314-2128 */ {
@@ -17,7 +19,7 @@ const { css } = {
     ).textContent = s.replace(/;/g, "!important;");
   },
 };
-
+const globalThis = this.unsafeWindow || this;
 const { host, pathname } = location;
 
 // React Docs
@@ -304,16 +306,24 @@ if (host === "wx.qq.com" || host === "wx2.qq.com") {
 
 // Deepl
 if (host === "www.deepl.com") {
-  throw 1;
   css`
-    body > :not(.dl_translator_page_container),
-    [data-testid="translator-character-limit-proad"] {
+    [data-testid="dl-header"],
+    [data-testid="dl-footer"],
+    [data-testid="write-promo-banner"],
+    [data-testid="app_banner_content"],
+    [data-testid="translator-character-limit-proad"],
+    [aria-labelledby="customer-quotes-heading"],
+    [aria-labelledby="customer-quotes-heading"] ~ * {
       display: none;
     }
-    #dl_translator {
-      padding: 0;
-      margin: -4px -12px 0;
-      width: calc(100vw + 24px);
+    :is(#dl_translator, [data-testid="translator"]) {
+      &,
+      & > *,
+      & > * > * {
+        padding: 0;
+        margin: 0;
+        max-width: unset;
+      }
     }
   `;
 }
@@ -377,6 +387,12 @@ if (host === "mui.com") {
       border: 2px solid #355678dd;
     }
   `;
+}
+
+// Youtube
+if (host === "www.youtube.com") {
+  // Disable the ServiceWorker to save memory
+  globalThis.navigator.serviceWorker.register = () => {};
 }
 
 // Bing Login
