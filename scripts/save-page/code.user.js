@@ -6,7 +6,7 @@
 // @description:en Save page as single HTML file.
 // @description:zh-CN 将页面保存为单个 HTML 文件。
 // @namespace   https://greasyfork.org/users/197529
-// @version     0.1.5
+// @version     0.1.7
 // @author      kkocdko
 // @license     Unlicense
 // @match       *://*/*
@@ -43,6 +43,15 @@ const { addFloatButton, fetchex } = {
 
 // TODO: Content Security Policy. Example: https://github.com/kkocdko/kblog
 
+addFloatButton("Remove images", async function () {
+  const placeholder = `data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 10 10"></svg>`;
+  document.querySelectorAll("img").forEach((el) => {
+    el.src = placeholder;
+  });
+  this.textContent = "Images removed";
+  this.style.background = "#4caf50";
+});
+
 addFloatButton("Save page", async function () {
   console.time("save page");
   this.style.background = "#ff9800";
@@ -53,7 +62,7 @@ addFloatButton("Save page", async function () {
 
   const /** @type {Document} */ dom = document.cloneNode(true);
 
-  const removeList = `script, style, source, title, link[rel=stylesheet], link[rel=alternate], link[rel=search], link[rel*=pre], link[rel*=icon]`;
+  const removeList = `script, style, source, title, link`;
   dom.querySelectorAll(removeList).forEach((el) => el.remove());
 
   const qsam = (s, f) => [...document.querySelectorAll(s)].map(f);
@@ -77,20 +86,30 @@ addFloatButton("Save page", async function () {
 
   // [TODO:Limitation] `url()` and `image-set()` in css will not be save
   // Avoid the long-loading issue
-  const cssStr = css.join("\n").replace(/(url|image-set)(.+?)/g, "url()");
+  const cssStr = css
+    .filter((v) => !v.slice(0, 128).includes("<!DOCTYPE")) // exclude some invalid resources
+    .join("\n\n")
+    .replace(/(url|image-set)(.+?)/g, "url()");
   dom.head.appendChild(dom.createElement("style")).textContent = cssStr;
+  console.log({ cssStr });
+
+  dom.querySelectorAll("a").forEach((el) => {
+    // "a:not([href^='http']):not([href^='//'])"
+    el.setAttribute("href", el.href); // make links absolute
+  });
 
   // [TODO:Limitation] breaked some no-doctype / xhtml / html4 pages
   const result = "<!DOCTYPE html>" + dom.documentElement.outerHTML;
+
+  console.timeEnd("save page");
+
+  clearInterval(interval);
 
   const link = document.createElement("a"); // Using `dom` will cause failure
   link.download = `${document.title}_${Date.now()}.html`;
   link.href = "data:text/html," + encodeURIComponent(result);
   link.click();
 
-  console.timeEnd("save page");
-
-  clearInterval(interval);
   this.textContent = "Page saved";
   this.style.background = "#4caf50";
 });
