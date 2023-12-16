@@ -230,8 +230,10 @@ if (host === "react-redux.js.org") {
 // Onedrive
 if (host === "onedrive.live.com") {
   css`
+    #O365_NavHeader,
     #O365_NavHeader * {
       background: #fff;
+      background-color: #fff;
       color: #000;
     }
   `;
@@ -406,7 +408,7 @@ if (host === "mui.com") {
 // Youtube
 if (host === "www.youtube.com") {
   // Disable the ServiceWorker to save memory
-  globalThis.navigator.serviceWorker.register = () => {};
+  Object.defineProperty(globalThis.navigator, "serviceWorker", {});
 }
 
 // Bing Login
@@ -414,6 +416,30 @@ if (host === "login.live.com") {
   css`
     .template-section.main-section {
       background: #fff;
+    }
+  `;
+}
+
+// Stack Overflow
+if (
+  host === "stackoverflow.com" ||
+  host === "askubuntu.com" ||
+  host === "superuser.com" ||
+  host.endsWith(".stackexchange.com")
+) {
+  css`
+    .js-consent-banner,
+    .js-dismissable-hero {
+      display: none;
+    }
+    header.js-top-bar {
+      position: absolute;
+      margin: 0;
+      border-top: none;
+      background: #fff;
+    }
+    header.js-top-bar * {
+      background: transparent;
     }
   `;
 }

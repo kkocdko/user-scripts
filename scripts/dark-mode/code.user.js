@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name        Dark Mode
-// @version     0.1.15
+// @version     0.1.16
 // @author      kkocdko
 // @license     Unlicense
 // @match       *://*/*
@@ -13,12 +13,15 @@
 // @exclude-match  *://127.0.0.1:9246/*
 // @exclude-match  *://127.0.0.1:9325/*
 // @exclude-match  *://127.0.0.1:9304/*
+// @exclude-match  *://127.0.0.1:9090/*
 // @exclude-match  *://127.0.0.1:9391/*
 // @exclude-match  *://127.0.0.1:9538/*
+// @exclude-match  *://127.0.0.1:9056/*
 // @exclude-match  *://127.0.0.1:9423/*
 // @exclude-match  *://192.168.0.247/*
 // @exclude-match  *://192.168.0.248/*
 // @exclude-match  *://192.168.0.244/*
+// @exclude-match  *://47.100.126.230:*/*
 // @exclude-match  *://11.22.33.44/*
 // @exclude-match  *://127.0.0.1:8090/*
 // @exclude-match  *://localhost:8129/*
@@ -27,7 +30,10 @@
 // @exclude-match  *://47.114.114.68:13002/*
 // @exclude-match  *://172.17.7.*/*
 // @exclude-match  *://forum.suse.org.cn/*
+// @exclude-match  *://generated.vusercontent.net/*
+// @exclude-match  *://caddyserver.com/*
 // @exclude-match  *://godbolt.org/*
+// @exclude-match  *://v0.dev/*
 // @exclude-match  *://*.atlasos.net/*
 // @exclude-match  *://ariakit.org/*
 // @exclude-match  *://xanmod.org/*
@@ -35,10 +41,12 @@
 // @exclude-match  *://mirrors.tuna.tsinghua.edu.cn/*
 // @exclude-match  *://discord.com/*
 // @exclude-match  *://ark-ui.com/*
+// @exclude-match  *://sekai.icu/*
 // @exclude-match  *://xdaforums.com/*
 // @exclude-match  *://replit.com/*
 // @exclude-match  *://*.moment.co/*
 // @exclude-match  *://predr.ag/*
+// @exclude-match  *://man.openbsd.org/*
 // @exclude-match  *://vscode.dev/*
 // @exclude-match  *://*.nextweb.fun/*
 // @exclude-match  *://ianlecorbeau.github.io/blog/*
@@ -50,6 +58,7 @@
 // @exclude-match  *://*.babylonjs.com/*
 // @exclude-match  *://online-go.com/*
 // @exclude-match  *://*.web.dev/*
+// @exclude-match  *://twitter.com/*
 // @exclude-match  *://rust-lang.github.io/*
 // @exclude-match  *://*.go.dev/*
 // @exclude-match  *://oledera.samsungdisplay.com/*
@@ -63,6 +72,7 @@
 // @exclude-match  *://*.reddit.com/*
 // @exclude-match  *://*.cdnjs.com/*
 // @exclude-match  *://slint-ui.com/*
+// @exclude-match  *://ffmpeg.org/*
 // @exclude-match  *://nas.iot4im.com:13001/*
 // @exclude-match  *://docs.python.org/*
 // @exclude-match  *://nas.iot4im.com:14001/*
@@ -81,6 +91,7 @@
 // @exclude-match  *://chakra-ui.com/*
 // @exclude-match  *://rcore-os.cn/*
 // @exclude-match  *://*.cloud.tencent.com/*
+// @exclude-match  *://www.theseus-os.com/Theseus/book/*
 // @exclude-match  *://blog.csdn.net/zSY_snake/article/details/*
 // @exclude-match  *://ui.shadcn.com/*
 // @exclude-match  *://*.radix-ui.com/*
@@ -109,7 +120,6 @@
 // @exclude-match  *://live.mdnplay.dev/*
 // @exclude-match  *://*.mdn.mozilla.net/*
 // @exclude-match  *://cdn.jsdelivr.net/*
-// @exclude-match  *://stackoverflow.com/*
 // @exclude-match  *://nb.nextweb.fun/*
 // @exclude-match  *://doc.rust-lang.org/*
 // @exclude-match  *://kkocdko.site/toy/*
@@ -122,9 +132,9 @@
 
 document.documentElement.style.background = "#000";
 document.documentElement.style.backgroundColor = "#000";
-document.lastChild.appendChild(document.createElement("style")).textContent = `
-body,header,footer{background:#fff!important;background-color:#fff!important;}
-body{filter:invert(1) hue-rotate(180deg) brightness(1.2)!important;}
-body>pre:first-child{color:#000!important;}
+document.head.appendChild(document.createElement("style")).textContent = `
+html,body,header,footer{background:#fff!important;background-color:#fff!important;}
+html{filter:invert(1) hue-rotate(180deg) brightness(1.2)!important;}
+body>pre:first-child:last-child{color:#000!important;color-scheme:light!important;}
 `;
 // *{background-color:#fff!important;}
