@@ -287,6 +287,14 @@ if (host === "github.com" || host === "gist.github.com") {
     .search-title * {
       color: #fff;
     }
+    /*
+    .js-pick-reaction img {
+      display: none;
+    }
+    .js-pick-reaction button[value~="THUMBS_UP"] > g-emoji::after {
+      content: "👍";
+    }
+    */
   `;
 }
 
@@ -420,11 +428,21 @@ if (host === "login.live.com") {
   `;
 }
 
+// Bilibili Login Dialog
+if (host.endsWith(".bilibili.com")) {
+  css`
+    .bili-mini-mask {
+      /*display: none;*/
+    }
+  `;
+}
+
 // Stack Overflow
 if (
   host === "stackoverflow.com" ||
   host === "askubuntu.com" ||
   host === "superuser.com" ||
+  host === "serverfault.com" ||
   host.endsWith(".stackexchange.com")
 ) {
   css`
@@ -495,4 +513,32 @@ if (host === "registry.npmmirror.com") {
   //   //       .then((v) => v["dist-tags"].latest)
   //   //   : pkgp2;
   // });
+}
+
+if (host === "web.telegram.org") {
+  css`
+    html {
+      --color-primary: rgb(51, 41, 112);
+      --color-primary-opacity: rgb(51, 41, 112, 0.502);
+      --color-primary-opacity-hover: rgb(51, 41, 112, 0.627);
+      --color-primary-shade: rgb(51, 41, 112);
+      --color-primary-shade-rgb: 51, 41, 112;
+      --color-background-own: rgb(51, 41, 112);
+      --color-background-own-apple: rgb(51, 41, 112);
+      --color-background-own-selected: rgb(51, 41, 112);
+      --color-chat-active: rgb(51, 41, 112);
+      --color-chat-active-greyed: rgb(51, 41, 112);
+      --color-green: rgb(51, 41, 112);
+      --color-green-darker: rgb(51, 41, 112);
+      --color-reply-own-hover: #0000;
+      --color-reply-own-hover-apple: #0000;
+      --color-reply-own-active: #0000;
+      --color-reply-own-active-apple: #0000;
+      --color-code: #0000;
+      --color-message-reaction-own: #0000;
+      --color-message-reaction-hover-own: #0000;
+      --color-message-reaction-chosen-hover: #0000;
+      --color-voice-transcribe-button-own: #0000;
+    }
+  `;
 }
