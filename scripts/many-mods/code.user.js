@@ -395,6 +395,28 @@ if (host === "gorm.io") {
   `;
 }
 
+// Redis Docs
+if (host === "redis.io") {
+  css`
+    .codetabs,
+    .bg-gradient-to-bl,
+    #search-button ~ * {
+      background: #0000;
+      box-shadow: 0 0 0 1px #777;
+    }
+    .codetabs *,
+    .highlight pre {
+      background: #0000;
+    }
+    .codetabs {
+      filter: invert(1) hue-rotate(180deg);
+    }
+    header {
+      position: relative;
+    }
+  `;
+}
+
 // MUI Docs
 if (host === "mui.com") {
   css`
@@ -414,7 +436,7 @@ if (host === "mui.com") {
 }
 
 // Youtube
-if (host === "www.youtube.com") {
+if (host.endsWith(".youtube.com")) {
   // Disable the ServiceWorker to save memory
   Object.defineProperty(globalThis.navigator, "serviceWorker", {});
 }
@@ -428,13 +450,14 @@ if (host === "login.live.com") {
   `;
 }
 
-// Bilibili Login Dialog
+// Bilibili
 if (host.endsWith(".bilibili.com")) {
   css`
     .bili-mini-mask {
       /*display: none;*/
     }
   `;
+  Object.defineProperty(globalThis.indexedDB, "open", {});
 }
 
 // Stack Overflow
@@ -518,11 +541,6 @@ if (host === "registry.npmmirror.com") {
 if (host === "web.telegram.org") {
   css`
     html {
-      --color-primary: rgb(51, 41, 112);
-      --color-primary-opacity: rgb(51, 41, 112, 0.502);
-      --color-primary-opacity-hover: rgb(51, 41, 112, 0.627);
-      --color-primary-shade: rgb(51, 41, 112);
-      --color-primary-shade-rgb: 51, 41, 112;
       --color-background-own: rgb(51, 41, 112);
       --color-background-own-apple: rgb(51, 41, 112);
       --color-background-own-selected: rgb(51, 41, 112);
