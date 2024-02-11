@@ -2,7 +2,7 @@
 // @name        Many Mods
 // @description Many many small modify for many sites.
 // @namespace   https://greasyfork.org/users/197529
-// @version     1.0.22
+// @version     1.0.25
 // @author      kkocdko
 // @license     Unlicense
 // @match       *://*/*
@@ -33,7 +33,8 @@ const { css, addFloatButton } = {
     return document.addFloatButton(text, onclick);
   },
 };
-const globalThis = this.unsafeWindow || this;
+
+// const globalThis = this.unsafeWindow || this;
 const { host, pathname } = location;
 
 // React Docs
@@ -455,6 +456,13 @@ if (host.endsWith(".bilibili.com")) {
   css`
     .bili-mini-mask {
       /*display: none;*/
+    }
+    .openapp-dialog,
+    .mplayer-widescreen-callapp {
+      display: none;
+    }
+    .m-video-player {
+      position: relative;
     }
   `;
   Object.defineProperty(globalThis.indexedDB, "open", {});

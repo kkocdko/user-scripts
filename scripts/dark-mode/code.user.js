@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name        Dark Mode
-// @version     0.1.16
+// @version     0.1.17
 // @author      kkocdko
 // @license     Unlicense
 // @match       *://*/*
@@ -8,19 +8,26 @@
 // @exclude-match  *://127.0.0.1:9005/*
 // @exclude-match  *://127.0.0.1:8080/*
 // @exclude-match  *://127.0.0.1:8889/*
+// @exclude-match  *://127.0.0.1:9254/*
+// @exclude-match  *://127.0.0.1:9505/*
 // @exclude-match  *://127.0.0.1:9261/*
 // @exclude-match  *://127.0.0.1:4000/*
 // @exclude-match  *://127.0.0.1:9246/*
 // @exclude-match  *://127.0.0.1:9325/*
+// @exclude-match  *://127.0.0.1:3000/*
+// @exclude-match  *://127.0.0.1:9984/*
 // @exclude-match  *://127.0.0.1:9304/*
+// @exclude-match  *://*@127.0.0.1:9304/*
 // @exclude-match  *://127.0.0.1:9090/*
 // @exclude-match  *://127.0.0.1:9391/*
 // @exclude-match  *://127.0.0.1:9538/*
 // @exclude-match  *://127.0.0.1:9056/*
+// @exclude-match  *://127.0.0.1:9888/*
 // @exclude-match  *://127.0.0.1:9423/*
 // @exclude-match  *://192.168.0.247/*
 // @exclude-match  *://192.168.0.248/*
 // @exclude-match  *://192.168.0.244/*
+// @exclude-match  *://*@47.100.126.230:*/*
 // @exclude-match  *://47.100.126.230:*/*
 // @exclude-match  *://11.22.33.44/*
 // @exclude-match  *://127.0.0.1:8090/*
@@ -49,6 +56,8 @@
 // @exclude-match  *://man.openbsd.org/*
 // @exclude-match  *://vscode.dev/*
 // @exclude-match  *://*.nextweb.fun/*
+// @exclude-match  *://*.nextchat.dev/*
+// @exclude-match  *://chat-gpt-next-web.vercel.app/*
 // @exclude-match  *://ianlecorbeau.github.io/blog/*
 // @exclude-match  *://netplan.readthedocs.io/*
 // @exclude-match  *://124.222.123.153:9304/*
@@ -59,6 +68,7 @@
 // @exclude-match  *://online-go.com/*
 // @exclude-match  *://*.web.dev/*
 // @exclude-match  *://twitter.com/*
+// @exclude-match  *://itsfoss.com/*
 // @exclude-match  *://rust-lang.github.io/*
 // @exclude-match  *://*.go.dev/*
 // @exclude-match  *://oledera.samsungdisplay.com/*
@@ -71,8 +81,11 @@
 // @exclude-match  *://caniuse.com/*
 // @exclude-match  *://*.reddit.com/*
 // @exclude-match  *://*.cdnjs.com/*
+// @exclude-match  *://*.feishu.cn/*
 // @exclude-match  *://slint-ui.com/*
+// @exclude-match  *://www.ffmpeg.org/*
 // @exclude-match  *://ffmpeg.org/*
+// @exclude-match  *://meet.google.com/*
 // @exclude-match  *://nas.iot4im.com:13001/*
 // @exclude-match  *://docs.python.org/*
 // @exclude-match  *://nas.iot4im.com:14001/*
@@ -84,13 +97,13 @@
 // @exclude-match  *://turtle.codemao.cn/*
 // @exclude-match  *://8.219.185.10:9304/*
 // @exclude-match  *://bun.sh/*
+// @exclude-match  *://*.skk.moe/*
 // @exclude-match  *://regex101.com/*
 // @exclude-match  *://react.fluentui.dev/*
 // @exclude-match  *://raw.githubusercontent.com/*
 // @exclude-match  *://codepen.io/*
 // @exclude-match  *://chakra-ui.com/*
 // @exclude-match  *://rcore-os.cn/*
-// @exclude-match  *://*.cloud.tencent.com/*
 // @exclude-match  *://www.theseus-os.com/Theseus/book/*
 // @exclude-match  *://blog.csdn.net/zSY_snake/article/details/*
 // @exclude-match  *://ui.shadcn.com/*
@@ -98,6 +111,7 @@
 // @exclude-match  *://*.js13kgames.com/*
 // @exclude-match  *://esp-rs.github.io/*
 // @exclude-match  *://*.openai.com/*
+// @exclude-match  *://*.curl.se/*
 // @exclude-match  *://*.toolpad.io/*
 // @exclude-match  *://*.tailwindcss.com/*
 // @exclude-match  *://*.tailwindui.com/*
@@ -118,9 +132,10 @@
 // @exclude-match  *://instant.1point3acres.com/*
 // @exclude-match  *://www.webrtc-experiment.com/*
 // @exclude-match  *://live.mdnplay.dev/*
+// @exclude-match  *://*.opensuse.org/*
+// @exclude-match  *://hedzr.com/*
 // @exclude-match  *://*.mdn.mozilla.net/*
 // @exclude-match  *://cdn.jsdelivr.net/*
-// @exclude-match  *://nb.nextweb.fun/*
 // @exclude-match  *://doc.rust-lang.org/*
 // @exclude-match  *://kkocdko.site/toy/*
 // @exclude-match  *://ecs-workbench.aliyun.com/*
@@ -134,7 +149,7 @@ document.documentElement.style.background = "#000";
 document.documentElement.style.backgroundColor = "#000";
 document.head.appendChild(document.createElement("style")).textContent = `
 html,body,header,footer{background:#fff!important;background-color:#fff!important;}
-html{filter:invert(1) hue-rotate(180deg) brightness(1.2)!important;}
+html{color-scheme:light;filter:invert(1) hue-rotate(180deg) brightness(1.2)!important;}
 body>pre:first-child:last-child{color:#000!important;color-scheme:light!important;}
 `;
 // *{background-color:#fff!important;}
