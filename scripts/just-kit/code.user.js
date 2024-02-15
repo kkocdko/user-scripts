@@ -4,7 +4,7 @@
 // @description:en Patches & tools for JUST Website.
 // @description:zh-CN 用于江苏科技大学网站的补丁与工具。
 // @namespace   https://greasyfork.org/users/197529
-// @version     0.2.4
+// @version     0.2.5
 // @author      kkocdko
 // @license     Unlicense
 // @match       *://*.just.edu.cn/*
@@ -115,18 +115,16 @@ if (urlMatch`/jsxsd/xskb/xskb_list.do`) {
 if (urlMatch`/jwglxt/kbcx/xskbcx_cxXskbcxIndex.html`) {
   addFloatButton("Better schedule", () => {
     let week = Math.floor(
-      (Date.now() - new Date("2023-09-04 00:00:00 +8").getTime()) /
+      (Date.now() - new Date("2024-02-26 00:00:00 +8").getTime()) /
         1000 /
         3600 /
         24 /
         7 +
         1
     );
-    alert(`Week = ${week}`)
-    // v = +prompt("Week = ", v);
+    week = +prompt("Week = ", week);
 
-    if (week !== 0)
-    if (false)
+    if (week !== 0 && false)
       document
         .querySelectorAll("#kblist_table .glyphicon-calendar")
         .forEach((el) => {
@@ -186,11 +184,12 @@ if (urlMatch`/jwglxt/kbcx/xskbcx_cxXskbcxIndex.html`) {
 .table-bordered>thead>tr>th, .table-bordered>tbody>tr>th, .table-bordered>tfoot>tr>th, .table-bordered>thead>tr>td, .table-bordered>tbody>tr>td, .table-bordered>tfoot>tr>td {  border:1px solid #555;  border-width: 1px 0 0 0;}
 .timetable .week,.timetable .festival{color:#000;}
 .timetable .festival{white-space: nowrap;}
-.timetable .timetable_con .title {  width: 14em;  margin-right: 2em;  white-space: nowrap;  overflow: hidden;  text-overflow: ellipsis;}
+.timetable .timetable_con .title {  width: 100%;  margin-right: 2em;  white-space: nowrap;  overflow: hidden;  text-overflow: ellipsis;}
 .table>thead>tr>th, .table>tbody>tr>th, .table>tfoot>tr>th, .table>thead>tr>td, .table>tbody>tr>td, .table>tfoot>tr>td {  padding: 0;}
 #table2{  background: #fff;  position: fixed;  left: 0;  top: 0;  width: 100vw;  overflow: scroll;  height: 100vh;}
 #table2 font[color="blue"]{color: #000;}*{   font-weight: normal; font-size:16px;font-family: sans-serif;}
 .timetable .week{padding:0 4px 0 0;}
+#kblist_table tbody .timetable_con .title+p {text-wrap: nowrap;}
 `.replace(/;/g, "!important;");
   });
 }
