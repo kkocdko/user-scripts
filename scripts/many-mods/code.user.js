@@ -2,15 +2,123 @@
 // @name        Many Mods
 // @description Many many small modify for many sites.
 // @namespace   https://greasyfork.org/users/197529
-// @version     1.0.25
+// @version     2.0.1
 // @author      kkocdko
 // @license     Unlicense
 // @match       *://*/*
+// @exclude-match  *://127.0.0.1:8109/*
+// @exclude-match  *://127.0.0.1:9304/*
+// @exclude-match  *://127.0.0.1:9090/*
+// @exclude-match  *://*@127.0.0.1:9304/*
+// @exclude-match  *://*@47.100.126.230:*/*
+// @exclude-match  *://47.100.126.230:*/*
+// @exclude-match  *://47.114.114.68:13002/*
+// @exclude-match  *://forum.suse.org.cn/*
+// @exclude-match  *://generated.vusercontent.net/*
+// @exclude-match  *://caddyserver.com/*
+// @exclude-match  *://godbolt.org/*
+// @exclude-match  *://v0.dev/*
+// @exclude-match  *://*.atlasos.net/*
+// @exclude-match  *://ariakit.org/*
+// @exclude-match  *://xanmod.org/*
+// @exclude-match  *://without.boats/*
+// @exclude-match  *://mirrors.tuna.tsinghua.edu.cn/*
+// @exclude-match  *://discord.com/*
+// @exclude-match  *://ark-ui.com/*
+// @exclude-match  *://sekai.icu/*
+// @exclude-match  *://xdaforums.com/*
+// @exclude-match  *://replit.com/*
+// @exclude-match  *://*.moment.co/*
+// @exclude-match  *://predr.ag/*
+// @exclude-match  *://man.openbsd.org/*
+// @exclude-match  *://vscode.dev/*
+// @exclude-match  *://*.nextweb.fun/*
+// @exclude-match  *://*.nextchat.dev/*
+// @exclude-match  *://chat-gpt-next-web.vercel.app/*
+// @exclude-match  *://ianlecorbeau.github.io/blog/*
+// @exclude-match  *://netplan.readthedocs.io/*
+// @exclude-match  *://html5.gamedistribution.com/*
+// @exclude-match  *://skydom.pecpoc.com/*
+// @exclude-match  *://*.codeium.com/*
+// @exclude-match  *://*.babylonjs.com/*
+// @exclude-match  *://online-go.com/*
+// @exclude-match  *://*.web.dev/*
+// @exclude-match  *://x.com/*
+// @exclude-match  *://twitter.com/*
+// @exclude-match  *://itsfoss.com/*
+// @exclude-match  *://rust-lang.github.io/*
+// @exclude-match  *://*.go.dev/*
+// @exclude-match  *://oledera.samsungdisplay.com/*
+// @exclude-match  *://obsproject.com/*
+// @exclude-match  *://*.xda-developers.com/*
+// @exclude-match  *://mirrorz.org/*
+// @exclude-match  *://codesandbox.io/*
+// @exclude-match  *://*.lhr.life/*
+// @exclude-match  *://caniuse.com/*
+// @exclude-match  *://*.reddit.com/*
+// @exclude-match  *://*.cdnjs.com/*
+// @exclude-match  *://*.feishu.cn/*
+// @exclude-match  *://slint-ui.com/*
+// @exclude-match  *://www.ffmpeg.org/*
+// @exclude-match  *://ffmpeg.org/*
+// @exclude-match  *://meet.google.com/*
+// @exclude-match  *://nas.iot4im.com:13001/*
+// @exclude-match  *://nas.iot4im.com:14001/*
+// @exclude-match  *://docs.python.org/*
+// @exclude-match  *://*.y8.com/*
+// @exclude-match  *://mirror.nju.edu.cn/*
+// @exclude-match  *://nnethercote.github.io/perf-book/*
+// @exclude-match  *://colab.research.google.com/*
+// @exclude-match  *://danielyxie.github.io/bitburner/*
+// @exclude-match  *://turtle.codemao.cn/*
+// @exclude-match  *://bun.sh/*
+// @exclude-match  *://*.skk.moe/*
+// @exclude-match  *://regex101.com/*
+// @exclude-match  *://react.fluentui.dev/*
+// @exclude-match  *://raw.githubusercontent.com/*
+// @exclude-match  *://codepen.io/*
+// @exclude-match  *://chakra-ui.com/*
+// @exclude-match  *://rcore-os.cn/*
+// @exclude-match  *://www.theseus-os.com/Theseus/book/*
+// @exclude-match  *://ui.shadcn.com/*
+// @exclude-match  *://*.radix-ui.com/*
+// @exclude-match  *://*.js13kgames.com/*
+// @exclude-match  *://esp-rs.github.io/*
+// @exclude-match  *://*.openai.com/*
+// @exclude-match  *://*.curl.se/*
+// @exclude-match  *://*.toolpad.io/*
+// @exclude-match  *://*.tailwindcss.com/*
+// @exclude-match  *://*.tailwindui.com/*
+// @exclude-match  *://*.mui.com/*
+// @exclude-match  *://*.github.com/*
+// @exclude-match  *://*.github.dev/*
+// @exclude-match  *://download-directory.github.io/*
+// @exclude-match  *://developer.mozilla.org/*
+// @exclude-match  *://esbuild.github.io/*
+// @exclude-match  *://flutter.github.io/*
+// @exclude-match  *://gallery.flutter.dev/*
+// @exclude-match  *://happy0316.top/*
+// @exclude-match  *://parceljs.org/*
+// @exclude-match  *://instant.1point3acres.com/*
+// @exclude-match  *://www.webrtc-experiment.com/*
+// @exclude-match  *://live.mdnplay.dev/*
+// @exclude-match  *://*.opensuse.org/*
+// @exclude-match  *://hedzr.com/*
+// @exclude-match  *://*.mdn.mozilla.net/*
+// @exclude-match  *://cdn.jsdelivr.net/*
+// @exclude-match  *://doc.rust-lang.org/*
+// @exclude-match  *://kkocdko.site/toy/*
+// @exclude-match  *://ecs-workbench.aliyun.com/*
+// @exclude-match  *://shapezio.fandom.com/*
+// @exclude-match  *://www.bilibili.com/robots.txt
+// @require     https://registry.npmmirror.com/darkreader/4.9.86/files/darkreader.js
 // @run-at      document-start
+// @inject-into content
 // ==/UserScript==
-"use strict";
 
-// Only contains custom style and other tiny function that wouldn't shock users
+// @inject-into content // 既要又要问题
+
+// Only contains custom style and other tiny functions that wouldn't shock users
 
 const { css, addFloatButton } = {
   css([s]) /* 20230314-2128 */ {
@@ -37,6 +145,30 @@ const { css, addFloatButton } = {
 // const globalThis = this.unsafeWindow || this;
 const { host, pathname } = location;
 
+// set this to undefined to disable DarkReader
+let darkOptions = {
+  darkSchemeBackgroundColor: "#000000",
+  darkSchemeTextColor: "#ffffff",
+  scrollbarColor: "#666666",
+  selectionColor: "#445566",
+  contrast: 100,
+  brightness: 150,
+};
+
+// Google Search
+if (host === "www.google.com") {
+  darkOptions = undefined;
+  css`
+    html,
+    body,
+    header,
+    header > *,
+    #main div {
+      background: #000;
+    }
+  `;
+}
+
 // React Docs
 if (host === "beta.reactjs.org") {
   css`
@@ -45,6 +177,26 @@ if (host === "beta.reactjs.org") {
       max-height: unset;
     }
     .sp-editor ~ * {
+      display: none;
+    }
+  `;
+}
+
+// ithome
+if (host.endsWith(".ithome.com")) {
+  darkOptions.sepia = 90;
+}
+
+// bilibili
+if (host.endsWith(".bilibili.com")) {
+  DarkReader.setFetchMethod(window.fetch); // TODO: just use this anyhow?
+  css`
+    #biliMainHeader,
+    #biliMainHeader * {
+      transition: none;
+      background: #000;
+    }
+    .mini-header__logo {
       display: none;
     }
   `;
@@ -108,9 +260,23 @@ if (host === "www.luogu.com.cn") {
 }
 
 // V2EX
-if (host === "v2ex.com" || host === "www.v2ex.com") {
-  if (host === "www.v2ex.com") location.host = "v2ex.com";
+if (host === "v2ex.com" || host.endsWith(".v2ex.com")) {
+  if (host !== "v2ex.com") {
+    location.host = "v2ex.com";
+    css`
+      * {
+        background: #000;
+        visibility: hidden;
+      }
+    `;
+    throw new Error("jumped");
+  }
+  darkOptions = undefined;
   css`
+    :root {
+      --box-border-color: #666;
+      --box-background-hover-color: #666;
+    }
     #Wrapper {
       --component-margin: 0;
     }
@@ -118,8 +284,16 @@ if (host === "v2ex.com" || host === "www.v2ex.com") {
       padding: 0;
     }
     * {
-      background: #fff;
-      color: #000;
+      background: #000;
+      color: #fff;
+      text-shadow: none;
+    }
+    h1 {
+      font-weight: normal;
+    }
+    .disable_now {
+      background: none;
+      border: 1px solid #666;
     }
     a:visited {
       color: #999;
@@ -152,14 +326,14 @@ if (host === "rcore-os.github.io" || host === "rcore-os.cn") {
     }
   `;
   /*
-  *, *>*, ::before, ::after,.md-header,.md-main,.md-nav,.md-nav>*,.md-nav__item { background: #000;color:#fff; }
-  .utterances-frame {     filter: invert(1);
-      background: #fff;}
-      .highlight .hll,.highlight .hll *{background:#474722;}
-      .wy-nav-content-wrap{margin-left:0;}
-      .wy-nav-side:not(:hover){transform:translate(calc(-100% + 15px),calc(-100% + 15px));}
-      .wy-nav-content{max-width:unset;padding:5px;}
-  */
+    *, *>*, ::before, ::after,.md-header,.md-main,.md-nav,.md-nav>*,.md-nav__item { background: #000;color:#fff; }
+    .utterances-frame {     filter: invert(1);
+        background: #fff;}
+        .highlight .hll,.highlight .hll *{background:#474722;}
+        .wy-nav-content-wrap{margin-left:0;}
+        .wy-nav-side:not(:hover){transform:translate(calc(-100% + 15px),calc(-100% + 15px));}
+        .wy-nav-content{max-width:unset;padding:5px;}
+    */
 }
 
 // TexPage
@@ -203,7 +377,7 @@ if (host === "docs.python.org") {
 }
 
 // Pandas Docs
-if ((host + pathname).startsWith("pandas.pydata.org/docs")) {
+if (host === "pandas.pydata.org" && pathname.startsWith("/docs")) {
   css`
     * {
       background: #000;
@@ -228,7 +402,7 @@ if (host === "react-redux.js.org") {
   `;
 }
 
-// Onedrive
+// OneDrive
 if (host === "onedrive.live.com") {
   css`
     #O365_NavHeader,
@@ -236,6 +410,9 @@ if (host === "onedrive.live.com") {
       background: #fff;
       background-color: #fff;
       color: #000;
+    }
+    #spartan-left-nav > div:first-child button {
+      background: none;
     }
   `;
 }
@@ -267,36 +444,36 @@ if (host === "turtle.codemao.cn") {
 // GitHub
 if (host === "github.com" || host === "gist.github.com") {
   (matchMedia("(prefers-color-scheme:dark)").matches ? css : () => {})`
-    body {
-      --color-fg-default: #fff;
-      --color-canvas-default: #000;
-      --color-page-header-bg: #000;
-      --color-canvas-subtle: #000;
-      --color-btn-bg: #000;
-      --color-border-default: #777;
-      --color-btn-border: #777;
-      --color-border-muted: #777;
-      --color-canvas-overlay: #000;
-      --color-header-bg: #000;
-      --color-fg-muted: hsl(212deg 9% 74%);
-      --color-accent-fg: hsl(215deg 56% 66%);
-    }
-    .search-results-page {
-      background: #000;
-    }
-    .search-title,
-    .search-title * {
-      color: #fff;
-    }
-    /*
-    .js-pick-reaction img {
-      display: none;
-    }
-    .js-pick-reaction button[value~="THUMBS_UP"] > g-emoji::after {
-      content: "👍";
-    }
-    */
-  `;
+      body {
+        --color-fg-default: #fff;
+        --color-canvas-default: #000;
+        --color-page-header-bg: #000;
+        --color-canvas-subtle: #000;
+        --color-btn-bg: #000;
+        --color-border-default: #777;
+        --color-btn-border: #777;
+        --color-border-muted: #777;
+        --color-canvas-overlay: #000;
+        --color-header-bg: #000;
+        --color-fg-muted: hsl(212deg 9% 74%);
+        --color-accent-fg: hsl(215deg 56% 66%);
+      }
+      .search-results-page {
+        background: #000;
+      }
+      .search-title,
+      .search-title * {
+        color: #fff;
+      }
+      /*
+      .js-pick-reaction img {
+        display: none;
+      }
+      .js-pick-reaction button[value~="THUMBS_UP"] > g-emoji::after {
+        content: "👍";
+      }
+      */
+    `;
 }
 
 // WeChat Web
@@ -436,10 +613,25 @@ if (host === "mui.com") {
   `;
 }
 
+// Gitee
+if (host === "gitee.com") {
+  css`
+    #git-header-nav {
+      background-color: #0000;
+    }
+    #git-header-nav * {
+      color: #000;
+    }
+  `;
+}
+
 // Youtube
 if (host.endsWith(".youtube.com")) {
+  darkOptions = undefined;
   // Disable the ServiceWorker to save memory
-  Object.defineProperty(globalThis.navigator, "serviceWorker", {});
+  Object.defineProperty(globalThis.navigator, "serviceWorker", {
+    value: undefined,
+  });
 }
 
 // Bing Login
@@ -447,6 +639,30 @@ if (host === "login.live.com") {
   css`
     .template-section.main-section {
       background: #fff;
+    }
+  `;
+}
+
+// Tower
+if (host === "tower.im") {
+  // darkOptions = {};
+  css`
+    tr-todo-page-todo-title .title-style,
+    .team-name,
+    .link-team-name {
+      font-weight: normal;
+      transition: none;
+    }
+    #nav-upgrade {
+      display: none;
+    }
+    .notifications-group-item-body img,
+    img.avatar,
+    a.avatar img,
+    .assignee img,
+    .pjax-loading {
+      opacity: 0.7;
+      transition: none;
     }
   `;
 }
@@ -491,6 +707,12 @@ if (
       background: transparent;
     }
   `;
+}
+
+if (host.endsWith(".zhihu.com")) {
+  Object.defineProperty(globalThis, "Worker", { value: undefined });
+  Object.defineProperty(globalThis, "SharedWorker", { value: undefined });
+  Object.defineProperty(globalThis, "WebSocket", { value: undefined });
 }
 
 // For math pages, load KaTeX
@@ -547,6 +769,7 @@ if (host === "registry.npmmirror.com") {
 }
 
 if (host === "web.telegram.org") {
+  darkOptions = undefined;
   css`
     html {
       --color-background-own: rgb(51, 41, 112);
@@ -568,3 +791,20 @@ if (host === "web.telegram.org") {
     }
   `;
 }
+
+if (darkOptions) {
+  if (window.DarkReader) {
+    // unsafeWindow.DarkReader = DarkReader;
+    DarkReader.auto(darkOptions);
+    // setTimeout(() => DarkReader.auto(false), 1000);
+  } else {
+    const url = `https://registry.npmmirror.com/darkreader/4.9.86/files/darkreader.js`; // same as the `@require` above
+    import(url).then(() => {
+      DarkReader.auto(darkOptions);
+      // setTimeout(() => DarkReader.auto(false), 1000);
+    });
+  }
+}
+
+// https://github.com/darkreader/darkreader/issues/9567
+// https://github.com/darkreader/darkreader/pull/4005
