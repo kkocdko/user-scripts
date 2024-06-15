@@ -2,7 +2,7 @@
 // @name        Many Mods
 // @description Many many small modify for many sites.
 // @namespace   https://greasyfork.org/users/197529
-// @version     2.0.9
+// @version     2.0.10
 // @author      kkocdko
 // @license     Unlicense
 // @match       *://*/*
@@ -113,6 +113,7 @@
 // @exclude-match  *://shapezio.fandom.com/*
 // @exclude-match  *://www.bilibili.com/robots.txt
 // @require     https://registry.npmmirror.com/darkreader/4.9.86/files/darkreader.js
+// @grant       GM_xmlhttpRequest
 // @run-at      document-start
 // ==/UserScript==
 
@@ -165,6 +166,8 @@ let darkOptions = {
   selectionColor: "#445566",
   contrast: 100,
   brightness: 140,
+  fixes: undefined,
+  fetchMethod: window.fetch,
 };
 
 // Google Search
@@ -214,12 +217,62 @@ if (host === "www.reddit.com") {
   `;
 }
 
+// gitee
+if (host === "gitee.com") {
+  darkOptions.fetchMethod = (url) =>
+    new Promise((resolve) => {
+      GM_xmlhttpRequest({
+        url,
+        onload: (response) => {
+          resolve({ text: async () => response.response });
+        },
+      });
+    });
+  darkOptions.fixes = {
+    ignoreImageAnalysis: ["*"],
+    disableStyleSheetsProxy: true,
+  };
+  css`
+    #git-header-nav {
+      background: #000;
+    }
+  `;
+  // darkOptions.fetchMethod = async () => ({ text: async () => "" });
+  // darkOptions = undefined;
+  // css`
+  //   *,
+  //   #git-header-nav {
+  //     background: none;
+  //     color: #fff;
+  //   }
+  //   html,
+  //   body {
+  //     background: #000;
+  //   }
+  // `;
+}
+
 // ithome
 if (host.endsWith(".ithome.com")) {
   darkOptions.sepia = 90;
   css`
     * {
       background: #000;
+    }
+  `;
+}
+
+// cnbeta
+if (host === "www.cnbeta.com.tw") {
+  css`
+    * {
+      animation: none;
+      transition: none;
+    }
+    .cnbeta-side-yellow-title,
+    .cnbeta-side-blue-title,
+    .page-footer {
+      background: none;
     }
   `;
 }
@@ -660,18 +713,6 @@ if (host === "mui.com") {
   `;
 }
 
-// Gitee
-if (host === "gitee.com") {
-  css`
-    #git-header-nav {
-      background-color: #0000;
-    }
-    #git-header-nav * {
-      color: #000;
-    }
-  `;
-}
-
 // Youtube
 if (host.endsWith(".youtube.com")) {
   darkOptions = undefined;
@@ -872,19 +913,17 @@ if (host === "web.telegram.org") {
 }
 
 if (darkOptions) {
+  const run = () => {
+    if (darkOptions.fetchMethod)
+      DarkReader.setFetchMethod(darkOptions.fetchMethod);
+    DarkReader.auto(darkOptions, darkOptions.fixes);
+  };
   if (window.DarkReader) {
-    // unsafeWindow.DarkReader = DarkReader;
-    DarkReader.setFetchMethod(window.fetch); // TODO: just use this anyhow?
-    DarkReader.auto(darkOptions);
-    // setTimeout(() => DarkReader.auto(false), 1000);
+    run();
   } else {
     console.log("[many-mods] start load darkreader by dynamic import");
     const url = `https://registry.npmmirror.com/darkreader/4.9.86/files/darkreader.js`; // same as the `@require` above
-    import(url).then(() => {
-      DarkReader.setFetchMethod(window.fetch); // TODO: just use this anyhow?
-      DarkReader.auto(darkOptions);
-      // setTimeout(() => DarkReader.auto(false), 1000);
-    });
+    import(url).then(() => run());
   }
 }
 
