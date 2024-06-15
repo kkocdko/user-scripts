@@ -2,7 +2,7 @@
 // @name        Many Mods
 // @description Many many small modify for many sites.
 // @namespace   https://greasyfork.org/users/197529
-// @version     2.0.1
+// @version     2.0.2
 // @author      kkocdko
 // @license     Unlicense
 // @match       *://*/*
@@ -142,6 +142,17 @@ const { css, addFloatButton } = {
   },
 };
 
+const afterReady = (f) => {
+  let triggered = false;
+  const listener = () => {
+    if (triggered) return;
+    triggered = true;
+    f();
+  };
+  window.addEventListener("DOMContentLoaded", listener);
+  window.addEventListener("load", listener);
+};
+
 // const globalThis = this.unsafeWindow || this;
 const { host, pathname } = location;
 
@@ -152,7 +163,7 @@ let darkOptions = {
   scrollbarColor: "#666666",
   selectionColor: "#445566",
   contrast: 100,
-  brightness: 150,
+  brightness: 140,
 };
 
 // Google Search
@@ -187,16 +198,25 @@ if (host.endsWith(".ithome.com")) {
   darkOptions.sepia = 90;
 }
 
+// wechat articles
+if (host.endsWith("mp.weixin.qq.com")) {
+  css`
+    #page-content {
+      background: #000;
+    }
+  `;
+}
+
 // bilibili
 if (host.endsWith(".bilibili.com")) {
-  DarkReader.setFetchMethod(window.fetch); // TODO: just use this anyhow?
   css`
     #biliMainHeader,
     #biliMainHeader * {
       transition: none;
       background: #000;
     }
-    .mini-header__logo {
+    .mini-header__logo,
+    .animated-banner {
       display: none;
     }
   `;
@@ -262,13 +282,14 @@ if (host === "www.luogu.com.cn") {
 // V2EX
 if (host === "v2ex.com" || host.endsWith(".v2ex.com")) {
   if (host !== "v2ex.com") {
-    location.host = "v2ex.com";
     css`
       * {
         background: #000;
         visibility: hidden;
       }
     `;
+    window.stop();
+    location.host = "v2ex.com";
     throw new Error("jumped");
   }
   darkOptions = undefined;
@@ -692,7 +713,16 @@ if (
   host === "serverfault.com" ||
   host.endsWith(".stackexchange.com")
 ) {
+  darkOptions = undefined;
+  afterReady(() => {
+    // force enable highcontrast dark theme when not login
+    document.body.classList.add("theme-dark");
+    document.body.classList.add("theme-highcontrast");
+  });
   css`
+    body {
+      background: #000;
+    }
     .js-consent-banner,
     .js-dismissable-hero {
       display: none;
@@ -701,10 +731,10 @@ if (
       position: absolute;
       margin: 0;
       border-top: none;
-      background: #fff;
+      background: none;
     }
     header.js-top-bar * {
-      background: transparent;
+      background: none;
     }
   `;
 }
@@ -789,17 +819,33 @@ if (host === "web.telegram.org") {
       --color-message-reaction-chosen-hover: #0000;
       --color-voice-transcribe-button-own: #0000;
     }
+    .message-content {
+      border: 1px solid #555;
+      background: none;
+    }
+    .chat-list {
+      background: #000;
+    }
+    .Chat {
+      --background-color: #0000;
+    }
+    .Chat.selected .ListItem-button {
+      background-color: rgba(51, 41, 112, 0.8);
+    }
   `;
 }
 
 if (darkOptions) {
   if (window.DarkReader) {
     // unsafeWindow.DarkReader = DarkReader;
+    DarkReader.setFetchMethod(window.fetch); // TODO: just use this anyhow?
     DarkReader.auto(darkOptions);
     // setTimeout(() => DarkReader.auto(false), 1000);
   } else {
+    console.log("[many-mods] start load darkreader by dynamic import");
     const url = `https://registry.npmmirror.com/darkreader/4.9.86/files/darkreader.js`; // same as the `@require` above
     import(url).then(() => {
+      DarkReader.setFetchMethod(window.fetch); // TODO: just use this anyhow?
       DarkReader.auto(darkOptions);
       // setTimeout(() => DarkReader.auto(false), 1000);
     });
