@@ -2,7 +2,7 @@
 // @name        Many Mods
 // @description Many many small modify for many sites.
 // @namespace   https://greasyfork.org/users/197529
-// @version     2.0.4
+// @version     2.0.5
 // @author      kkocdko
 // @license     Unlicense
 // @match       *://*/*
@@ -823,7 +823,6 @@ if (host === "web.telegram.org") {
       --color-reply-own-hover-apple: #0000;
       --color-reply-own-active: #0000;
       --color-reply-own-active-apple: #0000;
-      --color-code: #0000;
       --color-message-reaction-own: #0000;
       --color-message-reaction-hover-own: #0000;
       --color-message-reaction-chosen-hover: #0000;
