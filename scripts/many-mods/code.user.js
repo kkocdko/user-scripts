@@ -2,7 +2,7 @@
 // @name        Many Mods
 // @description Many many small modify for many sites.
 // @namespace   https://greasyfork.org/users/197529
-// @version     2.0.6
+// @version     2.0.7
 // @author      kkocdko
 // @license     Unlicense
 // @match       *://*/*
@@ -113,9 +113,9 @@
 // @exclude-match  *://www.bilibili.com/robots.txt
 // @require     https://registry.npmmirror.com/darkreader/4.9.86/files/darkreader.js
 // @run-at      document-start
-// @inject-into content
 // ==/UserScript==
 
+// @inject-into page
 // @inject-into content // 既要又要问题
 
 // Only contains custom style and other tiny functions that wouldn't shock users
@@ -750,6 +750,7 @@ if (
 }
 
 if (host.endsWith(".zhihu.com")) {
+  // console.log(window.wrappedJSObject)
   Object.defineProperty(globalThis, "Worker", { value: undefined });
   Object.defineProperty(globalThis, "SharedWorker", { value: undefined });
   Object.defineProperty(globalThis, "WebSocket", { value: undefined });
