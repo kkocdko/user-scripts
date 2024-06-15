@@ -2,7 +2,7 @@
 // @name        Many Mods
 // @description Many many small modify for many sites.
 // @namespace   https://greasyfork.org/users/197529
-// @version     2.0.13
+// @version     2.0.14
 // @author      kkocdko
 // @license     Unlicense
 // @match       *://*/*
@@ -91,10 +91,20 @@
 // Only contains custom style and other tiny functions that wouldn't shock users
 
 const { css, addFloatButton } = {
-  css([s]) /* 20230314-2128 */ {
-    document.lastChild.appendChild(
-      document.createElement("style")
-    ).textContent = s.replace(/;/g, "!important;");
+  css([s]) /* 20240616-0739 */ {
+    const el = document.createElement("style");
+    el.textContent = s.replace(/;/g, "!important;");
+    if (document.lastChild) {
+      document.lastChild.appendChild(el);
+      return;
+    }
+    const observer = new MutationObserver(() => {
+      if (document.lastChild) {
+        observer.disconnect();
+        document.lastChild.appendChild(el);
+      }
+    });
+    observer.observe(document, { subtree: true });
   },
   addFloatButton(text, onclick) /* 20220509-1936 */ {
     if (!document.addFloatButton) {
