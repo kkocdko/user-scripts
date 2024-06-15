@@ -2,7 +2,7 @@
 // @name        Many Mods
 // @description Many many small modify for many sites.
 // @namespace   https://greasyfork.org/users/197529
-// @version     2.0.15
+// @version     2.0.16
 // @author      kkocdko
 // @license     Unlicense
 // @match       *://*/*
@@ -90,36 +90,18 @@
 
 // Only contains custom style and other tiny functions that wouldn't shock users
 
-const { css, addFloatButton } = {
-  css([s]) /* 20240616-0739 */ {
-    const el = document.createElement("style");
-    el.textContent = s.replace(/;/g, "!important;");
+const afterEnter = (f) => {
+  if (document.lastChild) {
+    f();
+    return;
+  }
+  const observer = new MutationObserver(() => {
     if (document.lastChild) {
-      document.lastChild.appendChild(el);
-      return;
+      observer.disconnect();
+      f();
     }
-    const observer = new MutationObserver(() => {
-      if (document.lastChild) {
-        observer.disconnect();
-        document.lastChild.appendChild(el);
-      }
-    });
-    observer.observe(document, { childList: true, subtree: false });
-  },
-  addFloatButton(text, onclick) /* 20220509-1936 */ {
-    if (!document.addFloatButton) {
-      const host = document.body.appendChild(document.createElement("div"));
-      const root = host.attachShadow({ mode: "open" });
-      root.innerHTML = `<style>:host{position:fixed;top:4px;left:4px;z-index:2147483647;height:0}#i{display:none}*{float:left;padding:0 1em;margin:4px;font-size:14px;line-height:2em;color:#fff;user-select:none;background:#28e;border:1px solid #fffa;border-radius:8px;transition:.3s}[for]~:active{filter:brightness(1.1);transition:0s}:checked~*{opacity:.3;transform:translateY(-3em)}:checked+*{transform:translateY(3em)}</style><input id=i type=checkbox><label for=i>&zwj;</label>`;
-      document.addFloatButton = (text, onclick) => {
-        const el = document.createElement("label");
-        el.textContent = text;
-        el.addEventListener("click", onclick);
-        return root.appendChild(el);
-      };
-    }
-    return document.addFloatButton(text, onclick);
-  },
+  });
+  observer.observe(document, { childList: true, subtree: false });
 };
 
 const afterReady = (f) => {
@@ -131,6 +113,14 @@ const afterReady = (f) => {
   };
   window.addEventListener("DOMContentLoaded", listener);
   window.addEventListener("load", listener);
+};
+
+const css = ([s]) => {
+  const el = document.createElement("style");
+  el.textContent = s.replace(/;/g, "!important;");
+  afterEnter(() => {
+    document.lastChild.appendChild(el);
+  });
 };
 
 // const globalThis = this.unsafeWindow || this;
@@ -926,11 +916,11 @@ if (darkOptions) {
     DarkReader.auto(darkOptions, darkOptions.fixes);
   };
   if (window.DarkReader) {
-    run();
+    afterEnter(() => run());
   } else {
     console.log("[many-mods] start load darkreader by dynamic import");
     const url = `https://registry.npmmirror.com/darkreader/4.9.86/files/darkreader.js`; // same as the `@require` above
-    import(url).then(() => run());
+    import(url).then(() => afterEnter(() => run()));
   }
 }
 
