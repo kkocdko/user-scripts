@@ -2,7 +2,7 @@
 // @name        Many Mods
 // @description Many many small modify for many sites.
 // @namespace   https://greasyfork.org/users/197529
-// @version     2.0.2
+// @version     2.0.3
 // @author      kkocdko
 // @license     Unlicense
 // @match       *://*/*
@@ -173,9 +173,11 @@ if (host === "www.google.com") {
     html,
     body,
     header,
-    header > *,
-    #main div {
+    header > * {
       background: #000;
+    }
+    #main div {
+      background: none;
     }
   `;
 }
