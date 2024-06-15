@@ -2,12 +2,13 @@
 // @name        Many Mods
 // @description Many many small modify for many sites.
 // @namespace   https://greasyfork.org/users/197529
-// @version     2.0.16
+// @version     2.0.21
 // @author      kkocdko
 // @license     Unlicense
 // @match       *://*/*
 // @exclude-match  *://127.0.0.1:8109/*
 // @exclude-match  *://127.0.0.1:9304/*
+// @exclude-match  *://127.0.0.1:9393/*
 // @exclude-match  *://127.0.0.1:9090/*
 // @exclude-match  *://*@127.0.0.1:9304/*
 // @exclude-match  *://*@47.100.126.230:*/*
@@ -19,8 +20,6 @@
 // @exclude-match  *://caddyserver.com/*
 // @exclude-match  *://godbolt.org/*
 // @exclude-match  *://v0.dev/*
-// @exclude-match  *://github.com/*
-// @exclude-match  *://*.github.com/*
 // @exclude-match  *://*.github.dev/*
 // @exclude-match  *://discord.com/*
 // @exclude-match  *://replit.com/*
@@ -109,8 +108,17 @@ const afterReady = (f) => {
   const listener = () => {
     if (triggered) return;
     triggered = true;
+    window.removeEventListener("DOMContentLoaded", listener);
+    window.removeEventListener("load", listener);
     f();
   };
+  if (
+    document.readyState === "interactive" ||
+    document.readyState === "complete"
+  ) {
+    listener();
+    return;
+  }
   window.addEventListener("DOMContentLoaded", listener);
   window.addEventListener("load", listener);
 };
@@ -132,14 +140,15 @@ let darkOptions = {
   darkSchemeTextColor: "#ffffff",
   scrollbarColor: "#666666",
   selectionColor: "#445566",
-  contrast: 100,
-  brightness: 140,
+  contrast: 115,
+  brightness: 130, // { contrast: 115, brightness: 130 } just got the background color down to #000
   fixes: undefined,
   fetchMethod: window.fetch,
 };
 
 css`
   :root {
+    background: #000000;
     --darkreader-bg--background-color-neutral-subtle: #000000;
     --darkreader-bg--background-color-neutral: #000000;
   }
@@ -167,6 +176,7 @@ if (host === "www.google.com") {
       box-shadow: 0 0 0 1px #777;
     }
   `;
+  // document.querySelector('footer a[href^="/setprefs?"]');
 }
 
 // React Docs
@@ -537,29 +547,43 @@ if (host === "turtle.codemao.cn") {
 
 // GitHub
 if (host === "github.com" || host === "gist.github.com") {
-  (matchMedia("(prefers-color-scheme:dark)").matches ? css : () => {})`
-      body {
-        --color-fg-default: #fff;
-        --color-canvas-default: #000;
-        --color-page-header-bg: #000;
-        --color-canvas-subtle: #000;
-        --color-btn-bg: #000;
-        --color-border-default: #777;
-        --color-btn-border: #777;
-        --color-border-muted: #777;
-        --color-canvas-overlay: #000;
-        --color-header-bg: #000;
-        --color-fg-muted: hsl(212deg 9% 74%);
-        --color-accent-fg: hsl(215deg 56% 66%);
-      }
-      .search-results-page {
-        background: #000;
-      }
-      .search-title,
-      .search-title * {
-        color: #fff;
-      }
-      /*
+  darkOptions = undefined;
+  css`
+    body {
+      --color-fg-default: #fff;
+      --color-canvas-default: #000;
+      --color-page-header-bg: #000;
+      --color-canvas-subtle: #000;
+      --color-btn-bg: #000;
+      --color-border-default: #777;
+      --color-btn-border: #777;
+      --color-border-muted: #777;
+      --color-canvas-overlay: #000;
+      --color-header-bg: #000;
+      --color-fg-muted: hsl(212deg 9% 74%);
+      --color-accent-fg: hsl(215deg 56% 66%);
+    }
+    .search-results-page {
+      background: #000;
+    }
+    .search-title,
+    .search-title * {
+      color: #fff;
+    }
+    .markdown-body .snippet-clipboard-content {
+      background: #000;
+      border: 1px solid var(--borderColor-default);
+    }
+    .markdown-body .snippet-clipboard-content pre {
+      background: none;
+    }
+    .markdown-body :not(pre) > code {
+      border: 1px solid var(--borderColor-default);
+      background: none;
+      padding: 2px 4px;
+    }
+
+    /*
       .js-pick-reaction img {
         display: none;
       }
@@ -567,7 +591,7 @@ if (host === "github.com" || host === "gist.github.com") {
         content: "👍";
       }
       */
-    `;
+  `;
 }
 
 // WeChat Web
@@ -748,6 +772,16 @@ if (host === "tower.im") {
       opacity: 0.7;
       transition: none;
     }
+    * {
+      transition: none;
+    }
+    .workspace .pjax-loading:before {
+      content: "···";
+      animation: none;
+      top: 200px;
+      text-align: center;
+      width: unset;
+    }
   `;
 }
 
@@ -892,6 +926,7 @@ if (host === "web.telegram.org") {
       --color-message-reaction-hover-own: #0000;
       --color-message-reaction-chosen-hover: #0000;
       --color-voice-transcribe-button-own: #0000;
+      --button-primary-bgColor-rest: #09b43add;
     }
     .message-content {
       border: 1px solid #555;
