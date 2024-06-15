@@ -2,7 +2,7 @@
 // @name        Many Mods
 // @description Many many small modify for many sites.
 // @namespace   https://greasyfork.org/users/197529
-// @version     2.0.21
+// @version     2.0.23
 // @author      kkocdko
 // @license     Unlicense
 // @match       *://*/*
@@ -562,6 +562,10 @@ if (host === "github.com" || host === "gist.github.com") {
       --color-header-bg: #000;
       --color-fg-muted: hsl(212deg 9% 74%);
       --color-accent-fg: hsl(215deg 56% 66%);
+      --button-primary-bgColor-rest: #09b43aee;
+      --button-default-bgColor-rest: #000;
+      --bgColor-muted: #000;
+      --bgColor-default: #000;
     }
     .search-results-page {
       background: #000;
@@ -570,11 +574,13 @@ if (host === "github.com" || host === "gist.github.com") {
     .search-title * {
       color: #fff;
     }
-    .markdown-body .snippet-clipboard-content {
+    .markdown-body .snippet-clipboard-content,
+    .markdown-body .highlight {
       background: #000;
       border: 1px solid var(--borderColor-default);
     }
-    .markdown-body .snippet-clipboard-content pre {
+    .markdown-body .snippet-clipboard-content pre,
+    .markdown-body .highlight pre {
       background: none;
     }
     .markdown-body :not(pre) > code {
@@ -582,15 +588,14 @@ if (host === "github.com" || host === "gist.github.com") {
       background: none;
       padding: 2px 4px;
     }
-
     /*
-      .js-pick-reaction img {
-        display: none;
-      }
-      .js-pick-reaction button[value~="THUMBS_UP"] > g-emoji::after {
-        content: "👍";
-      }
-      */
+    .js-pick-reaction img {
+      display: none;
+    }
+    .js-pick-reaction button[value~="THUMBS_UP"] > g-emoji::after {
+      content: "👍";
+    }
+    */
   `;
 }
 
