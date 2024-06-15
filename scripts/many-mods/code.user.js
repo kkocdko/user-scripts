@@ -2,7 +2,7 @@
 // @name        Many Mods
 // @description Many many small modify for many sites.
 // @namespace   https://greasyfork.org/users/197529
-// @version     2.0.10
+// @version     2.0.13
 // @author      kkocdko
 // @license     Unlicense
 // @match       *://*/*
@@ -13,104 +13,72 @@
 // @exclude-match  *://*@47.100.126.230:*/*
 // @exclude-match  *://47.100.126.230:*/*
 // @exclude-match  *://47.114.114.68:13002/*
+// @exclude-match  *://kkocdko.site/toy/*
 // @exclude-match  *://forum.suse.org.cn/*
 // @exclude-match  *://generated.vusercontent.net/*
 // @exclude-match  *://caddyserver.com/*
 // @exclude-match  *://godbolt.org/*
 // @exclude-match  *://v0.dev/*
-// @exclude-match  *://*.atlasos.net/*
-// @exclude-match  *://ariakit.org/*
-// @exclude-match  *://xanmod.org/*
-// @exclude-match  *://without.boats/*
-// @exclude-match  *://mirrors.tuna.tsinghua.edu.cn/*
+// @exclude-match  *://github.com/*
+// @exclude-match  *://*.github.com/*
+// @exclude-match  *://*.github.dev/*
 // @exclude-match  *://discord.com/*
-// @exclude-match  *://ark-ui.com/*
-// @exclude-match  *://sekai.icu/*
-// @exclude-match  *://xdaforums.com/*
 // @exclude-match  *://replit.com/*
-// @exclude-match  *://*.moment.co/*
-// @exclude-match  *://predr.ag/*
-// @exclude-match  *://man.openbsd.org/*
-// @exclude-match  *://vscode.dev/*
+// @exclude-match  *://html5.gamedistribution.com/*
+// @exclude-match  *://skydom.pecpoc.com/*
+// @exclude-match  *://caniuse.com/*
+// @exclude-match  *://developer.mozilla.org/*
+// @exclude-match  *://*.mdn.mozilla.net/*
+// @exclude-match  *://esbuild.github.io/*
+// @exclude-match  *://flutter.github.io/*
+// @exclude-match  *://gallery.flutter.dev/*
+// @exclude-match  *://codesandbox.io/*
+// @exclude-match  *://codepen.io/*
+// @exclude-match  *://doc.rust-lang.org/*
+// @exclude-match  *://rust-lang.github.io/*
+// @exclude-match  *://*.xda-developers.com/*
+// @exclude-match  *://online-go.com/*
+// @exclude-match  *://x.com/*
+// @exclude-match  *://twitter.com/*
+// @exclude-match  *://meet.google.com/*
+// @exclude-match  *://tailwindcss.com/*
+// @exclude-match  *://mui.com/*
+// @exclude-match  *://react.fluentui.dev/*
+// @exclude-match  *://chakra-ui.com/*
+// @exclude-match  *://ui.shadcn.com/*
+// @exclude-match  *://*.radix-ui.com/*
 // @exclude-match  *://*.nextweb.fun/*
 // @exclude-match  *://*.nextchat.dev/*
 // @exclude-match  *://chat-gpt-next-web.vercel.app/*
 // @exclude-match  *://ianlecorbeau.github.io/blog/*
-// @exclude-match  *://netplan.readthedocs.io/*
-// @exclude-match  *://html5.gamedistribution.com/*
-// @exclude-match  *://skydom.pecpoc.com/*
 // @exclude-match  *://*.codeium.com/*
 // @exclude-match  *://*.babylonjs.com/*
-// @exclude-match  *://online-go.com/*
 // @exclude-match  *://*.web.dev/*
-// @exclude-match  *://x.com/*
-// @exclude-match  *://twitter.com/*
-// @exclude-match  *://itsfoss.com/*
-// @exclude-match  *://rust-lang.github.io/*
-// @exclude-match  *://*.go.dev/*
 // @exclude-match  *://oledera.samsungdisplay.com/*
-// @exclude-match  *://obsproject.com/*
-// @exclude-match  *://*.xda-developers.com/*
-// @exclude-match  *://mirrorz.org/*
-// @exclude-match  *://codesandbox.io/*
 // @exclude-match  *://*.lhr.life/*
-// @exclude-match  *://caniuse.com/*
 // @exclude-match  *://*.cdnjs.com/*
 // @exclude-match  *://*.feishu.cn/*
-// @exclude-match  *://slint-ui.com/*
-// @exclude-match  *://www.ffmpeg.org/*
-// @exclude-match  *://ffmpeg.org/*
-// @exclude-match  *://meet.google.com/*
 // @exclude-match  *://nas.iot4im.com:13001/*
 // @exclude-match  *://nas.iot4im.com:14001/*
-// @exclude-match  *://docs.python.org/*
 // @exclude-match  *://*.y8.com/*
-// @exclude-match  *://mirror.nju.edu.cn/*
 // @exclude-match  *://nnethercote.github.io/perf-book/*
 // @exclude-match  *://colab.research.google.com/*
 // @exclude-match  *://danielyxie.github.io/bitburner/*
-// @exclude-match  *://turtle.codemao.cn/*
-// @exclude-match  *://bun.sh/*
 // @exclude-match  *://*.skk.moe/*
 // @exclude-match  *://regex101.com/*
-// @exclude-match  *://react.fluentui.dev/*
-// @exclude-match  *://raw.githubusercontent.com/*
-// @exclude-match  *://codepen.io/*
-// @exclude-match  *://chakra-ui.com/*
-// @exclude-match  *://rcore-os.cn/*
-// @exclude-match  *://www.theseus-os.com/Theseus/book/*
-// @exclude-match  *://ui.shadcn.com/*
-// @exclude-match  *://*.radix-ui.com/*
 // @exclude-match  *://*.js13kgames.com/*
 // @exclude-match  *://esp-rs.github.io/*
 // @exclude-match  *://*.openai.com/*
 // @exclude-match  *://*.curl.se/*
 // @exclude-match  *://*.toolpad.io/*
-// @exclude-match  *://*.tailwindcss.com/*
-// @exclude-match  *://*.tailwindui.com/*
-// @exclude-match  *://*.mui.com/*
-// @exclude-match  *://*.github.com/*
-// @exclude-match  *://*.github.dev/*
-// @exclude-match  *://download-directory.github.io/*
-// @exclude-match  *://developer.mozilla.org/*
-// @exclude-match  *://esbuild.github.io/*
-// @exclude-match  *://flutter.github.io/*
-// @exclude-match  *://gallery.flutter.dev/*
 // @exclude-match  *://happy0316.top/*
 // @exclude-match  *://parceljs.org/*
-// @exclude-match  *://instant.1point3acres.com/*
 // @exclude-match  *://www.webrtc-experiment.com/*
 // @exclude-match  *://*.draw.io/*
 // @exclude-match  *://*.diagrams.net/*
 // @exclude-match  *://live.mdnplay.dev/*
 // @exclude-match  *://*.opensuse.org/*
 // @exclude-match  *://hedzr.com/*
-// @exclude-match  *://*.mdn.mozilla.net/*
-// @exclude-match  *://cdn.jsdelivr.net/*
-// @exclude-match  *://doc.rust-lang.org/*
-// @exclude-match  *://kkocdko.site/toy/*
-// @exclude-match  *://ecs-workbench.aliyun.com/*
-// @exclude-match  *://shapezio.fandom.com/*
 // @exclude-match  *://www.bilibili.com/robots.txt
 // @require     https://registry.npmmirror.com/darkreader/4.9.86/files/darkreader.js
 // @grant       GM_xmlhttpRequest
@@ -169,6 +137,13 @@ let darkOptions = {
   fixes: undefined,
   fetchMethod: window.fetch,
 };
+
+css`
+  :root {
+    --darkreader-bg--background-color-neutral-subtle: #000000;
+    --darkreader-bg--background-color-neutral: #000000;
+  }
+`;
 
 // Google Search
 if (host === "www.google.com") {
@@ -250,6 +225,25 @@ if (host === "gitee.com") {
   //     background: #000;
   //   }
   // `;
+}
+
+// linakesi ci
+if (host === "ci.linakesi.com") {
+  darkOptions.sepia = 90;
+  css`
+    .breadcrumbs__wrapper,
+    .breadcrumbs__wrapper *,
+    .stage-start-time,
+    .stage-start-time *,
+    .cbwf-dialog,
+    .cbwf-dialog * {
+      background: #000;
+      color: #fff;
+    }
+    .stage-wrapper * {
+      text-shadow: none;
+    }
+  `;
 }
 
 // ithome
@@ -804,6 +798,9 @@ if (
     }
     header.js-top-bar * {
       background: none;
+    }
+    .site-header--container {
+      display: none;
     }
   `;
 }
