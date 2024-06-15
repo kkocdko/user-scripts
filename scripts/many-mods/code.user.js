@@ -2,7 +2,7 @@
 // @name        Many Mods
 // @description Many many small modify for many sites.
 // @namespace   https://greasyfork.org/users/197529
-// @version     2.0.14
+// @version     2.0.15
 // @author      kkocdko
 // @license     Unlicense
 // @match       *://*/*
@@ -104,7 +104,7 @@ const { css, addFloatButton } = {
         document.lastChild.appendChild(el);
       }
     });
-    observer.observe(document, { subtree: true });
+    observer.observe(document, { childList: true, subtree: false });
   },
   addFloatButton(text, onclick) /* 20220509-1936 */ {
     if (!document.addFloatButton) {
