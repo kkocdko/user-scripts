@@ -2,7 +2,7 @@
 // @name        Many Mods
 // @description Many many small modify for many sites.
 // @namespace   https://greasyfork.org/users/197529
-// @version     2.0.7
+// @version     2.0.9
 // @author      kkocdko
 // @license     Unlicense
 // @match       *://*/*
@@ -55,7 +55,6 @@
 // @exclude-match  *://codesandbox.io/*
 // @exclude-match  *://*.lhr.life/*
 // @exclude-match  *://caniuse.com/*
-// @exclude-match  *://*.reddit.com/*
 // @exclude-match  *://*.cdnjs.com/*
 // @exclude-match  *://*.feishu.cn/*
 // @exclude-match  *://slint-ui.com/*
@@ -101,6 +100,8 @@
 // @exclude-match  *://parceljs.org/*
 // @exclude-match  *://instant.1point3acres.com/*
 // @exclude-match  *://www.webrtc-experiment.com/*
+// @exclude-match  *://*.draw.io/*
+// @exclude-match  *://*.diagrams.net/*
 // @exclude-match  *://live.mdnplay.dev/*
 // @exclude-match  *://*.opensuse.org/*
 // @exclude-match  *://hedzr.com/*
@@ -203,9 +204,24 @@ if (host === "beta.reactjs.org") {
   `;
 }
 
+// reddit
+if (host === "www.reddit.com") {
+  darkOptions = undefined;
+  css`
+    * {
+      --color-neutral-background: #000;
+    }
+  `;
+}
+
 // ithome
 if (host.endsWith(".ithome.com")) {
   darkOptions.sepia = 90;
+  css`
+    * {
+      background: #000;
+    }
+  `;
 }
 
 // wechat articles
@@ -663,6 +679,8 @@ if (host.endsWith(".youtube.com")) {
   Object.defineProperty(globalThis.navigator, "serviceWorker", {
     value: undefined,
   });
+  // https://greasyfork.org/scripts/457579  使用移动版(平板布局)页面
+  // https://greasyfork.org/scripts/437123  允许后台播放
 }
 
 // Bing Login
@@ -754,6 +772,12 @@ if (host.endsWith(".zhihu.com")) {
   Object.defineProperty(globalThis, "Worker", { value: undefined });
   Object.defineProperty(globalThis, "SharedWorker", { value: undefined });
   Object.defineProperty(globalThis, "WebSocket", { value: undefined });
+  css`
+    .ContentItem-title,
+    .QuestionHeader-title {
+      font-weight: normal;
+    }
+  `;
 }
 
 // For math pages, load KaTeX
