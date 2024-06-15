@@ -2,7 +2,7 @@
 // @name        Many Mods
 // @description Many many small modify for many sites.
 // @namespace   https://greasyfork.org/users/197529
-// @version     2.0.3
+// @version     2.0.4
 // @author      kkocdko
 // @license     Unlicense
 // @match       *://*/*
