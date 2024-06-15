@@ -172,12 +172,20 @@ if (host === "www.google.com") {
   css`
     html,
     body,
-    header,
-    header > * {
+    #tsf *,
+    #searchform,
+    #searchform > * {
       background: #000;
     }
-    #main div {
+    header,
+    header > *,
+    #gsr,
+    #main div,
+    #tsf textarea + * {
       background: none;
+    }
+    #tsf > div:first-child {
+      box-shadow: 0 0 0 1px #777;
     }
   `;
 }
