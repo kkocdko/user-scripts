@@ -2,7 +2,7 @@
 // @name        Many Mods
 // @description Many many small modify for many sites.
 // @namespace   https://greasyfork.org/users/197529
-// @version     2.0.25
+// @version     2.0.26
 // @author      kkocdko
 // @license     Unlicense
 // @match       *://*/*
@@ -176,7 +176,19 @@ if (host === "www.google.com") {
       box-shadow: 0 0 0 1px #777;
     }
   `;
-  // document.querySelector('footer a[href^="/setprefs?"]');
+  const toDarkMode = () => {
+    if (document.querySelector('meta[name="color-scheme"]')) {
+      return true;
+    }
+    const el = document.querySelector(
+      'footer a[href^="/setprefs?"][href*="cs=2"], #appbar a[href^="/setprefs?"][href*="cs=2"]'
+    );
+    if (el) {
+      el?.click();
+      return true;
+    }
+  };
+  afterEnter(() => {}, toDarkMode);
 }
 
 // React Docs
@@ -516,6 +528,9 @@ if (host === "blog.csdn.net") {
     }
     * {
       user-select: unset;
+    }
+    body {
+      background-image: none;
     }
   `;
 }
