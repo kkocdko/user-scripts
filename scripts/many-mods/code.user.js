@@ -952,7 +952,11 @@ if (darkOptions) {
   const run = () => {
     if (darkOptions.fetchMethod)
       DarkReader.setFetchMethod(darkOptions.fetchMethod);
+    // https://github.com/darkreader/darkreader/issues/9567
+    const raf = window.requestAnimationFrame;
+    window.requestAnimationFrame = (f) => setTimeout(f, 700);
     DarkReader.auto(darkOptions, darkOptions.fixes);
+    window.requestAnimationFrame = raf;
   };
   if (window.DarkReader) {
     afterEnter(() => run());
