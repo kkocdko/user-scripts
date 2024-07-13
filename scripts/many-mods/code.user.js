@@ -2,7 +2,7 @@
 // @name        Many Mods
 // @description Many many small modify for many sites.
 // @namespace   https://greasyfork.org/users/197529
-// @version     2.0.23
+// @version     2.0.25
 // @author      kkocdko
 // @license     Unlicense
 // @match       *://*/*
@@ -89,18 +89,18 @@
 
 // Only contains custom style and other tiny functions that wouldn't shock users
 
-const afterEnter = (f) => {
-  if (document.lastChild) {
+const afterEnter = (f, condition = () => document.lastChild) => {
+  if (condition()) {
     f();
     return;
   }
   const observer = new MutationObserver(() => {
-    if (document.lastChild) {
+    if (condition()) {
       observer.disconnect();
       f();
     }
   });
-  observer.observe(document, { childList: true, subtree: false });
+  observer.observe(document, { childList: true, subtree: true });
 };
 
 const afterReady = (f) => {
@@ -286,21 +286,6 @@ if (host.endsWith("mp.weixin.qq.com")) {
   css`
     #page-content {
       background: #000;
-    }
-  `;
-}
-
-// bilibili
-if (host.endsWith(".bilibili.com")) {
-  css`
-    #biliMainHeader,
-    #biliMainHeader * {
-      transition: none;
-      background: #000;
-    }
-    .mini-header__logo,
-    .animated-banner {
-      display: none;
     }
   `;
 }
@@ -740,9 +725,7 @@ if (host === "mui.com") {
 if (host.endsWith(".youtube.com")) {
   darkOptions = undefined;
   // Disable the ServiceWorker to save memory
-  Object.defineProperty(globalThis.navigator, "serviceWorker", {
-    value: undefined,
-  });
+  Object.defineProperty(globalThis.navigator, "serviceWorker", {});
   // https://greasyfork.org/scripts/457579  使用移动版(平板布局)页面
   // https://greasyfork.org/scripts/437123  允许后台播放
 }
@@ -793,6 +776,15 @@ if (host === "tower.im") {
 // Bilibili
 if (host.endsWith(".bilibili.com")) {
   css`
+    #biliMainHeader,
+    #biliMainHeader * {
+      transition: none;
+      background: #000;
+    }
+    .mini-header__logo,
+    .animated-banner {
+      display: none;
+    }
     .bili-mini-mask {
       /*display: none;*/
     }
@@ -815,13 +807,20 @@ if (
   host === "serverfault.com" ||
   host.endsWith(".stackexchange.com")
 ) {
-  darkOptions = undefined;
-  afterReady(() => {
-    // force enable highcontrast dark theme when not login
-    document.body.classList.add("theme-dark");
-    document.body.classList.add("theme-highcontrast");
-  });
+  // darkOptions = undefined;
+  afterEnter(
+    () => {
+      // force enable highcontrast dark theme when not login
+      document.body.classList.add("theme-dark");
+      document.body.classList.add("theme-highcontrast");
+    },
+    () => document?.body?.classList?.add
+  );
   css`
+    * {
+      --theme-post-title-color: #7cbfed;
+      --theme-link-color: #7cbfed;
+    }
     body {
       background: #000;
     }
@@ -846,9 +845,9 @@ if (
 
 if (host.endsWith(".zhihu.com")) {
   // console.log(window.wrappedJSObject)
-  Object.defineProperty(globalThis, "Worker", { value: undefined });
-  Object.defineProperty(globalThis, "SharedWorker", { value: undefined });
-  Object.defineProperty(globalThis, "WebSocket", { value: undefined });
+  Object.defineProperty(globalThis, "Worker", {});
+  Object.defineProperty(globalThis, "SharedWorker", {});
+  Object.defineProperty(globalThis, "WebSocket", {});
   css`
     .ContentItem-title,
     .QuestionHeader-title {
