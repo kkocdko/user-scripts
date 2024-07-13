@@ -2,7 +2,7 @@
 // @name        Many Mods
 // @description Many many small modify for many sites.
 // @namespace   https://greasyfork.org/users/197529
-// @version     2.0.26
+// @version     2.0.27
 // @author      kkocdko
 // @license     Unlicense
 // @match       *://*/*
@@ -89,7 +89,7 @@
 
 // Only contains custom style and other tiny functions that wouldn't shock users
 
-const afterEnter = (f, condition = () => document.lastChild) => {
+const afterEnter = (f, condition = () => document.documentElement) => {
   if (condition()) {
     f();
     return;
@@ -127,7 +127,7 @@ const css = ([s]) => {
   const el = document.createElement("style");
   el.textContent = s.replace(/;/g, "!important;");
   afterEnter(() => {
-    document.lastChild.appendChild(el);
+    document.documentElement.appendChild(el);
   });
 };
 
@@ -181,7 +181,7 @@ if (host === "www.google.com") {
       return true;
     }
     const el = document.querySelector(
-      'footer a[href^="/setprefs?"][href*="cs=2"], #appbar a[href^="/setprefs?"][href*="cs=2"]'
+      'footer a[href^="/setprefs?"][href*="cs=2"], #appbar a[href^="/setprefs?"][href*="cs=2"], #navd a[href^="/setprefs?"][href*="cs=2"]'
     );
     if (el) {
       el?.click();
