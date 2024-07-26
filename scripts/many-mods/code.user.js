@@ -2,7 +2,7 @@
 // @name        Many Mods
 // @description Many many small modify for many sites.
 // @namespace   https://greasyfork.org/users/197529
-// @version     2.0.30
+// @version     2.0.31
 // @author      kkocdko
 // @license     Unlicense
 // @match       *://*/*
@@ -302,6 +302,11 @@ if (host === "m.nmc.cn") {
     header {
       background: #000;
       background-image: none;
+    }
+    .wrapper {
+      overflow-x: scroll;
+      overflow-x: overlay;
+      -webkit-user-drag: unset;
     }
   `;
 }
