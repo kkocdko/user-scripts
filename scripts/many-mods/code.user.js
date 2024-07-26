@@ -2,7 +2,7 @@
 // @name        Many Mods
 // @description Many many small modify for many sites.
 // @namespace   https://greasyfork.org/users/197529
-// @version     2.0.27
+// @version     2.0.29
 // @author      kkocdko
 // @license     Unlicense
 // @match       *://*/*
@@ -258,12 +258,57 @@ if (host === "ci.linakesi.com") {
     .stage-start-time,
     .stage-start-time *,
     .cbwf-dialog,
-    .cbwf-dialog * {
+    .cbwf-dialog *,
+    .jenkins-config-widgets,
+    .jenkins-config {
       background: #000;
       color: #fff;
     }
     .stage-wrapper * {
       text-shadow: none;
+    }
+  `;
+}
+
+if (host === "m.weather.com.cn") {
+  // darkOptions = undefined;
+  darkOptions.fetchMethod = (input, init) => {
+    const extName = new URL(input).pathname.split(".").pop();
+    if (
+      extName === "jpg" ||
+      extName === "jpeg" ||
+      extName === "png" ||
+      extName === "webp" ||
+      extName === "avif"
+    ) {
+      return;
+    }
+    if (self.GM_xmlhttpRequest) {
+      return new Promise((resolve, reject) => {
+        const onload = (e) => {
+          resolve({ text: () => e.responseText });
+        };
+        GM_xmlhttpRequest({ url: input, onload, onerror: reject });
+      });
+    } else {
+      return window.fetch(input, init);
+    }
+  };
+  css`
+    body,
+    .ebox,
+    .ebox > .npage1,
+    .ebox > .npage1 > * {
+      background-image: none;
+      background: #000;
+      background-color: #000;
+    }
+    .cedao img {
+      filter: invert(1);
+    }
+    .guanggao,
+    .closeAd ~ * {
+      display: none;
     }
   `;
 }
@@ -863,6 +908,7 @@ if (host.endsWith(".zhihu.com")) {
   Object.defineProperty(globalThis, "Worker", {});
   Object.defineProperty(globalThis, "SharedWorker", {});
   Object.defineProperty(globalThis, "WebSocket", {});
+  Object.defineProperty(globalThis.indexedDB, "open", {});
   css`
     .ContentItem-title,
     .QuestionHeader-title {
@@ -928,6 +974,7 @@ if (host === "web.telegram.org") {
   darkOptions = undefined;
   css`
     html {
+      --color-background: #000;
       --color-background-own: rgb(51, 41, 112);
       --color-background-own-apple: rgb(51, 41, 112);
       --color-background-own-selected: rgb(51, 41, 112);
