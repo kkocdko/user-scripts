@@ -2,7 +2,7 @@
 // @name        Many Mods
 // @description Many many small modify for many sites.
 // @namespace   https://greasyfork.org/users/197529
-// @version     2.0.29
+// @version     2.0.30
 // @author      kkocdko
 // @license     Unlicense
 // @match       *://*/*
@@ -270,8 +270,9 @@ if (host === "ci.linakesi.com") {
   `;
 }
 
-if (host === "m.weather.com.cn") {
+if (host === "m.nmc.cn") {
   // darkOptions = undefined;
+  /*
   darkOptions.fetchMethod = (input, init) => {
     const extName = new URL(input).pathname.split(".").pop();
     if (
@@ -294,21 +295,13 @@ if (host === "m.weather.com.cn") {
       return window.fetch(input, init);
     }
   };
+  */
   css`
-    body,
-    .ebox,
-    .ebox > .npage1,
-    .ebox > .npage1 > * {
-      background-image: none;
+    .weather-real,
+    .am-header,
+    header {
       background: #000;
-      background-color: #000;
-    }
-    .cedao img {
-      filter: invert(1);
-    }
-    .guanggao,
-    .closeAd ~ * {
-      display: none;
+      background-image: none;
     }
   `;
 }
