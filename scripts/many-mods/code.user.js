@@ -2,7 +2,7 @@
 // @name        Many Mods
 // @description Many many small modify for many sites.
 // @namespace   https://greasyfork.org/users/197529
-// @version     2.0.35
+// @version     2.0.36
 // @author      kkocdko
 // @license     Unlicense
 // @match       *://*/*
@@ -88,6 +88,41 @@
 // @inject-into content // 既要又要问题
 
 // Only contains custom style and other tiny functions that wouldn't shock users
+
+const fetchX = (url) => {
+  return new Promise((resolve) => {
+    GM_xmlhttpRequest({
+      url,
+      onload: (response) => {
+        resolve({ text: async () => response.response });
+      },
+    });
+  });
+  /*
+  darkOptions.fetchMethod = (input, init) => {
+    const extName = new URL(input).pathname.split(".").pop();
+    if (
+      extName === "jpg" ||
+      extName === "jpeg" ||
+      extName === "png" ||
+      extName === "webp" ||
+      extName === "avif"
+    ) {
+      return;
+    }
+    if (self.GM_xmlhttpRequest) {
+      return new Promise((resolve, reject) => {
+        const onload = (e) => {
+          resolve({ text: () => e.responseText });
+        };
+        GM_xmlhttpRequest({ url: input, onload, onerror: reject });
+      });
+    } else {
+      return window.fetch(input, init);
+    }
+  };
+  */
+};
 
 const afterEnter = (f, condition = () => document.documentElement) => {
   if (condition()) {
@@ -214,17 +249,14 @@ if (host === "www.reddit.com") {
   `;
 }
 
+// npm
+if (host === "www.npmjs.com") {
+  darkOptions.fetchMethod = fetchX;
+}
+
 // gitee
 if (host === "gitee.com") {
-  darkOptions.fetchMethod = (url) =>
-    new Promise((resolve) => {
-      GM_xmlhttpRequest({
-        url,
-        onload: (response) => {
-          resolve({ text: async () => response.response });
-        },
-      });
-    });
+  darkOptions.fetchMethod = fetchX;
   darkOptions.fixes = {
     ignoreImageAnalysis: ["*"],
     disableStyleSheetsProxy: true,
@@ -271,31 +303,6 @@ if (host === "ci.linakesi.com") {
 }
 
 if (host === "m.nmc.cn") {
-  // darkOptions = undefined;
-  /*
-  darkOptions.fetchMethod = (input, init) => {
-    const extName = new URL(input).pathname.split(".").pop();
-    if (
-      extName === "jpg" ||
-      extName === "jpeg" ||
-      extName === "png" ||
-      extName === "webp" ||
-      extName === "avif"
-    ) {
-      return;
-    }
-    if (self.GM_xmlhttpRequest) {
-      return new Promise((resolve, reject) => {
-        const onload = (e) => {
-          resolve({ text: () => e.responseText });
-        };
-        GM_xmlhttpRequest({ url: input, onload, onerror: reject });
-      });
-    } else {
-      return window.fetch(input, init);
-    }
-  };
-  */
   css`
     .weather-real,
     .am-header,
