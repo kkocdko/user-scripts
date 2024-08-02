@@ -2,7 +2,7 @@
 // @name        Many Mods
 // @description Many many small modify for many sites.
 // @namespace   https://greasyfork.org/users/197529
-// @version     2.0.34
+// @version     2.0.35
 // @author      kkocdko
 // @license     Unlicense
 // @match       *://*/*
@@ -596,7 +596,7 @@ if (host === "turtle.codemao.cn") {
 if (host === "github.com" || host === "gist.github.com") {
   darkOptions = undefined;
   css`
-    body {
+    html {
       --color-fg-default: #fff;
       --color-canvas-default: #000;
       --color-page-header-bg: #000;
@@ -613,36 +613,8 @@ if (host === "github.com" || host === "gist.github.com") {
       --button-default-bgColor-rest: #000;
       --bgColor-muted: #000;
       --bgColor-default: #000;
+      --bgColor-inset: #000;
     }
-    .search-results-page {
-      background: #000;
-    }
-    .search-title,
-    .search-title * {
-      color: #fff;
-    }
-    .markdown-body .snippet-clipboard-content,
-    .markdown-body .highlight {
-      background: #000;
-      border: 1px solid var(--borderColor-default);
-    }
-    .markdown-body .snippet-clipboard-content pre,
-    .markdown-body .highlight pre {
-      background: none;
-    }
-    .markdown-body :not(pre) > code {
-      border: 1px solid var(--borderColor-default);
-      background: none;
-      padding: 2px 4px;
-    }
-    /*
-    .js-pick-reaction img {
-      display: none;
-    }
-    .js-pick-reaction button[value~="THUMBS_UP"] > g-emoji::after {
-      content: "👍";
-    }
-    */
   `;
 }
 
@@ -672,30 +644,6 @@ if (host === "wx.qq.com" || host === "wx2.qq.com") {
 
     .nav_view {
       top: 154px;
-    }
-  `;
-}
-
-// Deepl
-if (host === "www.deepl.com") {
-  css`
-    [data-testid="dl-header"],
-    [data-testid="dl-footer"],
-    [data-testid="write-promo-banner"],
-    [data-testid="app_banner_content"],
-    [data-testid="translator-character-limit-proad"],
-    [aria-labelledby="customer-quotes-heading"],
-    [aria-labelledby="customer-quotes-heading"] ~ * {
-      display: none;
-    }
-    :is(#dl_translator, [data-testid="translator"]) {
-      &,
-      & > *,
-      & > * > * {
-        padding: 0;
-        margin: 0;
-        max-width: unset;
-      }
     }
   `;
 }
@@ -788,7 +736,7 @@ if (host.endsWith(".youtube.com")) {
   darkOptions = undefined;
   // Disable the ServiceWorker to save memory
   Object.defineProperty(globalThis.navigator, "serviceWorker", {});
-  // https://greasyfork.org/scripts/457579  使用移动版(平板布局)页面
+  // https://greasyfork.org/scripts/457579  使用移动版(平板布局)页面  https://m.youtube.com/?persist_app=1&app=m
   // https://greasyfork.org/scripts/437123  允许后台播放
 }
 
@@ -911,47 +859,6 @@ if (host.endsWith(".zhihu.com")) {
   Object.defineProperty(globalThis, "SharedWorker", {});
   Object.defineProperty(globalThis, "WebSocket", {});
   Object.defineProperty(globalThis.indexedDB, "open", {});
-  if (
-    document.documentElement.dataset.android ||
-    document.documentElement.dataset.ios
-  ) {
-    darkOptions = undefined;
-    css`
-      body {
-        overflow-y: scroll;
-        background-color: #000;
-      }
-      .ContentItem-title,
-      .QuestionHeader-title {
-        font-weight: normal;
-      }
-      .MobileModal-wrapper,
-      .OpenInAppButton,
-      .Question-mainEntity > :not(meta ~ *),
-      .App-main > div:first-child > :not(.TopstoryMain) {
-        display: none;
-      }
-      .QuestionStatus + .Card::before {
-        border: none;
-      }
-      body,
-      html,
-      div,
-      p {
-        background-color: #000;
-      }
-      * {
-        color: #fff;
-      }
-      .List-item + .List-item:after,
-      .VoteButton {
-        border-color: #7777;
-      }
-      .Button.ContentItem-more {
-        opacity: 0.5;
-      }
-    `;
-  }
 }
 
 // For math pages, load KaTeX
