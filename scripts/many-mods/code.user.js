@@ -2,7 +2,7 @@
 // @name        Many Mods
 // @description Many many small modify for many sites.
 // @namespace   https://greasyfork.org/users/197529
-// @version     2.0.33
+// @version     2.0.34
 // @author      kkocdko
 // @license     Unlicense
 // @match       *://*/*
@@ -911,12 +911,47 @@ if (host.endsWith(".zhihu.com")) {
   Object.defineProperty(globalThis, "SharedWorker", {});
   Object.defineProperty(globalThis, "WebSocket", {});
   Object.defineProperty(globalThis.indexedDB, "open", {});
-  css`
-    .ContentItem-title,
-    .QuestionHeader-title {
-      font-weight: normal;
-    }
-  `;
+  if (
+    document.documentElement.dataset.android ||
+    document.documentElement.dataset.ios
+  ) {
+    darkOptions = undefined;
+    css`
+      body {
+        overflow-y: scroll;
+        background-color: #000;
+      }
+      .ContentItem-title,
+      .QuestionHeader-title {
+        font-weight: normal;
+      }
+      .MobileModal-wrapper,
+      .OpenInAppButton,
+      .Question-mainEntity > :not(meta ~ *),
+      .App-main > div:first-child > :not(.TopstoryMain) {
+        display: none;
+      }
+      .QuestionStatus + .Card::before {
+        border: none;
+      }
+      body,
+      html,
+      div,
+      p {
+        background-color: #000;
+      }
+      * {
+        color: #fff;
+      }
+      .List-item + .List-item:after,
+      .VoteButton {
+        border-color: #7777;
+      }
+      .Button.ContentItem-more {
+        opacity: 0.5;
+      }
+    `;
+  }
 }
 
 // For math pages, load KaTeX
