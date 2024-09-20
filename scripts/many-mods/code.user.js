@@ -2,7 +2,7 @@
 // @name        Many Mods
 // @description Many many small modify for many sites.
 // @namespace   https://greasyfork.org/users/197529
-// @version     2.0.36
+// @version     2.0.44
 // @author      kkocdko
 // @license     Unlicense
 // @match       *://*/*
@@ -14,7 +14,6 @@
 // @exclude-match  *://*@47.100.126.230:*/*
 // @exclude-match  *://47.100.126.230:*/*
 // @exclude-match  *://47.114.114.68:13002/*
-// @exclude-match  *://kkocdko.site/toy/*
 // @exclude-match  *://forum.suse.org.cn/*
 // @exclude-match  *://generated.vusercontent.net/*
 // @exclude-match  *://caddyserver.com/*
@@ -46,8 +45,6 @@
 // @exclude-match  *://chakra-ui.com/*
 // @exclude-match  *://ui.shadcn.com/*
 // @exclude-match  *://*.radix-ui.com/*
-// @exclude-match  *://*.nextweb.fun/*
-// @exclude-match  *://*.nextchat.dev/*
 // @exclude-match  *://chat-gpt-next-web.vercel.app/*
 // @exclude-match  *://ianlecorbeau.github.io/blog/*
 // @exclude-match  *://*.codeium.com/*
@@ -72,14 +69,12 @@
 // @exclude-match  *://*.toolpad.io/*
 // @exclude-match  *://happy0316.top/*
 // @exclude-match  *://parceljs.org/*
-// @exclude-match  *://www.webrtc-experiment.com/*
 // @exclude-match  *://*.draw.io/*
 // @exclude-match  *://*.diagrams.net/*
 // @exclude-match  *://live.mdnplay.dev/*
 // @exclude-match  *://*.opensuse.org/*
 // @exclude-match  *://hedzr.com/*
-// @exclude-match  *://www.bilibili.com/robots.txt
-// @require     https://registry.npmmirror.com/darkreader/4.9.86/files/darkreader.js
+// @require     https://registry.npmmirror.com/darkreader/4.9.92/files/darkreader.js
 // @grant       GM_xmlhttpRequest
 // @run-at      document-start
 // ==/UserScript==
@@ -88,41 +83,6 @@
 // @inject-into content // 既要又要问题
 
 // Only contains custom style and other tiny functions that wouldn't shock users
-
-const fetchX = (url) => {
-  return new Promise((resolve) => {
-    GM_xmlhttpRequest({
-      url,
-      onload: (response) => {
-        resolve({ text: async () => response.response });
-      },
-    });
-  });
-  /*
-  darkOptions.fetchMethod = (input, init) => {
-    const extName = new URL(input).pathname.split(".").pop();
-    if (
-      extName === "jpg" ||
-      extName === "jpeg" ||
-      extName === "png" ||
-      extName === "webp" ||
-      extName === "avif"
-    ) {
-      return;
-    }
-    if (self.GM_xmlhttpRequest) {
-      return new Promise((resolve, reject) => {
-        const onload = (e) => {
-          resolve({ text: () => e.responseText });
-        };
-        GM_xmlhttpRequest({ url: input, onload, onerror: reject });
-      });
-    } else {
-      return window.fetch(input, init);
-    }
-  };
-  */
-};
 
 const afterEnter = (f, condition = () => document.documentElement) => {
   if (condition()) {
@@ -178,7 +138,21 @@ let darkOptions = {
   contrast: 115,
   brightness: 130, // { contrast: 115, brightness: 130 } just got the background color down to #000
   fixes: undefined,
-  fetchMethod: window.fetch,
+  fetchMethod: (input, init) => {
+    if (!self.GM_xmlhttpRequest) return window.fetch(input, init);
+    return new Promise((resolve, reject) => {
+      GM_xmlhttpRequest({
+        url: input,
+        onerror: reject,
+        onload: (response) => {
+          resolve({
+            text: async () => response.responseText,
+            blob: async () => response.response,
+          });
+        },
+      });
+    });
+  },
 };
 
 css`
@@ -249,14 +223,8 @@ if (host === "www.reddit.com") {
   `;
 }
 
-// npm
-if (host === "www.npmjs.com") {
-  darkOptions.fetchMethod = fetchX;
-}
-
 // gitee
 if (host === "gitee.com") {
-  darkOptions.fetchMethod = fetchX;
   darkOptions.fixes = {
     ignoreImageAnalysis: ["*"],
     disableStyleSheetsProxy: true,
@@ -283,7 +251,7 @@ if (host === "gitee.com") {
 
 // linakesi ci
 if (host === "ci.linakesi.com") {
-  darkOptions.sepia = 90;
+  darkOptions.sepia = 10;
   css`
     .breadcrumbs__wrapper,
     .breadcrumbs__wrapper *,
@@ -354,6 +322,25 @@ if (host.endsWith("mp.weixin.qq.com")) {
       background: #000;
     }
   `;
+}
+
+// ChatGPT
+if (host === "chatgpt.com") {
+  darkOptions = undefined;
+  afterReady(() => {
+    setTimeout(() => {
+      css`
+        html {
+          --main-surface-primary: #000;
+        }
+      `;
+    }, 1000);
+  });
+}
+
+// Doubao (bytedance)
+if (host.endsWith(".doubao.com")) {
+  Object.defineProperty(globalThis.navigator, "serviceWorker", {}); // Disable the ServiceWorker to save cache storate
 }
 
 // Katex
@@ -741,8 +728,7 @@ if (host === "mui.com") {
 // Youtube
 if (host.endsWith(".youtube.com")) {
   darkOptions = undefined;
-  // Disable the ServiceWorker to save memory
-  Object.defineProperty(globalThis.navigator, "serviceWorker", {});
+  Object.defineProperty(globalThis.navigator, "serviceWorker", {}); // Disable the ServiceWorker to save memory
   // https://greasyfork.org/scripts/457579  使用移动版(平板布局)页面  https://m.youtube.com/?persist_app=1&app=m
   // https://greasyfork.org/scripts/437123  允许后台播放
 }
@@ -766,6 +752,7 @@ if (host === "tower.im") {
       font-weight: normal;
       transition: none;
     }
+    .promotion-banner-link,
     #nav-upgrade {
       display: none;
     }
@@ -792,6 +779,8 @@ if (host === "tower.im") {
 
 // Bilibili
 if (host.endsWith(".bilibili.com")) {
+  Object.defineProperty(globalThis.indexedDB, "open", {}); // 因为逼站的前端是傻逼
+  Object.defineProperty(globalThis.navigator, "serviceWorker", {}); // Disable the ServiceWorker to save memory
   css`
     #biliMainHeader,
     #biliMainHeader * {
@@ -812,8 +801,20 @@ if (host.endsWith(".bilibili.com")) {
     .m-video-player {
       position: relative;
     }
+    #submit-video .cover {
+      pointer-events: none;
+    }
   `;
-  Object.defineProperty(globalThis.indexedDB, "open", {});
+  // TODO: 在搜索页面等页面添加 在嵌入播放器打开 的选项？
+  if (pathname === "/blackboard/webplayer/mbplayer.html") {
+    if (new URLSearchParams(location.hash.slice(1)).has("no-dm")) {
+      css`
+        .gsl-dm {
+          display: none;
+        }
+      `;
+    }
+  }
 }
 
 // Stack Overflow
@@ -862,10 +863,18 @@ if (
 
 if (host.endsWith(".zhihu.com")) {
   // console.log(window.wrappedJSObject)
+  // 因为知乎的前端是傻逼
+  Object.defineProperty(globalThis.navigator, "serviceWorker", {});
   Object.defineProperty(globalThis, "Worker", {});
   Object.defineProperty(globalThis, "SharedWorker", {});
   Object.defineProperty(globalThis, "WebSocket", {});
   Object.defineProperty(globalThis.indexedDB, "open", {});
+  css`
+    .ContentItem-title,
+    .QuestionHeader-title {
+      font-weight: normal;
+    }
+  `;
 }
 
 // For math pages, load KaTeX
