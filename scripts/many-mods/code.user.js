@@ -2,7 +2,7 @@
 // @name        Many Mods
 // @description Many many small modify for many sites.
 // @namespace   https://greasyfork.org/users/197529
-// @version     2.0.44
+// @version     2.0.46
 // @author      kkocdko
 // @license     Unlicense
 // @match       *://*/*
@@ -24,6 +24,7 @@
 // @exclude-match  *://replit.com/*
 // @exclude-match  *://html5.gamedistribution.com/*
 // @exclude-match  *://skydom.pecpoc.com/*
+// @exclude-match  *://material.angular.io/*
 // @exclude-match  *://caniuse.com/*
 // @exclude-match  *://developer.mozilla.org/*
 // @exclude-match  *://*.mdn.mozilla.net/*
@@ -64,7 +65,6 @@
 // @exclude-match  *://regex101.com/*
 // @exclude-match  *://*.js13kgames.com/*
 // @exclude-match  *://esp-rs.github.io/*
-// @exclude-match  *://*.openai.com/*
 // @exclude-match  *://*.curl.se/*
 // @exclude-match  *://*.toolpad.io/*
 // @exclude-match  *://happy0316.top/*
@@ -825,7 +825,7 @@ if (
   host === "serverfault.com" ||
   host.endsWith(".stackexchange.com")
 ) {
-  // darkOptions = undefined;
+  darkOptions = undefined;
   afterEnter(
     () => {
       // force enable highcontrast dark theme when not login
@@ -839,8 +839,10 @@ if (
       --theme-post-title-color: #7cbfed;
       --theme-link-color: #7cbfed;
     }
+    #question-header a[href="/questions/ask"],
     body {
       background: #000;
+      color: #fff;
     }
     .js-consent-banner,
     .js-dismissable-hero {
@@ -857,6 +859,10 @@ if (
     }
     .site-header--container {
       display: none;
+    }
+    .s-sidebarwidget,
+    .s-sidebarwidget * {
+      background: none;
     }
   `;
 }
@@ -904,6 +910,23 @@ if (
   // https://zhuanlan.zhihu.com/p/429815465
   // https://zhuanlan.zhihu.com/p/557873619
   // https://www.cnblogs.com/Paranoid5/p/15112393.html
+}
+
+if (host === "leetcode.com" || host === "leetcode.cn") {
+  Object.defineProperty(globalThis.navigator, "serviceWorker", {});
+  Object.defineProperty(globalThis, "Worker", {});
+  darkOptions = undefined;
+  css`
+    .flexlayout__layout,
+    .flexlayout__layout * {
+      background-color: #000;
+    }
+    .flexlayout__layout code,
+    .flexlayout__layout pre {
+      color: unset;
+      font-family: monospace;
+    }
+  `;
 }
 
 if (host === "registry.npmmirror.com") {
