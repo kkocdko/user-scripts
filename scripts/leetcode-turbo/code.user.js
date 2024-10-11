@@ -2,48 +2,65 @@
 // @name        LeetCode Turbo
 // @description Replace monaco with vanilla textarea.
 // @namespace   https://greasyfork.org/users/197529
-// @version     0.1.4
+// @version     0.2.1
 // @author      kkocdko
 // @license     Unlicense
 // @match       *://leetcode.com/problems/*
 // @match       *://leetcode.cn/problems/*
 // @run-at      document-start
 // ==/UserScript==
-"use strict";
 
 const globalThis = this.unsafeWindow || this;
-const originFetch = globalThis.fetch;
-const textarea = document.createElement("textarea");
-textarea.style =
-  "font-family: monospace; height: 100%; width: 100%; padding: 6px 10px; white-space: pre; outline: none;";
-const replaceEditorTimer = setInterval(() => {
-  const el = document.querySelector("#editor");
-  if (el) el.replaceWith(textarea), clearInterval(replaceEditorTimer);
-}, 500);
+globalThis.requestAnimationFrame = () => {}; // just ignore the requestAnimationFrame is ok?
+const fetch = globalThis.fetch;
+// Object.defineProperties(globalThis, { gio: { get: () => ({}), set() {} } }); // block the https://github.com/syt123450/giojs
 globalThis.fetch = (input, init) => {
   if (input?.includes("/lc-monaco/") || input?.includes("/monaco-tm/"))
     throw Error("Monaco editor blocked.");
   if (input?.endsWith("/submit") || input?.endsWith("/submit/"))
     init.body = JSON.stringify({
       ...JSON.parse(init.body),
-      typed_code: textarea.value,
+      lang: lang.value,
+      typed_code: editor.value,
     });
-  return originFetch(input, init);
+  return fetch(input, init);
 };
-fetch("https://leetcode.cn/graphql/", {
+const question = fetch("/graphql/", {
   method: "POST",
   headers: { "content-type": "application/json" },
   body: JSON.stringify({
     operationName: "questionEditorData",
     variables: { titleSlug: location.pathname.split("/")[2] },
-    query:
-      "query questionEditorData($titleSlug: String!) { question(titleSlug: $titleSlug) { codeSnippets { langSlug code } } }",
+    query: `query questionEditorData($titleSlug: String!) { question(titleSlug: $titleSlug) { codeSnippets { langSlug code } } }`,
   }),
-}).then(async (v) => {
-  const snippets = (await v.json()).data.question.codeSnippets;
-  textarea.value = snippets.find((v) => v.langSlug == "cpp").code;
-});
-globalThis.requestAnimationFrame = () => {}; // just ignore the requestAnimationFrame is ok?
+}).then((v) => v.json());
+const reloadSnippets = async () => {
+  const snippets = (await question).data.question.codeSnippets;
+  for (const v of snippets)
+    lang.appendChild(document.createElement("option")).textContent = v.langSlug;
+  lang.value = localStorage.codeLang || "cpp";
+  editor.value = snippets.find((v) => v.langSlug === lang.value).code;
+};
+const lang = document.createElement("select");
+lang.style = `font: 13px / 1.3 monospace; min-width: 5em; top: -29px; left: 6em; position: absolute; border: 1px solid #7778`;
+lang.onchange = (e) => {
+  if (!confirm("will OVERWRITE the content in editor, continue?"))
+    return e.preventDefault();
+  localStorage.codeLang = lang.value;
+  reloadSnippets();
+};
+const editor = document.createElement("textarea");
+editor.spellcheck = false;
+editor.style = `font: 13px / 1.3 monospace; height: 100%; width: 100%; padding: 6px; white-space: pre; outline: none`;
+const replaceEditorTimer = setInterval(() => {
+  const el = document.querySelector("#editor");
+  if (!el) return;
+  clearInterval(replaceEditorTimer);
+  el.replaceWith(editor);
+  editor.parentNode.insertBefore(lang, editor);
+  editor.parentNode.style.overflow = "initial";
+}, 200);
+reloadSnippets();
 
 // make a LRU cache for getComputedStyle
 /*
