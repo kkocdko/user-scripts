@@ -2,7 +2,7 @@
 // @name        Many Mods
 // @description Many many small modify for many sites.
 // @namespace   https://greasyfork.org/users/197529
-// @version     2.0.46
+// @version     2.0.48
 // @author      kkocdko
 // @license     Unlicense
 // @match       *://*/*
@@ -729,6 +729,15 @@ if (host === "mui.com") {
 if (host.endsWith(".youtube.com")) {
   darkOptions = undefined;
   Object.defineProperty(globalThis.navigator, "serviceWorker", {}); // Disable the ServiceWorker to save memory
+  css`
+    /* place the nerd info box to the bottom */
+    .ytp-sfn {
+      position: fixed;
+      bottom: 0px;
+      top: unset;
+      left: 0;
+    }
+  `;
   // https://greasyfork.org/scripts/457579  使用移动版(平板布局)页面  https://m.youtube.com/?persist_app=1&app=m
   // https://greasyfork.org/scripts/437123  允许后台播放
 }
@@ -989,6 +998,9 @@ if (host === "web.telegram.org") {
     }
     .Chat.selected .ListItem-button {
       background-color: rgba(51, 41, 112, 0.8);
+    }
+    .WebPage .small-image .full-media {
+      object-fit: contain; /* it was "cover" and my images was cropped */
     }
   `;
 }
