@@ -2,18 +2,15 @@
 // @name        Many Mods
 // @description Many many small modify for many sites.
 // @namespace   https://greasyfork.org/users/197529
-// @version     2.0.51
+// @version     2.0.52
 // @author      kkocdko
 // @license     Unlicense
 // @match       *://*/*
 // @exclude-match  *://127.0.0.1:8109/*
-// @exclude-match  *://127.0.0.1:9304/*
 // @exclude-match  *://127.0.0.1:9393/*
 // @exclude-match  *://127.0.0.1:9090/*
-// @exclude-match  *://*@127.0.0.1:9304/*
 // @exclude-match  *://*@47.100.126.230:*/*
 // @exclude-match  *://47.100.126.230:*/*
-// @exclude-match  *://47.114.114.68:13002/*
 // @exclude-match  *://forum.suse.org.cn/*
 // @exclude-match  *://gemini.google.com/*
 // @exclude-match  *://generated.vusercontent.net/*
@@ -47,7 +44,6 @@
 // @exclude-match  *://chakra-ui.com/*
 // @exclude-match  *://ui.shadcn.com/*
 // @exclude-match  *://*.radix-ui.com/*
-// @exclude-match  *://chat-gpt-next-web.vercel.app/*
 // @exclude-match  *://ianlecorbeau.github.io/blog/*
 // @exclude-match  *://*.codeium.com/*
 // @exclude-match  *://*.babylonjs.com/*
@@ -56,8 +52,6 @@
 // @exclude-match  *://*.lhr.life/*
 // @exclude-match  *://*.cdnjs.com/*
 // @exclude-match  *://*.feishu.cn/*
-// @exclude-match  *://nas.iot4im.com:13001/*
-// @exclude-match  *://nas.iot4im.com:14001/*
 // @exclude-match  *://*.y8.com/*
 // @exclude-match  *://nnethercote.github.io/perf-book/*
 // @exclude-match  *://colab.research.google.com/*
@@ -78,6 +72,7 @@
 // @require     https://registry.npmmirror.com/darkreader/4.9.96/files/darkreader.js
 // @grant       GM_xmlhttpRequest
 // @run-at      document-start
+// @inject-into content
 // ==/UserScript==
 
 // @inject-into page
@@ -327,16 +322,6 @@ if (host === "chatgpt.com") {
 // Doubao (bytedance)
 if (host.endsWith(".doubao.com")) {
   Object.defineProperty(globalThis.navigator, "serviceWorker", {}); // Disable the ServiceWorker to save cache storate
-  // darkOptions = undefined;
-  // css`
-  //   html {
-  //     background: #000;
-  //   }
-  //   *,#guidance_groups *,* * {
-  //     color: #fff;
-  //     background: none;
-  //   }
-  // `;
 }
 
 // Katex
@@ -463,15 +448,6 @@ if (host === "rcore-os.github.io" || host === "rcore-os.cn") {
       text-decoration: none;
     }
   `;
-  /*
-    *, *>*, ::before, ::after,.md-header,.md-main,.md-nav,.md-nav>*,.md-nav__item { background: #000;color:#fff; }
-    .utterances-frame {     filter: invert(1);
-        background: #fff;}
-        .highlight .hll,.highlight .hll *{background:#474722;}
-        .wy-nav-content-wrap{margin-left:0;}
-        .wy-nav-side:not(:hover){transform:translate(calc(-100% + 15px),calc(-100% + 15px));}
-        .wy-nav-content{max-width:unset;padding:5px;}
-    */
 }
 
 // TexPage
@@ -522,20 +498,6 @@ if (host === "pandas.pydata.org" && pathname.startsWith("/docs")) {
     }
     .bd-header:not(:hover) {
       opacity: 0;
-    }
-  `;
-}
-
-// Redux (for React) Docs
-if (host === "react-redux.js.org") {
-  css`
-    [class^="codeBlockTitle_"],
-    [class^="codeBlockContent_"] > * {
-      filter: invert(1) hue-rotate(180deg);
-      background: #000;
-    }
-    .docusaurus-highlight-code-line {
-      background: #000;
     }
   `;
 }
@@ -615,23 +577,19 @@ if (host === "wx.qq.com" || host === "wx2.qq.com") {
     .copyright {
       display: none;
     }
-
     body {
       background: none;
       overflow: hidden;
     }
-
     .main {
       height: 100vh;
       min-height: unset;
       padding: 0;
     }
-
     .main_inner {
       max-width: unset;
       border-radius: 0;
     }
-
     .nav_view {
       top: 154px;
     }
@@ -642,19 +600,23 @@ if (host === "wx.qq.com" || host === "wx2.qq.com") {
 if (host === "www.bing.com" && pathname === "/search") {
   darkOptions = undefined;
   css`
-    #b_results *,
     *,
+    #b_results *,
     .b_scopebar ul:after {
       background-image: unset;
-      background: #000;
+      background-color: #000;
       color: #fff;
       border-color: #777;
     }
     #b_results a,
-    a,
-    a * {
+    #b_results a *:not(.rdtopattr *, .b_tpcn *) {
       color: #acf;
     }
+    /*
+    a strong {
+      box-shadow: inset 0 -2px 0 0 #ff06;
+    }
+    */
     #b_header,
     .b_scopebar {
       padding-top: 0;
@@ -662,8 +624,15 @@ if (host === "www.bing.com" && pathname === "/search") {
       margin-top: 0;
       margin-bottom: 0;
     }
+    #bpage #b_results > * {
+      margin: 0;
+    }
     #sb_form_q {
       border: none;
+    }
+    #b_results .b_algoheader,
+    #b_results .b_algoheader * {
+      background-color: #0000;
     }
   `;
 }
@@ -958,30 +927,6 @@ if (host === "leetcode.com" || host === "leetcode.cn") {
       font-family: monospace;
     }
   `;
-}
-
-if (host === "registry.npmmirror.com") {
-  // https://registry.npmmirror.com/katex/0.16.9/files/
-  // document.body.
-  // addFloatButton("Files List", async () => {
-  //   let [, pkg, ver, ver2] = location.pathname.split("/");
-  //   if (pkg?.startsWith("@")) {
-  //     pkg = pkg + "/" + ver;
-  //     ver = ver2;
-  //   }
-  //   if (!/^[\.\d]+$/.test(ver)) {
-  //     location = `${location.origin}/${pkg}/latest/files/`;
-  //     return;
-  //   }
-  //   const url = `${location.origin}/${pkg}/${ver}/files/`;
-  //   const r = await (await fetch(url)).json();
-  //   console.log(r);
-  //   // const ver = p1?.startsWith("@")
-  //   //   ? await fetch(`${location.origin}/${p1}/${p2}`)
-  //   //       .then((v) => v.json())
-  //   //       .then((v) => v["dist-tags"].latest)
-  //   //   : pkgp2;
-  // });
 }
 
 if (host === "web.telegram.org") {
