@@ -2,7 +2,7 @@
 // @name        Many Mods
 // @description Many many small modify for many sites.
 // @namespace   https://greasyfork.org/users/197529
-// @version     2.0.48
+// @version     2.0.51
 // @author      kkocdko
 // @license     Unlicense
 // @match       *://*/*
@@ -15,6 +15,7 @@
 // @exclude-match  *://47.100.126.230:*/*
 // @exclude-match  *://47.114.114.68:13002/*
 // @exclude-match  *://forum.suse.org.cn/*
+// @exclude-match  *://gemini.google.com/*
 // @exclude-match  *://generated.vusercontent.net/*
 // @exclude-match  *://caddyserver.com/*
 // @exclude-match  *://godbolt.org/*
@@ -74,7 +75,7 @@
 // @exclude-match  *://live.mdnplay.dev/*
 // @exclude-match  *://*.opensuse.org/*
 // @exclude-match  *://hedzr.com/*
-// @require     https://registry.npmmirror.com/darkreader/4.9.92/files/darkreader.js
+// @require     https://registry.npmmirror.com/darkreader/4.9.96/files/darkreader.js
 // @grant       GM_xmlhttpRequest
 // @run-at      document-start
 // ==/UserScript==
@@ -162,43 +163,6 @@ css`
     --darkreader-bg--background-color-neutral: #000000;
   }
 `;
-
-// Google Search
-if (host === "www.google.com") {
-  darkOptions = undefined;
-  css`
-    html,
-    body,
-    #tsf *,
-    #searchform,
-    #searchform > * {
-      background: #000;
-    }
-    header,
-    header > *,
-    #gsr,
-    #main div,
-    #tsf textarea + * {
-      background: none;
-    }
-    #tsf > div:first-child {
-      box-shadow: 0 0 0 1px #777;
-    }
-  `;
-  const toDarkMode = () => {
-    if (document.querySelector('meta[name="color-scheme"]')) {
-      return true;
-    }
-    const el = document.querySelector(
-      'footer a[href^="/setprefs?"][href*="cs=2"], #appbar a[href^="/setprefs?"][href*="cs=2"], #navd a[href^="/setprefs?"][href*="cs=2"]'
-    );
-    if (el) {
-      el?.click();
-      return true;
-    }
-  };
-  afterEnter(() => {}, toDarkMode);
-}
 
 // React Docs
 if (host === "beta.reactjs.org") {
@@ -324,6 +288,28 @@ if (host.endsWith("mp.weixin.qq.com")) {
   `;
 }
 
+// Debian man pages
+if (host === "manpages.debian.org") {
+  darkOptions = undefined;
+  css`
+    * {
+      background-image: unset;
+      background: #000;
+      color: #fff;
+    }
+    a,
+    a * {
+      color: #acf;
+    }
+    .maincontent {
+      max-width: unset;
+    }
+    .Bl-tag > dd {
+      overflow: hidden;
+    }
+  `;
+}
+
 // ChatGPT
 if (host === "chatgpt.com") {
   darkOptions = undefined;
@@ -341,6 +327,16 @@ if (host === "chatgpt.com") {
 // Doubao (bytedance)
 if (host.endsWith(".doubao.com")) {
   Object.defineProperty(globalThis.navigator, "serviceWorker", {}); // Disable the ServiceWorker to save cache storate
+  // darkOptions = undefined;
+  // css`
+  //   html {
+  //     background: #000;
+  //   }
+  //   *,#guidance_groups *,* * {
+  //     color: #fff;
+  //     background: none;
+  //   }
+  // `;
 }
 
 // Katex
@@ -642,8 +638,34 @@ if (host === "wx.qq.com" || host === "wx2.qq.com") {
   `;
 }
 
-// New Bing
-if (host === "www.bing.com") {
+// Bing search
+if (host === "www.bing.com" && pathname === "/search") {
+  darkOptions = undefined;
+  css`
+    #b_results *,
+    *,
+    .b_scopebar ul:after {
+      background-image: unset;
+      background: #000;
+      color: #fff;
+      border-color: #777;
+    }
+    #b_results a,
+    a,
+    a * {
+      color: #acf;
+    }
+    #b_header,
+    .b_scopebar {
+      padding-top: 0;
+      padding-bottom: 0;
+      margin-top: 0;
+      margin-bottom: 0;
+    }
+    #sb_form_q {
+      border: none;
+    }
+  `;
 }
 
 // OpenWRT LuCI Docs
@@ -1019,7 +1041,7 @@ if (darkOptions) {
     afterEnter(() => run());
   } else {
     console.log("[many-mods] start load darkreader by dynamic import");
-    const url = `https://registry.npmmirror.com/darkreader/4.9.86/files/darkreader.js`; // same as the `@require` above
+    const url = `https://registry.npmmirror.com/darkreader/4.9.96/files/darkreader.js`;
     import(url).then(() => afterEnter(() => run()));
   }
 }
