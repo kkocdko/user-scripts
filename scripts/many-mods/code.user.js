@@ -2,7 +2,7 @@
 // @name        Many Mods
 // @description Many many small modify for many sites.
 // @namespace   https://greasyfork.org/users/197529
-// @version     2.0.52
+// @version     2.0.53
 // @author      kkocdko
 // @license     Unlicense
 // @match       *://*/*
@@ -721,11 +721,20 @@ if (host.endsWith(".youtube.com")) {
   darkOptions = undefined;
   Object.defineProperty(globalThis.navigator, "serviceWorker", {}); // Disable the ServiceWorker to save memory
   css`
+    ytm-pivot-bar-renderer,
+    ytm-mobile-topbar-renderer,
+    ytm-feed-filter-chip-bar-renderer {
+      backdrop-filter: none;
+      background-color: #000;
+    }
+    ytm-pivot-bar-renderer {
+      height: 42px;
+    }
     /* place the nerd info box to the bottom */
     .ytp-sfn {
       position: fixed;
-      bottom: 0px;
       top: unset;
+      bottom: 0px;
       left: 0;
     }
   `;
