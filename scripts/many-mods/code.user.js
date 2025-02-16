@@ -2,7 +2,7 @@
 // @name        Many Mods
 // @description Many many small modify for many sites.
 // @namespace   https://greasyfork.org/users/197529
-// @version     2.0.53
+// @version     2.0.56
 // @author      kkocdko
 // @license     Unlicense
 // @match       *://*/*
@@ -16,6 +16,7 @@
 // @exclude-match  *://generated.vusercontent.net/*
 // @exclude-match  *://caddyserver.com/*
 // @exclude-match  *://godbolt.org/*
+// @exclude-match  *://vercel.com/*
 // @exclude-match  *://v0.dev/*
 // @exclude-match  *://*.github.dev/*
 // @exclude-match  *://discord.com/*
@@ -24,6 +25,7 @@
 // @exclude-match  *://skydom.pecpoc.com/*
 // @exclude-match  *://material.angular.io/*
 // @exclude-match  *://caniuse.com/*
+// @exclude-match  *://aistudio.google.com/*
 // @exclude-match  *://developer.mozilla.org/*
 // @exclude-match  *://*.mdn.mozilla.net/*
 // @exclude-match  *://esbuild.github.io/*
@@ -722,7 +724,7 @@ if (host.endsWith(".youtube.com")) {
   Object.defineProperty(globalThis.navigator, "serviceWorker", {}); // Disable the ServiceWorker to save memory
   css`
     ytm-pivot-bar-renderer,
-    ytm-mobile-topbar-renderer,
+    ytm-mobile-topbar-renderer:not(.topbar-transparent-background),
     ytm-feed-filter-chip-bar-renderer {
       backdrop-filter: none;
       background-color: #000;
