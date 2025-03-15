@@ -2,7 +2,7 @@
 // @name        LeetCode Turbo
 // @description Replace monaco with vanilla textarea.
 // @namespace   https://greasyfork.org/users/197529
-// @version     0.2.1
+// @version     0.2.2
 // @author      kkocdko
 // @license     Unlicense
 // @match       *://leetcode.com/problems/*
@@ -14,17 +14,33 @@ const globalThis = this.unsafeWindow || this;
 globalThis.requestAnimationFrame = () => {}; // just ignore the requestAnimationFrame is ok?
 const fetch = globalThis.fetch;
 // Object.defineProperties(globalThis, { gio: { get: () => ({}), set() {} } }); // block the https://github.com/syt123450/giojs
+// https://static.leetcode.cn/lc-monaco/monaco-97aac266332974a36c55_0.34.7.js
 globalThis.fetch = (input, init) => {
-  if (input?.includes("/lc-monaco/") || input?.includes("/monaco-tm/"))
-    throw Error("Monaco editor blocked.");
-  if (input?.endsWith("/submit") || input?.endsWith("/submit/"))
-    init.body = JSON.stringify({
-      ...JSON.parse(init.body),
-      lang: lang.value,
-      typed_code: editor.value,
-    });
+  // https://static.leetcode.cn/lc-monaco/monaco-stats_0.34.7.json
+  if (input?.includes("/lc-monaco/monaco-stats_")) {
+    return new Response(
+      JSON.stringify({
+        js: [
+          "monaco-fake.js",
+          // "monaco-97aac266332974a36c55_0.34.7.js",
+          // "monaco-with-langs-8b23646125da1a61dff8_0.34.7.js",
+          // "editor.worker-5b8fcf9e2261c26fa5dd_0.34.7.js",
+          // "ts.worker-1ef9d1d859df7cb2c889_0.34.7.js",
+        ],
+        css: [],
+      })
+    );
+  }
+  //   throw Error("Monaco editor blocked.");
+  // if (input?.endsWith("/submit") || input?.endsWith("/submit/"))
+  //   init.body = JSON.stringify({
+  //     ...JSON.parse(init.body),
+  //     lang: lang.value,
+  //     typed_code: editor.value,
+  //   });
   return fetch(input, init);
 };
+/*
 const question = fetch("/graphql/", {
   method: "POST",
   headers: { "content-type": "application/json" },
@@ -61,6 +77,7 @@ const replaceEditorTimer = setInterval(() => {
   editor.parentNode.style.overflow = "initial";
 }, 200);
 reloadSnippets();
+*/
 
 // make a LRU cache for getComputedStyle
 /*
