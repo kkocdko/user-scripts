@@ -2,7 +2,7 @@
 // @name        Many Mods
 // @description Many many small modify for many sites.
 // @namespace   https://greasyfork.org/users/197529
-// @version     2.0.56
+// @version     2.0.61
 // @author      kkocdko
 // @license     Unlicense
 // @match       *://*/*
@@ -611,7 +611,8 @@ if (host === "www.bing.com" && pathname === "/search") {
       border-color: #777;
     }
     #b_results a,
-    #b_results a *:not(.rdtopattr *, .b_tpcn *) {
+    #b_results a *:not(.rdtopattr *, .b_tpcn *),
+    #b_algospacing .b_algospacing_link {
       color: #acf;
     }
     /*
@@ -929,7 +930,7 @@ if (host === "leetcode.com" || host === "leetcode.cn") {
   darkOptions = undefined;
   css`
     .flexlayout__layout,
-    .flexlayout__layout * {
+    .flexlayout__layout *:not(.monaco-editor-background *) {
       background-color: #000;
     }
     .flexlayout__layout code,
@@ -940,45 +941,46 @@ if (host === "leetcode.com" || host === "leetcode.cn") {
   `;
 }
 
-if (host === "web.telegram.org") {
+if (host === "web.telegram.org" && (pathname === "/k/" || pathname === "/k")) {
   darkOptions = undefined;
   css`
+    * {
+      backdrop-filter: none;
+      animation: none;
+    }
     html {
-      --color-background: #000;
-      --color-background-own: rgb(51, 41, 112);
-      --color-background-own-apple: rgb(51, 41, 112);
-      --color-background-own-selected: rgb(51, 41, 112);
-      --color-chat-active: rgb(51, 41, 112);
-      --color-chat-active-greyed: rgb(51, 41, 112);
-      --color-green: rgb(51, 41, 112);
-      --color-green-darker: rgb(51, 41, 112);
-      --color-reply-own-hover: #0000;
-      --color-reply-own-hover-apple: #0000;
-      --color-reply-own-active: #0000;
-      --color-reply-own-active-apple: #0000;
-      --color-links: rgb(175, 163, 235);
-      --color-code: rgb(175, 163, 235);
-      --color-message-reaction-own: #0000;
-      --color-message-reaction-hover-own: #0000;
-      --color-message-reaction-chosen-hover: #0000;
-      --color-voice-transcribe-button-own: #0000;
-      --button-primary-bgColor-rest: #09b43add;
+      --body-background-color: #000000;
+      --body-background-color-rgb: 0, 0, 0;
+      --background-color-true: #181818;
+      --background-color: var(--background-color-true);
+      --message-background-color: #000000;
+      --message-out-background-color: #000000;
+      --message-out-background-color-rgb: 0, 0, 0;
+      --surface-color: #000000;
+      --surface-color-rgb: 0, 0, 0;
+      --menu-background-color: #222222;
+      --primary-color: #b6abed;
     }
-    .message-content {
-      border: 1px solid #555;
-      background: none;
+    .bubble-content,
+    .sidebar-header {
+      box-shadow: inset 0 -1px 0 0 #555;
     }
-    .chat-list {
-      background: #000;
+    .chatlist-chat.active {
+      --background: #000000;
+      box-shadow: inset 0 0 0 2px;
     }
-    .Chat {
-      --background-color: #0000;
+    .chat-input .btn-send,
+    .btn-corner,
+    .reaction-block:before {
+      background-color: #000000;
+      box-shadow: inset 0 0 0 1px #888;
     }
-    .Chat.selected .ListItem-button {
-      background-color: rgba(51, 41, 112, 0.8);
+    .avatar-like custom-emoji-renderer-element,
+    .chatlist-chat custom-emoji-renderer-element {
+      display: none;
     }
-    .WebPage .small-image .full-media {
-      object-fit: contain; /* it was "cover" and my images was cropped */
+    .chat-background {
+      background-color: #000000;
     }
   `;
 }
