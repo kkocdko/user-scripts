@@ -2,7 +2,7 @@
 // @name        Many Mods
 // @description Many many small modify for many sites.
 // @namespace   https://greasyfork.org/users/197529
-// @version     2.0.61
+// @version     2.0.63
 // @author      kkocdko
 // @license     Unlicense
 // @match       *://*/*
@@ -25,7 +25,6 @@
 // @exclude-match  *://skydom.pecpoc.com/*
 // @exclude-match  *://material.angular.io/*
 // @exclude-match  *://caniuse.com/*
-// @exclude-match  *://aistudio.google.com/*
 // @exclude-match  *://developer.mozilla.org/*
 // @exclude-match  *://*.mdn.mozilla.net/*
 // @exclude-match  *://esbuild.github.io/*
@@ -71,7 +70,7 @@
 // @exclude-match  *://live.mdnplay.dev/*
 // @exclude-match  *://*.opensuse.org/*
 // @exclude-match  *://hedzr.com/*
-// @require     https://registry.npmmirror.com/darkreader/4.9.96/files/darkreader.js
+// @require     https://registry.npmmirror.com/darkreader/4.9.105/files/darkreader.js
 // @grant       GM_xmlhttpRequest
 // @run-at      document-start
 // @inject-into content
@@ -153,9 +152,22 @@ let darkOptions = {
   },
 };
 
+afterEnter(() => {
+  document.documentElement.style.setProperty(
+    "color-scheme",
+    "dark",
+    "important"
+  );
+  document.documentElement.style.setProperty(
+    "background-color",
+    "#000000",
+    "important"
+  );
+});
 css`
   :root {
     background: #000000;
+    color-scheme: dark;
     --darkreader-bg--background-color-neutral-subtle: #000000;
     --darkreader-bg--background-color-neutral: #000000;
   }
@@ -321,6 +333,21 @@ if (host === "chatgpt.com") {
   });
 }
 
+// Google AI Studio
+if (host === "aistudio.google.com") {
+  darkOptions = undefined;
+  css`
+    html,
+    * {
+      --color-canvas-background_revamp: #000;
+    }
+    body,
+    .banner-and-app-container {
+      background: #000;
+    }
+  `;
+}
+
 // Doubao (bytedance)
 if (host.endsWith(".doubao.com")) {
   Object.defineProperty(globalThis.navigator, "serviceWorker", {}); // Disable the ServiceWorker to save cache storate
@@ -379,6 +406,25 @@ if (host === "www.luogu.com.cn") {
     #app > nav:not(:hover) {
       opacity: 0.3;
       transform: translate(calc(-100% + 20px), calc(100% - 20px));
+    }
+  `;
+}
+
+if (host === "chess.com" || host.endsWith(".chess.com")) {
+  darkOptions = undefined;
+  css`
+    body {
+      background: #000;
+      --color-neutrals-white: #bbb;
+    }
+    #board-single {
+      background-image: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 8 8"><rect width="8" height="8" fill="%23474747"/><path fill="black" d="M1,1v-1h1v1h1v-1h1v1h1v-1h1v1h1v-1h1v1z M0,2v-1h1v1h1v-1h1v1h1v-1h1v1h1v-1h1v1z M1,3v-1h1v1h1v-1h1v1h1v-1h1v1h1v-1h1v1z M0,4v-1h1v1h1v-1h1v1h1v-1h1v1h1v-1h1v1z M1,5v-1h1v1h1v-1h1v1h1v-1h1v1h1v-1h1v1z M0,6v-1h1v1h1v-1h1v1h1v-1h1v1h1v-1h1v1z M1,7v-1h1v1h1v-1h1v1h1v-1h1v1h1v-1h1v1z M0,8v-1h1v1h1v-1h1v1h1v-1h1v1h1v-1h1v1z"/></svg>');
+    }
+    .piece:is(.wp, .wr, .wn, .wb, .wq, .wk) {
+      filter: brightness(0.9);
+    }
+    .piece:is(.bp, .br, .bn, .bb, .bq, .bk) {
+      filter: sepia(1);
     }
   `;
 }
@@ -604,7 +650,8 @@ if (host === "www.bing.com" && pathname === "/search") {
   css`
     *,
     #b_results *,
-    .b_scopebar ul:after {
+    .b_scopebar ul:after,
+    .b_pinhead:not(.b_dark) #b_header {
       background-image: unset;
       background-color: #000;
       color: #fff;
@@ -740,9 +787,15 @@ if (host.endsWith(".youtube.com")) {
       bottom: 0px;
       left: 0;
     }
+    /*
+    .ytp-mweb-player {
+      transform: none;
+      transition: none;
+    }
+    */
   `;
   // https://greasyfork.org/scripts/457579  使用移动版(平板布局)页面  https://m.youtube.com/?persist_app=1&app=m
-  // https://greasyfork.org/scripts/437123  允许后台播放
+  // https://greasyfork.org/scripts/525586  允许后台播放
 }
 
 // Bing Login
@@ -999,7 +1052,7 @@ if (darkOptions) {
     afterEnter(() => run());
   } else {
     console.log("[many-mods] start load darkreader by dynamic import");
-    const url = `https://registry.npmmirror.com/darkreader/4.9.96/files/darkreader.js`;
+    const url = `https://registry.npmmirror.com/darkreader/4.9.105/files/darkreader.js`;
     import(url).then(() => afterEnter(() => run()));
   }
 }
