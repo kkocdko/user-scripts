@@ -2,7 +2,7 @@
 // @name        Many Mods
 // @description Many many small modify for many sites.
 // @namespace   https://greasyfork.org/users/197529
-// @version     2.0.63
+// @version     2.0.65
 // @author      kkocdko
 // @license     Unlicense
 // @match       *://*/*
@@ -420,11 +420,24 @@ if (host === "chess.com" || host.endsWith(".chess.com")) {
     #board-single {
       background-image: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 8 8"><rect width="8" height="8" fill="%23474747"/><path fill="black" d="M1,1v-1h1v1h1v-1h1v1h1v-1h1v1h1v-1h1v1z M0,2v-1h1v1h1v-1h1v1h1v-1h1v1h1v-1h1v1z M1,3v-1h1v1h1v-1h1v1h1v-1h1v1h1v-1h1v1z M0,4v-1h1v1h1v-1h1v1h1v-1h1v1h1v-1h1v1z M1,5v-1h1v1h1v-1h1v1h1v-1h1v1h1v-1h1v1z M0,6v-1h1v1h1v-1h1v1h1v-1h1v1h1v-1h1v1z M1,7v-1h1v1h1v-1h1v1h1v-1h1v1h1v-1h1v1z M0,8v-1h1v1h1v-1h1v1h1v-1h1v1h1v-1h1v1z"/></svg>');
     }
+    #board-single.analysis-overlay {
+      box-shadow: 0 0 0 2px #2196f3;
+    }
+    #board-single.analysis-overlay:before {
+      display: none;
+    }
     .piece:is(.wp, .wr, .wn, .wb, .wq, .wk) {
       filter: brightness(0.9);
     }
     .piece:is(.bp, .br, .bn, .bb, .bq, .bk) {
       filter: sepia(1);
+    }
+    .clock-icon-icon > svg {
+      transform: none;
+    }
+    .clock-time-monospace {
+      position: absolute;
+      display: block;
     }
   `;
 }
