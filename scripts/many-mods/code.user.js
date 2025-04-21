@@ -2,7 +2,7 @@
 // @name        Many Mods
 // @description Many many small modify for many sites.
 // @namespace   https://greasyfork.org/users/197529
-// @version     2.0.65
+// @version     2.0.67
 // @author      kkocdko
 // @license     Unlicense
 // @match       *://*/*
@@ -12,7 +12,6 @@
 // @exclude-match  *://*@47.100.126.230:*/*
 // @exclude-match  *://47.100.126.230:*/*
 // @exclude-match  *://forum.suse.org.cn/*
-// @exclude-match  *://gemini.google.com/*
 // @exclude-match  *://generated.vusercontent.net/*
 // @exclude-match  *://caddyserver.com/*
 // @exclude-match  *://godbolt.org/*
@@ -165,7 +164,9 @@ afterEnter(() => {
   );
 });
 css`
-  :root {
+  :root,
+  html,
+  body {
     background: #000000;
     color-scheme: dark;
     --darkreader-bg--background-color-neutral-subtle: #000000;
@@ -333,17 +334,45 @@ if (host === "chatgpt.com") {
   });
 }
 
-// Google AI Studio
-if (host === "aistudio.google.com") {
+// Google AI Studio / Gemini
+if (host === "aistudio.google.com" || host === "gemini.google.com") {
   darkOptions = undefined;
   css`
     html,
     * {
       --color-canvas-background_revamp: #000;
+      --gem-sys-color--surface: #000;
+      --gem-sys-color--surface-container: #000;
+      --mat-sidenav-content-text-color: #fff;
+      --mat-sys-on-background: #fff;
+      --gem-sys-color--on-surface: #fff;
+      --gem-sys-color--surface-container-high: #252628;
     }
     body,
-    .banner-and-app-container {
+    .banner-and-app-container,
+    .chat-container input-container {
       background: #000;
+    }
+    input-container.input-gradient::before {
+      display: none;
+    }
+  `;
+}
+
+// Qwen (Ali)
+if (host === "chat.qwen.ai") {
+  darkOptions = undefined;
+  css`
+    html {
+      --container-primary-bgweb: #000;
+      --container-secondary-bgweb: #000;
+      --container-primary-fill: #000;
+      --container-secondary-fill: #000;
+    }
+    .codespan:is(.dark *) {
+      background-color: #000;
+      color: #9fa8da;
+      box-shadow: 0 0 0 1px #777;
     }
   `;
 }
@@ -412,18 +441,24 @@ if (host === "www.luogu.com.cn") {
 
 if (host === "chess.com" || host.endsWith(".chess.com")) {
   darkOptions = undefined;
+  Object.defineProperty(globalThis.navigator, "serviceWorker", {});
+  Object.defineProperty(globalThis, "Worker", {});
+  Object.defineProperty(globalThis, "SharedWorker", {});
+  // Object.defineProperty(globalThis, "WebSocket", {});
+  // Object.defineProperty(globalThis.indexedDB, "open", {});
   css`
     body {
       background: #000;
       --color-neutrals-white: #bbb;
     }
-    #board-single {
+    wc-chess-board {
       background-image: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 8 8"><rect width="8" height="8" fill="%23474747"/><path fill="black" d="M1,1v-1h1v1h1v-1h1v1h1v-1h1v1h1v-1h1v1z M0,2v-1h1v1h1v-1h1v1h1v-1h1v1h1v-1h1v1z M1,3v-1h1v1h1v-1h1v1h1v-1h1v1h1v-1h1v1z M0,4v-1h1v1h1v-1h1v1h1v-1h1v1h1v-1h1v1z M1,5v-1h1v1h1v-1h1v1h1v-1h1v1h1v-1h1v1z M0,6v-1h1v1h1v-1h1v1h1v-1h1v1h1v-1h1v1z M1,7v-1h1v1h1v-1h1v1h1v-1h1v1h1v-1h1v1z M0,8v-1h1v1h1v-1h1v1h1v-1h1v1h1v-1h1v1z"/></svg>');
     }
-    #board-single.analysis-overlay {
+    wc-chess-board.analysis-overlay {
       box-shadow: 0 0 0 2px #2196f3;
     }
-    #board-single.analysis-overlay:before {
+    wc-chess-board.analysis-overlay:before,
+    .tv-player-component {
       display: none;
     }
     .piece:is(.wp, .wr, .wn, .wb, .wq, .wk) {
@@ -440,6 +475,17 @@ if (host === "chess.com" || host.endsWith(".chess.com")) {
       display: block;
     }
   `;
+  if (pathname === "/home") {
+    const getEl = () => {
+      console.log("find_tv get_el");
+      return document.querySelector(".tv-player-component");
+    };
+    console.time("find_tv");
+    afterEnter(() => {
+      getEl().remove();
+      console.timeEnd("find_tv");
+    }, getEl);
+  }
 }
 
 // V2EX
