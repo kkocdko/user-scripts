@@ -2,7 +2,7 @@
 // @name        Many Mods
 // @description Many many small modify for many sites.
 // @namespace   https://greasyfork.org/users/197529
-// @version     2.0.67
+// @version     2.0.68
 // @author      kkocdko
 // @license     Unlicense
 // @match       *://*/*
@@ -466,6 +466,9 @@ if (host === "chess.com" || host.endsWith(".chess.com")) {
     }
     .piece:is(.bp, .br, .bn, .bb, .bq, .bk) {
       filter: sepia(1);
+    }
+    wc-chess-board .hint {
+      background-color: #567;
     }
     .clock-icon-icon > svg {
       transform: none;
