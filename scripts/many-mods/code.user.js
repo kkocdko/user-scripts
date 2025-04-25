@@ -2,7 +2,7 @@
 // @name        Many Mods
 // @description Many many small modify for many sites.
 // @namespace   https://greasyfork.org/users/197529
-// @version     2.0.68
+// @version     2.0.69
 // @author      kkocdko
 // @license     Unlicense
 // @match       *://*/*
@@ -187,6 +187,17 @@ if (host === "beta.reactjs.org") {
   `;
 }
 
+// Kubernetes Docs
+if (host === "kubernetes.io") {
+  css`
+    .td-navbar {
+      min-height: 0;
+      height: 2.8em;
+      zoom: 0.8;
+    }
+  `;
+}
+
 // reddit
 if (host === "www.reddit.com") {
   darkOptions = undefined;
@@ -260,16 +271,6 @@ if (host === "m.nmc.cn") {
       -webkit-user-drag: unset;
       touch-action: unset;
       transform: none;
-    }
-  `;
-}
-
-// ithome
-if (host.endsWith(".ithome.com")) {
-  darkOptions.sepia = 90;
-  css`
-    * {
-      background: #000;
     }
   `;
 }
