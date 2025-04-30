@@ -2,7 +2,7 @@
 // @name        Many Mods
 // @description Many many small modify for many sites.
 // @namespace   https://greasyfork.org/users/197529
-// @version     2.0.69
+// @version     2.0.75
 // @author      kkocdko
 // @license     Unlicense
 // @match       *://*/*
@@ -445,28 +445,27 @@ if (host === "chess.com" || host.endsWith(".chess.com")) {
   Object.defineProperty(globalThis.navigator, "serviceWorker", {});
   Object.defineProperty(globalThis, "Worker", {});
   Object.defineProperty(globalThis, "SharedWorker", {});
-  // Object.defineProperty(globalThis, "WebSocket", {});
-  // Object.defineProperty(globalThis.indexedDB, "open", {});
   css`
     body {
       background: #000;
       --color-neutrals-white: #bbb;
+      --gutter: 0rem;
+      --gutterSmall: 1px;
+      --subtractFrom: 0rem;
+      --evalWidth: calc(2rem - 2px);
     }
     wc-chess-board {
       background-image: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 8 8"><rect width="8" height="8" fill="%23474747"/><path fill="black" d="M1,1v-1h1v1h1v-1h1v1h1v-1h1v1h1v-1h1v1z M0,2v-1h1v1h1v-1h1v1h1v-1h1v1h1v-1h1v1z M1,3v-1h1v1h1v-1h1v1h1v-1h1v1h1v-1h1v1z M0,4v-1h1v1h1v-1h1v1h1v-1h1v1h1v-1h1v1z M1,5v-1h1v1h1v-1h1v1h1v-1h1v1h1v-1h1v1z M0,6v-1h1v1h1v-1h1v1h1v-1h1v1h1v-1h1v1z M1,7v-1h1v1h1v-1h1v1h1v-1h1v1h1v-1h1v1z M0,8v-1h1v1h1v-1h1v1h1v-1h1v1h1v-1h1v1z"/></svg>');
     }
-    wc-chess-board.analysis-overlay {
-      box-shadow: 0 0 0 2px #2196f3;
-    }
-    wc-chess-board.analysis-overlay:before,
-    .tv-player-component {
-      display: none;
+    wc-chess-board.analysis-overlay:before {
+      box-shadow: 0 0 0 1px #1976d2;
+      background: none;
     }
     .piece:is(.wp, .wr, .wn, .wb, .wq, .wk) {
       filter: brightness(0.9);
     }
     .piece:is(.bp, .br, .bn, .bb, .bq, .bk) {
-      filter: sepia(1);
+      filter: sepia(1) brightness(1.1);
     }
     wc-chess-board .hint {
       background-color: #567;
@@ -476,18 +475,17 @@ if (host === "chess.com" || host.endsWith(".chess.com")) {
     }
     .clock-time-monospace {
       position: absolute;
-      display: block;
+    }
+    .evaluation-bar-score {
+      padding-left: 1px;
+      padding-right: 1px;
     }
   `;
   if (pathname === "/home") {
-    const getEl = () => {
-      console.log("find_tv get_el");
-      return document.querySelector(".tv-player-component");
-    };
-    console.time("find_tv");
+    const getEl = () => document.querySelector(".tv-player-component");
+    console.time("find_tv_remove");
     afterEnter(() => {
-      getEl().remove();
-      console.timeEnd("find_tv");
+      getEl().remove(), console.timeEnd("find_tv_remove");
     }, getEl);
   }
 }
@@ -618,9 +616,8 @@ if (host === "onedrive.live.com") {
   css`
     #O365_NavHeader,
     #O365_NavHeader * {
-      background: #fff;
-      background-color: #fff;
-      color: #000;
+      background: none;
+      background-color: none;
     }
     #spartan-left-nav > div:first-child button {
       background: none;
@@ -1043,7 +1040,8 @@ if (
 if (host === "leetcode.com" || host === "leetcode.cn") {
   Object.defineProperty(globalThis.navigator, "serviceWorker", {});
   Object.defineProperty(globalThis, "Worker", {});
-  darkOptions = undefined;
+  if (pathname === "/contest" || pathname.startsWith("/contest/"));
+  else darkOptions = undefined;
   css`
     .flexlayout__layout,
     .flexlayout__layout *:not(.monaco-editor-background *) {
@@ -1053,6 +1051,14 @@ if (host === "leetcode.com" || host === "leetcode.cn") {
     .flexlayout__layout pre {
       color: unset;
       font-family: monospace;
+    }
+  `;
+}
+
+if (host === "oi-wiki.org") {
+  css`
+    .md-content img {
+      filter: invert(1);
     }
   `;
 }
