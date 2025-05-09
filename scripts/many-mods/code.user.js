@@ -2,18 +2,14 @@
 // @name        Many Mods
 // @description Many many small modify for many sites.
 // @namespace   https://greasyfork.org/users/197529
-// @version     2.0.76
+// @version     2.0.77
 // @author      kkocdko
 // @license     Unlicense
 // @match       *://*/*
 // @exclude-match  *://127.0.0.1:8109/*
 // @exclude-match  *://127.0.0.1:9393/*
 // @exclude-match  *://127.0.0.1:9090/*
-// @exclude-match  *://*@47.100.126.230:*/*
-// @exclude-match  *://47.100.126.230:*/*
-// @exclude-match  *://forum.suse.org.cn/*
 // @exclude-match  *://generated.vusercontent.net/*
-// @exclude-match  *://caddyserver.com/*
 // @exclude-match  *://godbolt.org/*
 // @exclude-match  *://vercel.com/*
 // @exclude-match  *://v0.dev/*
@@ -24,15 +20,11 @@
 // @exclude-match  *://skydom.pecpoc.com/*
 // @exclude-match  *://material.angular.io/*
 // @exclude-match  *://caniuse.com/*
-// @exclude-match  *://developer.mozilla.org/*
-// @exclude-match  *://*.mdn.mozilla.net/*
 // @exclude-match  *://esbuild.github.io/*
 // @exclude-match  *://flutter.github.io/*
 // @exclude-match  *://gallery.flutter.dev/*
 // @exclude-match  *://codesandbox.io/*
 // @exclude-match  *://codepen.io/*
-// @exclude-match  *://doc.rust-lang.org/*
-// @exclude-match  *://rust-lang.github.io/*
 // @exclude-match  *://*.xda-developers.com/*
 // @exclude-match  *://online-go.com/*
 // @exclude-match  *://x.com/*
@@ -59,8 +51,6 @@
 // @exclude-match  *://*.skk.moe/*
 // @exclude-match  *://regex101.com/*
 // @exclude-match  *://*.js13kgames.com/*
-// @exclude-match  *://esp-rs.github.io/*
-// @exclude-match  *://*.curl.se/*
 // @exclude-match  *://*.toolpad.io/*
 // @exclude-match  *://happy0316.top/*
 // @exclude-match  *://parceljs.org/*
@@ -186,6 +176,17 @@ const disableHeavyFeatures = () => {
     .databases()
     .then((dbs) => dbs.map((db) => indexedDB.deleteDatabase(db.name)));
 };
+
+// MDN
+if (host === "developer.mozilla.org") {
+  darkOptions = undefined;
+  css`
+    .code-example {
+      --code-background-block: #000;
+      border: 1px solid #777;
+    }
+  `;
+}
 
 // React Docs
 if (host === "beta.reactjs.org") {
@@ -380,6 +381,8 @@ if (host === "chat.qwen.ai") {
     html {
       --container-primary-bgweb: #000;
       --container-secondary-bgweb: #000;
+      --container-primary-bgapp: #000;
+      --container-secondary-bgapp: #000;
       --container-primary-fill: #000;
       --container-secondary-fill: #000;
     }
@@ -393,7 +396,7 @@ if (host === "chat.qwen.ai") {
 
 // Doubao (bytedance)
 if (host.endsWith(".doubao.com")) {
-  Object.defineProperty(globalThis.navigator, "serviceWorker", {}); // Disable the ServiceWorker to save cache storate
+  disableHeavyFeatures();
 }
 
 // Katex
