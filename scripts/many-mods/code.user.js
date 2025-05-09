@@ -2,7 +2,7 @@
 // @name        Many Mods
 // @description Many many small modify for many sites.
 // @namespace   https://greasyfork.org/users/197529
-// @version     2.0.75
+// @version     2.0.76
 // @author      kkocdko
 // @license     Unlicense
 // @match       *://*/*
@@ -72,7 +72,6 @@
 // @require     https://registry.npmmirror.com/darkreader/4.9.105/files/darkreader.js
 // @grant       GM_xmlhttpRequest
 // @run-at      document-start
-// @inject-into content
 // ==/UserScript==
 
 // @inject-into page
@@ -159,7 +158,7 @@ afterEnter(() => {
   );
   document.documentElement.style.setProperty(
     "background-color",
-    "#000000",
+    "#000",
     "important"
   );
 });
@@ -167,12 +166,26 @@ css`
   :root,
   html,
   body {
-    background: #000000;
+    background: #000;
     color-scheme: dark;
     --darkreader-bg--background-color-neutral-subtle: #000000;
     --darkreader-bg--background-color-neutral: #000000;
   }
 `;
+
+const disableHeavyFeatures = () => {
+  // some sites like bilibili.com use service worker and indexeddb, disable them to save memory
+  // Object.defineProperty(globalThis, "WebSocket", {});
+  Object.defineProperty(globalThis, "Worker", {});
+  Object.defineProperty(globalThis, "SharedWorker", {});
+  Object.defineProperty(globalThis.navigator, "serviceWorker", {
+    value: { getRegistrations: async () => {} },
+  });
+  Object.defineProperty(globalThis.indexedDB, "open", {});
+  indexedDB
+    .databases()
+    .then((dbs) => dbs.map((db) => indexedDB.deleteDatabase(db.name)));
+};
 
 // React Docs
 if (host === "beta.reactjs.org") {
@@ -493,12 +506,6 @@ if (host === "chess.com" || host.endsWith(".chess.com")) {
 // V2EX
 if (host === "v2ex.com" || host.endsWith(".v2ex.com")) {
   if (host !== "v2ex.com") {
-    css`
-      * {
-        background: #000;
-        visibility: hidden;
-      }
-    `;
     window.stop();
     location.host = "v2ex.com";
     throw new Error("jumped");
@@ -829,7 +836,7 @@ if (host === "mui.com") {
 // Youtube
 if (host.endsWith(".youtube.com")) {
   darkOptions = undefined;
-  Object.defineProperty(globalThis.navigator, "serviceWorker", {}); // Disable the ServiceWorker to save memory
+  disableHeavyFeatures();
   css`
     ytm-pivot-bar-renderer,
     ytm-mobile-topbar-renderer:not(.topbar-transparent-background),
@@ -904,42 +911,35 @@ if (host === "tower.im") {
 
 // Bilibili
 if (host.endsWith(".bilibili.com")) {
-  Object.defineProperty(globalThis.indexedDB, "open", {}); // 因为逼站的前端是傻逼
-  Object.defineProperty(globalThis.navigator, "serviceWorker", {}); // Disable the ServiceWorker to save memory
+  disableHeavyFeatures();
+  darkOptions = undefined;
   css`
-    #biliMainHeader,
-    #biliMainHeader * {
-      transition: none;
-      background: #000;
+    :root {
+      --brand_pink: #d67;
+      --bg1: #000;
+      --bg2: #000;
+      --bg3: #000;
+      --bg1_float: #000;
+      --bg2_float: #000;
+      --bg3_float: #000;
+      --text1: #fff;
+      --text2: #fff;
+      --text3: #fff;
+      --line_regular: #999;
+      --graph_bg_bright: #000;
+      --graph_bg_thin: #000;
+      --graph_bg_regular: #000;
+      --graph_bg_thick: #000;
+      --graph_weak: #000;
     }
-    .mini-header__logo,
-    .animated-banner {
+    .b-img {
+      background-color: #666;
+    }
+    #app .bg,
+    #app .bgc {
       display: none;
-    }
-    .bili-mini-mask {
-      /*display: none;*/
-    }
-    .openapp-dialog,
-    .mplayer-widescreen-callapp {
-      display: none;
-    }
-    .m-video-player {
-      position: relative;
-    }
-    #submit-video .cover {
-      pointer-events: none;
     }
   `;
-  // TODO: 在搜索页面等页面添加 在嵌入播放器打开 的选项？
-  if (pathname === "/blackboard/webplayer/mbplayer.html") {
-    if (new URLSearchParams(location.hash.slice(1)).has("no-dm")) {
-      css`
-        .gsl-dm {
-          display: none;
-        }
-      `;
-    }
-  }
 }
 
 // Stack Overflow
@@ -994,47 +994,27 @@ if (
 
 if (host.endsWith(".zhihu.com")) {
   // console.log(window.wrappedJSObject)
-  // 因为知乎的前端是傻逼
-  Object.defineProperty(globalThis.navigator, "serviceWorker", {});
-  Object.defineProperty(globalThis, "Worker", {});
-  Object.defineProperty(globalThis, "SharedWorker", {});
-  Object.defineProperty(globalThis, "WebSocket", {});
-  Object.defineProperty(globalThis.indexedDB, "open", {});
+  // 因为知乎的前端是傻逼，写进去一堆数据体积几十兆不知道在干什么
+  disableHeavyFeatures();
+  if (!document.cookie.split("; ").includes("theme=dark")) {
+    document.cookie = "theme=dark; path=/; max-age=31536000";
+    if (document.cookie.split("; ").includes("theme=dark")) {
+      location.reload(); // it is not set manually before (first if) and not httponly (second if), so needs reload
+    }
+  }
   css`
     .ContentItem-title,
     .QuestionHeader-title {
       font-weight: normal;
     }
-  `;
-}
-
-// For math pages, load KaTeX
-if (
-  (host.endsWith(".wikipedia.org") && document.querySelector("math")) ||
-  (host.endsWith(".cnblogs.com") && document.querySelector(".math")) ||
-  (host === "zhuanlan.zhihu.com" && document.querySelector(".ztext-math"))
-) {
-  const t = ([s]) => fetch(s).then((v) => v.text());
-  const p4js = t`https://registry.npmmirror.com/katex/0.16.9/files/dist/katex.min.js`;
-  const p4css = t`https://registry.npmmirror.com/katex/0.16.9/files/dist/katex.min.css`;
-  (async () => {
-    const q = ".mwe-math-element>img,.math,.ztext-math";
-    const es = document.querySelectorAll(q);
-    eval(await p4js);
-    for (const e of es) {
-      const code = (e.textContent || e.alt).trim().replace(/^\\\(|\\\)$/g, "");
-      e.katexResult = katex.renderToString(code, { throwOnError: false });
+    :root {
+      --GBL01A: #1363be;
     }
-    const el = document.createElement("style");
-    el.textContent = await p4css;
-    document.documentElement.appendChild(el);
-    for (const e of es)
-      if (e.tagName === "IMG") e.outerHTML = e.katexResult;
-      else e.innerHTML = e.katexResult;
-  })();
-  // https://zhuanlan.zhihu.com/p/429815465
-  // https://zhuanlan.zhihu.com/p/557873619
-  // https://www.cnblogs.com/Paranoid5/p/15112393.html
+    .OpenInAppButton,
+    .PlaceHolder.List-item {
+      display: none;
+    }
+  `;
 }
 
 if (host === "leetcode.com" || host === "leetcode.cn") {
@@ -1063,6 +1043,7 @@ if (host === "oi-wiki.org") {
   `;
 }
 
+// Telegram Web K > settings > language > show translate button = off
 if (host === "web.telegram.org" && (pathname === "/k/" || pathname === "/k")) {
   darkOptions = undefined;
   css`
