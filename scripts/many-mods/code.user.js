@@ -2,7 +2,7 @@
 // @name        Many Mods
 // @description Many many small modify for many sites.
 // @namespace   https://greasyfork.org/users/197529
-// @version     2.0.77
+// @version     2.0.78
 // @author      kkocdko
 // @license     Unlicense
 // @match       *://*/*
@@ -471,7 +471,8 @@ if (host === "chess.com" || host.endsWith(".chess.com")) {
       --evalWidth: calc(2rem - 2px);
     }
     wc-chess-board {
-      background-image: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 8 8"><rect width="8" height="8" fill="%23474747"/><path fill="black" d="M1,1v-1h1v1h1v-1h1v1h1v-1h1v1h1v-1h1v1z M0,2v-1h1v1h1v-1h1v1h1v-1h1v1h1v-1h1v1z M1,3v-1h1v1h1v-1h1v1h1v-1h1v1h1v-1h1v1z M0,4v-1h1v1h1v-1h1v1h1v-1h1v1h1v-1h1v1z M1,5v-1h1v1h1v-1h1v1h1v-1h1v1h1v-1h1v1z M0,6v-1h1v1h1v-1h1v1h1v-1h1v1h1v-1h1v1z M1,7v-1h1v1h1v-1h1v1h1v-1h1v1h1v-1h1v1z M0,8v-1h1v1h1v-1h1v1h1v-1h1v1h1v-1h1v1z"/></svg>');
+      background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 2 2"><path fill="%23474747" d="M0,0H1V2H2V1H0Z"/></svg>')
+        0 0 / 25% repeat;
     }
     wc-chess-board.analysis-overlay:before {
       box-shadow: 0 0 0 1px #1976d2;
@@ -486,15 +487,13 @@ if (host === "chess.com" || host.endsWith(".chess.com")) {
     wc-chess-board .hint {
       background-color: #567;
     }
-    .clock-icon-icon > svg {
-      transform: none;
-    }
+    .clock-icon-icon > svg,
     .clock-time-monospace {
+      transform: none;
       position: absolute;
     }
     .evaluation-bar-score {
-      padding-left: 1px;
-      padding-right: 1px;
+      padding: 1px;
     }
   `;
   if (pathname === "/home") {
@@ -924,19 +923,20 @@ if (host.endsWith(".bilibili.com")) {
       --bg3: #000;
       --bg1_float: #000;
       --bg2_float: #000;
-      --bg3_float: #000;
       --text1: #fff;
       --text2: #fff;
-      --text3: #fff;
-      --line_regular: #999;
+      --line_regular: #888;
       --graph_bg_bright: #000;
       --graph_bg_thin: #000;
       --graph_bg_regular: #000;
       --graph_bg_thick: #000;
       --graph_weak: #000;
     }
-    .b-img {
-      background-color: #666;
+    .b-img,
+    .history-list .r-info,
+    .history-list .r-info .title {
+      background: #000;
+      color: #fff;
     }
     #app .bg,
     #app .bgc {
