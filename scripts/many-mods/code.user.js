@@ -2,18 +2,14 @@
 // @name        Many Mods
 // @description Many many small modify for many sites.
 // @namespace   https://greasyfork.org/users/197529
-// @version     2.0.76
+// @version     2.0.81
 // @author      kkocdko
 // @license     Unlicense
 // @match       *://*/*
 // @exclude-match  *://127.0.0.1:8109/*
 // @exclude-match  *://127.0.0.1:9393/*
 // @exclude-match  *://127.0.0.1:9090/*
-// @exclude-match  *://*@47.100.126.230:*/*
-// @exclude-match  *://47.100.126.230:*/*
-// @exclude-match  *://forum.suse.org.cn/*
 // @exclude-match  *://generated.vusercontent.net/*
-// @exclude-match  *://caddyserver.com/*
 // @exclude-match  *://godbolt.org/*
 // @exclude-match  *://vercel.com/*
 // @exclude-match  *://v0.dev/*
@@ -24,15 +20,11 @@
 // @exclude-match  *://skydom.pecpoc.com/*
 // @exclude-match  *://material.angular.io/*
 // @exclude-match  *://caniuse.com/*
-// @exclude-match  *://developer.mozilla.org/*
-// @exclude-match  *://*.mdn.mozilla.net/*
 // @exclude-match  *://esbuild.github.io/*
 // @exclude-match  *://flutter.github.io/*
 // @exclude-match  *://gallery.flutter.dev/*
 // @exclude-match  *://codesandbox.io/*
 // @exclude-match  *://codepen.io/*
-// @exclude-match  *://doc.rust-lang.org/*
-// @exclude-match  *://rust-lang.github.io/*
 // @exclude-match  *://*.xda-developers.com/*
 // @exclude-match  *://online-go.com/*
 // @exclude-match  *://x.com/*
@@ -59,8 +51,6 @@
 // @exclude-match  *://*.skk.moe/*
 // @exclude-match  *://regex101.com/*
 // @exclude-match  *://*.js13kgames.com/*
-// @exclude-match  *://esp-rs.github.io/*
-// @exclude-match  *://*.curl.se/*
 // @exclude-match  *://*.toolpad.io/*
 // @exclude-match  *://happy0316.top/*
 // @exclude-match  *://parceljs.org/*
@@ -186,6 +176,17 @@ const disableHeavyFeatures = () => {
     .databases()
     .then((dbs) => dbs.map((db) => indexedDB.deleteDatabase(db.name)));
 };
+
+// MDN
+if (host === "developer.mozilla.org") {
+  darkOptions = undefined;
+  css`
+    .code-example {
+      --code-background-block: #000;
+      border: 1px solid #777;
+    }
+  `;
+}
 
 // React Docs
 if (host === "beta.reactjs.org") {
@@ -353,18 +354,17 @@ if (host === "aistudio.google.com" || host === "gemini.google.com") {
   darkOptions = undefined;
   css`
     html,
-    * {
+    body,
+    .banner-and-app-container,
+    .chat-container input-container {
       --color-canvas-background_revamp: #000;
+      --color-surface-container-high_revamp: #252627;
       --gem-sys-color--surface: #000;
       --gem-sys-color--surface-container: #000;
       --mat-sidenav-content-text-color: #fff;
       --mat-sys-on-background: #fff;
       --gem-sys-color--on-surface: #fff;
       --gem-sys-color--surface-container-high: #252628;
-    }
-    body,
-    .banner-and-app-container,
-    .chat-container input-container {
       background: #000;
     }
     input-container.input-gradient::before {
@@ -380,6 +380,8 @@ if (host === "chat.qwen.ai") {
     html {
       --container-primary-bgweb: #000;
       --container-secondary-bgweb: #000;
+      --container-primary-bgapp: #000;
+      --container-secondary-bgapp: #000;
       --container-primary-fill: #000;
       --container-secondary-fill: #000;
     }
@@ -393,14 +395,13 @@ if (host === "chat.qwen.ai") {
 
 // Doubao (bytedance)
 if (host.endsWith(".doubao.com")) {
-  Object.defineProperty(globalThis.navigator, "serviceWorker", {}); // Disable the ServiceWorker to save cache storate
+  disableHeavyFeatures();
 }
 
 // Katex
 if (host === "katex.org") {
   css`
     .demo {
-      /* filter: invert(1); */
       flex-direction: column-reverse;
     }
     .demo-right,
@@ -413,44 +414,6 @@ if (host === "katex.org") {
   document.querySelector(".demo-right").onclick = function () {
     this.parentNode.requestFullscreen();
   };
-}
-
-// Luogu
-if (host === "www.luogu.com.cn") {
-  let timer = null;
-  new MutationObserver(() => {
-    clearTimeout(timer);
-    timer = setTimeout(() => {
-      for (const el of document.querySelectorAll("a[target=_blank]"))
-        el.removeAttribute("target");
-    }, 500);
-  }).observe(document.body, {
-    characterData: true,
-    subtree: true,
-  });
-  css`
-    @media (prefers-color-scheme: dark) {
-      html {
-        filter: brightness(1.2);
-      }
-      .problem-card img {
-        filter: invert(1);
-      }
-    }
-    html {
-      overflow: overlay;
-    }
-    section.side > :not(.card) {
-      display: none;
-    }
-    .main-container {
-      margin-left: 0;
-    }
-    #app > nav:not(:hover) {
-      opacity: 0.3;
-      transform: translate(calc(-100% + 20px), calc(100% - 20px));
-    }
-  `;
 }
 
 if (host === "chess.com" || host.endsWith(".chess.com")) {
@@ -468,7 +431,8 @@ if (host === "chess.com" || host.endsWith(".chess.com")) {
       --evalWidth: calc(2rem - 2px);
     }
     wc-chess-board {
-      background-image: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 8 8"><rect width="8" height="8" fill="%23474747"/><path fill="black" d="M1,1v-1h1v1h1v-1h1v1h1v-1h1v1h1v-1h1v1z M0,2v-1h1v1h1v-1h1v1h1v-1h1v1h1v-1h1v1z M1,3v-1h1v1h1v-1h1v1h1v-1h1v1h1v-1h1v1z M0,4v-1h1v1h1v-1h1v1h1v-1h1v1h1v-1h1v1z M1,5v-1h1v1h1v-1h1v1h1v-1h1v1h1v-1h1v1z M0,6v-1h1v1h1v-1h1v1h1v-1h1v1h1v-1h1v1z M1,7v-1h1v1h1v-1h1v1h1v-1h1v1h1v-1h1v1z M0,8v-1h1v1h1v-1h1v1h1v-1h1v1h1v-1h1v1z"/></svg>');
+      background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 2 2"><path fill="%23474747" d="M0,0H1V2H2V1H0Z"/></svg>')
+        0 0 / 25% repeat;
     }
     wc-chess-board.analysis-overlay:before {
       box-shadow: 0 0 0 1px #1976d2;
@@ -483,15 +447,13 @@ if (host === "chess.com" || host.endsWith(".chess.com")) {
     wc-chess-board .hint {
       background-color: #567;
     }
-    .clock-icon-icon > svg {
-      transform: none;
-    }
+    .clock-icon-icon > svg,
     .clock-time-monospace {
+      transform: none;
       position: absolute;
     }
     .evaluation-bar-score {
-      padding-left: 1px;
-      padding-right: 1px;
+      padding: 1px;
     }
   `;
   if (pathname === "/home") {
@@ -536,32 +498,6 @@ if (host === "v2ex.com" || host.endsWith(".v2ex.com")) {
     }
     a:visited {
       color: #999;
-    }
-  `;
-}
-
-// rCore Tutoral
-if (host === "rcore-os.github.io" || host === "rcore-os.cn") {
-  css`
-    html {
-      font-size: 1.1em;
-    }
-    * {
-      background: #000;
-      color: #fff;
-    }
-    .content {
-      padding: 0 0.3em 0 0;
-    }
-    img:not(.avatar > *) {
-      filter: invert(1) hue-rotate(180deg);
-    }
-    .mobile-header:not(:hover),
-    .back-to-top:not(:hover) {
-      opacity: 0;
-    }
-    .highlight .w {
-      text-decoration: none;
     }
   `;
 }
@@ -729,11 +665,6 @@ if (host === "www.bing.com" && pathname === "/search") {
     #b_algospacing .b_algospacing_link {
       color: #acf;
     }
-    /*
-    a strong {
-      box-shadow: inset 0 -2px 0 0 #ff06;
-    }
-    */
     #b_header,
     .b_scopebar {
       padding-top: 0;
@@ -750,36 +681,6 @@ if (host === "www.bing.com" && pathname === "/search") {
     #b_results .b_algoheader,
     #b_results .b_algoheader * {
       background-color: #0000;
-    }
-  `;
-}
-
-// OpenWRT LuCI Docs
-if (host === "openwrt.github.io") {
-  css`
-    .navigation {
-      background-color: #000;
-      filter: invert(1);
-    }
-    ::-webkit-scrollbar {
-      width: 8px;
-      background-color: #000;
-    }
-    ::-webkit-scrollbar-corner {
-      background-color: #000;
-    }
-  `;
-}
-
-// OpenWRT Local
-if (host === "192.168.1.1") {
-  css`
-    @media (prefers-color-scheme: dark) {
-      header > .fill {
-        filter: invert(1);
-        background: #000;
-        box-shadow: 0 1px #777;
-      }
     }
   `;
 }
@@ -815,24 +716,6 @@ if (host === "redis.io") {
   `;
 }
 
-// MUI Docs
-if (host === "mui.com") {
-  css`
-    #__next > div,
-    nav[aria-label="documentation"] > .MuiDrawer-root > div {
-      background: #000;
-    }
-    #__next > div > header {
-      position: absolute;
-    }
-    .MuiCode-root pre,
-    [id^="demo-:"] {
-      background: #000;
-      border: 2px solid #355678dd;
-    }
-  `;
-}
-
 // Youtube
 if (host.endsWith(".youtube.com")) {
   darkOptions = undefined;
@@ -847,19 +730,13 @@ if (host.endsWith(".youtube.com")) {
     ytm-pivot-bar-renderer {
       height: 42px;
     }
-    /* place the nerd info box to the bottom */
-    .ytp-sfn {
-      position: fixed;
-      top: unset;
-      bottom: 0px;
-      left: 0;
-    }
-    /*
     .ytp-mweb-player {
       transform: none;
       transition: none;
     }
-    */
+    .ad-showing video {
+      visibility: hidden;
+    }
   `;
   // https://greasyfork.org/scripts/457579  使用移动版(平板布局)页面  https://m.youtube.com/?persist_app=1&app=m
   // https://greasyfork.org/scripts/525586  允许后台播放
@@ -921,19 +798,20 @@ if (host.endsWith(".bilibili.com")) {
       --bg3: #000;
       --bg1_float: #000;
       --bg2_float: #000;
-      --bg3_float: #000;
       --text1: #fff;
       --text2: #fff;
-      --text3: #fff;
-      --line_regular: #999;
+      --line_regular: #888;
       --graph_bg_bright: #000;
       --graph_bg_thin: #000;
       --graph_bg_regular: #000;
       --graph_bg_thick: #000;
       --graph_weak: #000;
     }
-    .b-img {
-      background-color: #666;
+    .b-img,
+    .history-list .r-info,
+    .history-list .r-info .title {
+      background: #000;
+      color: #fff;
     }
     #app .bg,
     #app .bgc {
