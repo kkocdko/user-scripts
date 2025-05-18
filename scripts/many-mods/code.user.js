@@ -738,7 +738,8 @@ if (host.endsWith(".youtube.com")) {
       visibility: hidden;
     }
   `;
-  // https://greasyfork.org/scripts/457579  使用移动版(平板布局)页面  https://m.youtube.com/?persist_app=1&app=m
+  // localStorage["yt-player-quality"]=JSON.stringify({data:"{\"quality\":144,\"previousQuality\":144}",expiration:5747494973140,creation:1747494973140})
+  // https://greasyfork.org/scripts/457579  使用移动版(平板布局)页面  https://m.youtube.com/?persist_app=1&app=m  |  app=desktop
   // https://greasyfork.org/scripts/525586  允许后台播放
 }
 
@@ -789,6 +790,31 @@ if (host === "tower.im") {
 // Bilibili
 if (host.endsWith(".bilibili.com")) {
   disableHeavyFeatures();
+  // https://linux.do/t/topic/642419
+  // globalThis.MediaSource.isTypeSupported = () => true;
+  // globalThis.navigator.mediaCapabilities.decodingInfo = (obj) => {
+  //   return Promise.resolve({
+  //     keySystemAccess: null,
+  //     supported: true,
+  //     smooth: true,
+  //     powerEfficient: true,
+  //   });
+  // };
+  // HTMLMediaElement.prototype.canPlayType = function (obj) {
+  //   return "probably";
+  // };
+  // const timer = setInterval(() => {
+  //   try {
+  //     let list = globalThis.__playinfo__.data.dash.video;
+  //     for (const [i, v] of Object.entries(list)) {
+  //       if (v.codecs.startsWith("avc1.")) {
+  //         list.splice(i, 1);
+  //       }
+  //     }
+  //     clearInterval(timer);
+  //     console.log("remove avc1 done");
+  //   } catch (_) {}
+  // }, 100);
   darkOptions = undefined;
   css`
     :root {
