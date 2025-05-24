@@ -2,7 +2,7 @@
 // @name        Many Mods
 // @description Many many small modify for many sites.
 // @namespace   https://greasyfork.org/users/197529
-// @version     2.0.81
+// @version     2.0.82
 // @author      kkocdko
 // @license     Unlicense
 // @match       *://*/*
@@ -175,6 +175,15 @@ const disableHeavyFeatures = () => {
   indexedDB
     .databases()
     .then((dbs) => dbs.map((db) => indexedDB.deleteDatabase(db.name)));
+};
+
+const slowdownTimers = () => {
+  const realSetInterval = globalThis.setInterval;
+  const realSetTimeout = globalThis.setTimeout;
+  globalThis.setInterval = (handler, timeout, ...args) =>
+    realSetInterval(handler, timeout * 2, ...args);
+  globalThis.setTimeout = (handler, timeout, ...args) =>
+    realSetTimeout(handler, timeout * 2, ...args);
 };
 
 // MDN
@@ -352,6 +361,7 @@ if (host === "chatgpt.com") {
 // Google AI Studio / Gemini
 if (host === "aistudio.google.com" || host === "gemini.google.com") {
   darkOptions = undefined;
+  slowdownTimers();
   css`
     html,
     body,
@@ -721,10 +731,12 @@ if (host.endsWith(".youtube.com")) {
   darkOptions = undefined;
   disableHeavyFeatures();
   css`
+    * {
+      backdrop-filter: none;
+    }
     ytm-pivot-bar-renderer,
     ytm-mobile-topbar-renderer:not(.topbar-transparent-background),
     ytm-feed-filter-chip-bar-renderer {
-      backdrop-filter: none;
       background-color: #000;
     }
     ytm-pivot-bar-renderer {
