@@ -2,7 +2,7 @@
 // @name        Many Mods
 // @description Many many small modify for many sites.
 // @namespace   https://greasyfork.org/users/197529
-// @version     2.0.82
+// @version     2.0.85
 // @author      kkocdko
 // @license     Unlicense
 // @match       *://*/*
@@ -16,19 +16,18 @@
 // @exclude-match  *://*.github.dev/*
 // @exclude-match  *://discord.com/*
 // @exclude-match  *://replit.com/*
+// @exclude-match  *://*.y8.com/*
 // @exclude-match  *://html5.gamedistribution.com/*
 // @exclude-match  *://skydom.pecpoc.com/*
+// @exclude-match  *://online-go.com/*
+// @exclude-match  *://krunker.io/*
+// @exclude-match  *://*.js13kgames.com/*
 // @exclude-match  *://material.angular.io/*
 // @exclude-match  *://caniuse.com/*
 // @exclude-match  *://esbuild.github.io/*
-// @exclude-match  *://flutter.github.io/*
-// @exclude-match  *://gallery.flutter.dev/*
 // @exclude-match  *://codesandbox.io/*
 // @exclude-match  *://codepen.io/*
 // @exclude-match  *://*.xda-developers.com/*
-// @exclude-match  *://online-go.com/*
-// @exclude-match  *://x.com/*
-// @exclude-match  *://twitter.com/*
 // @exclude-match  *://meet.google.com/*
 // @exclude-match  *://tailwindcss.com/*
 // @exclude-match  *://mui.com/*
@@ -44,20 +43,16 @@
 // @exclude-match  *://*.lhr.life/*
 // @exclude-match  *://*.cdnjs.com/*
 // @exclude-match  *://*.feishu.cn/*
-// @exclude-match  *://*.y8.com/*
 // @exclude-match  *://nnethercote.github.io/perf-book/*
 // @exclude-match  *://colab.research.google.com/*
 // @exclude-match  *://danielyxie.github.io/bitburner/*
 // @exclude-match  *://*.skk.moe/*
 // @exclude-match  *://regex101.com/*
-// @exclude-match  *://*.js13kgames.com/*
 // @exclude-match  *://*.toolpad.io/*
-// @exclude-match  *://happy0316.top/*
 // @exclude-match  *://parceljs.org/*
 // @exclude-match  *://*.draw.io/*
 // @exclude-match  *://*.diagrams.net/*
 // @exclude-match  *://live.mdnplay.dev/*
-// @exclude-match  *://*.opensuse.org/*
 // @exclude-match  *://hedzr.com/*
 // @require     https://registry.npmmirror.com/darkreader/4.9.105/files/darkreader.js
 // @grant       GM_xmlhttpRequest
@@ -70,15 +65,11 @@
 // Only contains custom style and other tiny functions that wouldn't shock users
 
 const afterEnter = (f, condition = () => document.documentElement) => {
-  if (condition()) {
-    f();
-    return;
-  }
+  if (condition()) return f();
   const observer = new MutationObserver(() => {
-    if (condition()) {
-      observer.disconnect();
-      f();
-    }
+    if (!condition()) return;
+    observer.disconnect();
+    f();
   });
   observer.observe(document, { childList: true, subtree: true });
 };
@@ -92,13 +83,8 @@ const afterReady = (f) => {
     window.removeEventListener("load", listener);
     f();
   };
-  if (
-    document.readyState === "interactive" ||
-    document.readyState === "complete"
-  ) {
-    listener();
-    return;
-  }
+  const state = document.readyState;
+  if (state === "interactive" || state === "complete") return listener();
   window.addEventListener("DOMContentLoaded", listener);
   window.addEventListener("load", listener);
 };
@@ -123,20 +109,20 @@ let darkOptions = {
   contrast: 115,
   brightness: 130, // { contrast: 115, brightness: 130 } just got the background color down to #000
   fixes: undefined,
-  fetchMethod: (input, init) => {
-    if (!self.GM_xmlhttpRequest) return window.fetch(input, init);
-    return new Promise((resolve, reject) => {
-      GM_xmlhttpRequest({
-        url: input,
-        onerror: reject,
-        onload: (response) => {
-          resolve({
-            text: async () => response.responseText,
-            blob: async () => response.response,
-          });
-        },
-      });
+  fetchMethod: (url, init) => {
+    if (!self.GM_xmlhttpRequest) return window.fetch(url, init);
+    const { promise, resolve, reject } = Promise.withResolvers();
+    GM_xmlhttpRequest({
+      url,
+      onerror: reject,
+      onload: (r) => {
+        resolve({
+          text: async () => r.responseText,
+          blob: async () => r.response,
+        });
+      },
     });
+    return promise;
   },
 };
 
@@ -367,8 +353,8 @@ if (host === "aistudio.google.com" || host === "gemini.google.com") {
     body,
     .banner-and-app-container,
     .chat-container input-container {
-      --color-canvas-background_revamp: #000;
-      --color-surface-container-high_revamp: #252627;
+      --color-canvas-background: #000;
+      --color-surface-container-high: #252627;
       --gem-sys-color--surface: #000;
       --gem-sys-color--surface-container: #000;
       --mat-sidenav-content-text-color: #fff;
@@ -929,6 +915,24 @@ if (host.endsWith(".zhihu.com")) {
     .OpenInAppButton,
     .PlaceHolder.List-item {
       display: none;
+    }
+    @media (orientation: portrait) {
+      header.AppHeader,
+      .Topstory-container,
+      .Topstory-mainColumn {
+        width: 100%;
+        min-width: 100%;
+        margin: 0;
+        padding: 0;
+        margin-top: -10px;
+      }
+      .Topstory-mainColumn + * {
+        display: none;
+      }
+      .ContentItem-actions {
+        overflow: auto;
+        overflow: overlay;
+      }
     }
   `;
 }
