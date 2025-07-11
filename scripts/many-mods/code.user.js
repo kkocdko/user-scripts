@@ -2,7 +2,7 @@
 // @name        Many Mods
 // @description Many many small modify for many sites.
 // @namespace   https://greasyfork.org/users/197529
-// @version     2.0.85
+// @version     2.0.86
 // @author      kkocdko
 // @license     Unlicense
 // @match       *://*/*
@@ -919,19 +919,41 @@ if (host.endsWith(".zhihu.com")) {
     @media (orientation: portrait) {
       header.AppHeader,
       .Topstory-container,
-      .Topstory-mainColumn {
+      .Topstory-mainColumn,
+      .Question-main,
+      .Question-mainColumn {
         width: 100%;
         min-width: 100%;
-        margin: 0;
         padding: 0;
+        margin: 0;
         margin-top: -10px;
       }
-      .Topstory-mainColumn + * {
+      .Question-mainColumn + *,
+      .Topstory-mainColumn + *,
+      .ContentItem-actions > :not(:first-child) svg {
         display: none;
       }
+      .Question-mainColumn .List-item,
+      .Topstory-mainColumn .TopstoryItem {
+        padding: 4px 4px 8px;
+      }
       .ContentItem-actions {
+        left: 0;
+        padding: 4px 0 0 0;
+        margin: 0;
         overflow: auto;
         overflow: overlay;
+      }
+      .ContentItem-actions > * {
+        margin: 0 8px 0 0;
+      }
+      .ContentItem-actions.is-fixed {
+        width: 100vw;
+        padding: 0;
+        background: #111a;
+      }
+      .Modal-content {
+        max-width: 100vw;
       }
     }
   `;
