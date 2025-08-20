@@ -2,7 +2,7 @@
 // @name        Many Mods
 // @description Many many small modify for many sites.
 // @namespace   https://greasyfork.org/users/197529
-// @version     2.0.87
+// @version     2.0.89
 // @author      kkocdko
 // @license     Unlicense
 // @match       *://*/*
@@ -780,59 +780,16 @@ if (host.endsWith(".zhihu.com")) {
     }
   }
   css`
-    .ContentItem-title,
-    .QuestionHeader-title {
-      font-weight: normal;
-    }
     :root {
       --GBL01A: #1363be;
     }
-    .OpenInAppButton,
-    .PlaceHolder.List-item {
-      display: none;
-    }
-    @media (orientation: portrait) {
-      header.AppHeader,
-      .Topstory-container,
-      .Topstory-mainColumn,
-      .Question-main,
-      .Question-mainColumn {
-        width: 100vw;
-        min-width: 100vw;
-        padding: 0;
-        margin: 0;
-        margin-top: -10px;
-      }
-      .Question-mainColumn + *,
-      .Topstory-mainColumn + *,
-      .ContentItem-actions > :not(:first-child) svg {
-        display: none;
-      }
-      .Question-mainColumn .List-item,
-      .Topstory-mainColumn .TopstoryItem,
-      .QuestionAnswer-content {
-        padding: 4px 4px 8px;
-      }
-      .ContentItem-actions {
-        left: 0;
-        padding: 4px 0 0 0;
-        margin: 0;
-        overflow: auto;
-        overflow: overlay;
-      }
-      .ContentItem-actions > * {
-        margin: 0 8px 0 0;
-      }
-      .ContentItem-actions.is-fixed {
-        width: 100vw;
-        padding: 0;
-        background: #111a;
-      }
-      .Modal-content {
-        max-width: 100vw;
-      }
+    .ContentItem-actions.is-fixed {
+      width: 100vw;
+      padding: 0;
+      background: #111a;
     }
   `;
+  // 另一部分已拆分至 zhihu-desktop-on-mobile
 }
 
 if (host === "leetcode.com" || host === "leetcode.cn") {
