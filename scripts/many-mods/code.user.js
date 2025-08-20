@@ -2,7 +2,7 @@
 // @name        Many Mods
 // @description Many many small modify for many sites.
 // @namespace   https://greasyfork.org/users/197529
-// @version     2.0.86
+// @version     2.0.87
 // @author      kkocdko
 // @license     Unlicense
 // @match       *://*/*
@@ -54,7 +54,7 @@
 // @exclude-match  *://*.diagrams.net/*
 // @exclude-match  *://live.mdnplay.dev/*
 // @exclude-match  *://hedzr.com/*
-// @require     https://registry.npmmirror.com/darkreader/4.9.105/files/darkreader.js
+// @require     https://registry.npmmirror.com/darkreader/4.9.109/files/darkreader.js
 // @grant       GM_xmlhttpRequest
 // @run-at      document-start
 // ==/UserScript==
@@ -228,40 +228,6 @@ if (host === "gitee.com") {
       background: #000;
     }
   `;
-  // darkOptions.fetchMethod = async () => ({ text: async () => "" });
-  // darkOptions = undefined;
-  // css`
-  //   *,
-  //   #git-header-nav {
-  //     background: none;
-  //     color: #fff;
-  //   }
-  //   html,
-  //   body {
-  //     background: #000;
-  //   }
-  // `;
-}
-
-// linakesi ci
-if (host === "ci.linakesi.com") {
-  darkOptions.sepia = 10;
-  css`
-    .breadcrumbs__wrapper,
-    .breadcrumbs__wrapper *,
-    .stage-start-time,
-    .stage-start-time *,
-    .cbwf-dialog,
-    .cbwf-dialog *,
-    .jenkins-config-widgets,
-    .jenkins-config {
-      background: #000;
-      color: #fff;
-    }
-    .stage-wrapper * {
-      text-shadow: none;
-    }
-  `;
 }
 
 if (host === "m.nmc.cn") {
@@ -280,21 +246,6 @@ if (host === "m.nmc.cn") {
       -webkit-user-drag: unset;
       touch-action: unset;
       transform: none;
-    }
-  `;
-}
-
-// cnbeta
-if (host === "www.cnbeta.com.tw") {
-  css`
-    * {
-      animation: none;
-      transition: none;
-    }
-    .cnbeta-side-yellow-title,
-    .cnbeta-side-blue-title,
-    .page-footer {
-      background: none;
     }
   `;
 }
@@ -330,20 +281,6 @@ if (host === "manpages.debian.org") {
   `;
 }
 
-// ChatGPT
-if (host === "chatgpt.com") {
-  darkOptions = undefined;
-  afterReady(() => {
-    setTimeout(() => {
-      css`
-        html {
-          --main-surface-primary: #000;
-        }
-      `;
-    }, 1000);
-  });
-}
-
 // Google AI Studio / Gemini
 if (host === "aistudio.google.com" || host === "gemini.google.com") {
   darkOptions = undefined;
@@ -369,7 +306,7 @@ if (host === "aistudio.google.com" || host === "gemini.google.com") {
   `;
 }
 
-// Qwen (Ali)
+// Qwen (Alibaba)
 if (host === "chat.qwen.ai") {
   darkOptions = undefined;
   css`
@@ -414,9 +351,7 @@ if (host === "katex.org") {
 
 if (host === "chess.com" || host.endsWith(".chess.com")) {
   darkOptions = undefined;
-  Object.defineProperty(globalThis.navigator, "serviceWorker", {});
-  Object.defineProperty(globalThis, "Worker", {});
-  Object.defineProperty(globalThis, "SharedWorker", {});
+  disableHeavyFeatures();
   css`
     body {
       background: #000;
@@ -581,16 +516,6 @@ if (host === "blog.csdn.net") {
   `;
 }
 
-// CodeMao
-if (host === "turtle.codemao.cn") {
-  css`
-    header,
-    .cm-editor {
-      background: #fff;
-    }
-  `;
-}
-
 // GitHub
 if (host === "github.com" || host === "gist.github.com") {
   darkOptions = undefined;
@@ -613,32 +538,6 @@ if (host === "github.com" || host === "gist.github.com") {
       --bgColor-muted: #000;
       --bgColor-default: #000;
       --bgColor-inset: #000;
-    }
-  `;
-}
-
-// WeChat Web
-if (host === "wx.qq.com" || host === "wx2.qq.com") {
-  css`
-    .download_entry,
-    .copyright {
-      display: none;
-    }
-    body {
-      background: none;
-      overflow: hidden;
-    }
-    .main {
-      height: 100vh;
-      min-height: unset;
-      padding: 0;
-    }
-    .main_inner {
-      max-width: unset;
-      border-radius: 0;
-    }
-    .nav_view {
-      top: 154px;
     }
   `;
 }
@@ -788,31 +687,6 @@ if (host === "tower.im") {
 // Bilibili
 if (host.endsWith(".bilibili.com")) {
   disableHeavyFeatures();
-  // https://linux.do/t/topic/642419
-  // globalThis.MediaSource.isTypeSupported = () => true;
-  // globalThis.navigator.mediaCapabilities.decodingInfo = (obj) => {
-  //   return Promise.resolve({
-  //     keySystemAccess: null,
-  //     supported: true,
-  //     smooth: true,
-  //     powerEfficient: true,
-  //   });
-  // };
-  // HTMLMediaElement.prototype.canPlayType = function (obj) {
-  //   return "probably";
-  // };
-  // const timer = setInterval(() => {
-  //   try {
-  //     let list = globalThis.__playinfo__.data.dash.video;
-  //     for (const [i, v] of Object.entries(list)) {
-  //       if (v.codecs.startsWith("avc1.")) {
-  //         list.splice(i, 1);
-  //       }
-  //     }
-  //     clearInterval(timer);
-  //     console.log("remove avc1 done");
-  //   } catch (_) {}
-  // }, 100);
   darkOptions = undefined;
   css`
     :root {
@@ -833,7 +707,8 @@ if (host.endsWith(".bilibili.com")) {
     }
     .b-img,
     .history-list .r-info,
-    .history-list .r-info .title {
+    .history-list .r-info .title,
+    .opus-module-content {
       background: #000;
       color: #fff;
     }
@@ -922,8 +797,8 @@ if (host.endsWith(".zhihu.com")) {
       .Topstory-mainColumn,
       .Question-main,
       .Question-mainColumn {
-        width: 100%;
-        min-width: 100%;
+        width: 100vw;
+        min-width: 100vw;
         padding: 0;
         margin: 0;
         margin-top: -10px;
@@ -934,7 +809,8 @@ if (host.endsWith(".zhihu.com")) {
         display: none;
       }
       .Question-mainColumn .List-item,
-      .Topstory-mainColumn .TopstoryItem {
+      .Topstory-mainColumn .TopstoryItem,
+      .QuestionAnswer-content {
         padding: 4px 4px 8px;
       }
       .ContentItem-actions {
@@ -992,16 +868,17 @@ if (host === "web.telegram.org" && (pathname === "/k/" || pathname === "/k")) {
     * {
       backdrop-filter: none;
       animation: none;
+      transition: none;
     }
     html {
-      --body-background-color: #000000;
+      --body-background-color: #000;
       --body-background-color-rgb: 0, 0, 0;
       --background-color-true: #181818;
       --background-color: var(--background-color-true);
-      --message-background-color: #000000;
-      --message-out-background-color: #000000;
+      --message-background-color: #000;
+      --message-out-background-color: #000;
       --message-out-background-color-rgb: 0, 0, 0;
-      --surface-color: #000000;
+      --surface-color: #000;
       --surface-color-rgb: 0, 0, 0;
       --menu-background-color: #222222;
       --primary-color: #b6abed;
@@ -1011,13 +888,13 @@ if (host === "web.telegram.org" && (pathname === "/k/" || pathname === "/k")) {
       box-shadow: inset 0 -1px 0 0 #555;
     }
     .chatlist-chat.active {
-      --background: #000000;
+      --background: #000;
       box-shadow: inset 0 0 0 2px;
     }
     .chat-input .btn-send,
     .btn-corner,
     .reaction-block:before {
-      background-color: #000000;
+      background-color: #000;
       box-shadow: inset 0 0 0 1px #888;
     }
     .avatar-like custom-emoji-renderer-element,
@@ -1025,7 +902,7 @@ if (host === "web.telegram.org" && (pathname === "/k/" || pathname === "/k")) {
       display: none;
     }
     .chat-background {
-      background-color: #000000;
+      background-color: #000;
     }
   `;
 }
@@ -1035,7 +912,7 @@ if (darkOptions) {
     if (darkOptions.fetchMethod)
       DarkReader.setFetchMethod(darkOptions.fetchMethod);
     // https://github.com/darkreader/darkreader/issues/9567
-    const raf = window.requestAnimationFrame;
+    const raf = window.requestAnimationFrame; // slow down requestAnimationFrame temporarily
     window.requestAnimationFrame = (f) => setTimeout(f, 700);
     DarkReader.auto(darkOptions, darkOptions.fixes);
     window.requestAnimationFrame = raf;
@@ -1044,7 +921,7 @@ if (darkOptions) {
     afterEnter(() => run());
   } else {
     console.log("[many-mods] start load darkreader by dynamic import");
-    const url = `https://registry.npmmirror.com/darkreader/4.9.105/files/darkreader.js`;
+    const url = `https://registry.npmmirror.com/darkreader/4.9.109/files/darkreader.js`;
     import(url).then(() => afterEnter(() => run()));
   }
 }
