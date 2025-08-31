@@ -4,7 +4,7 @@
 // @description Use full-featured desktop web zhihu on your phone.
 // @description:zh-CN 在你的手机上使用全功能的知乎桌面网页版。
 // @namespace   https://greasyfork.org/users/197529
-// @version     0.1.2
+// @version     0.1.3
 // @author      kkocdko
 // @license     Unlicense
 // @match       *://*.zhihu.com/*
@@ -39,11 +39,18 @@ css`
     display: none;
   }
   @media (orientation: portrait) {
+    header.AppHeader {
+      overflow: auto;
+    }
     header.AppHeader,
     .Topstory-container,
     .Topstory-mainColumn,
     .Question-main,
-    .Question-mainColumn {
+    .Question-mainColumn,
+    .Search-container,
+    .SearchMain,
+    .Profile-main,
+    .Profile-mainColumn {
       width: 100vw;
       min-width: 100vw;
       padding: 0;
@@ -55,7 +62,9 @@ css`
     .ContentItem-actions > :not(:first-child) svg {
       display: none;
     }
+    .Search-container .List-item,
     .Question-mainColumn .List-item,
+    .Profile-mainColumn .List-item,
     .Topstory-mainColumn .TopstoryItem,
     .QuestionAnswer-content {
       padding: 4px 4px 8px;
@@ -66,6 +75,7 @@ css`
       margin: 0;
       overflow: auto;
       overflow: overlay;
+      overflow-y: hidden;
     }
     .ContentItem-actions > * {
       margin: 0 8px 0 0;
