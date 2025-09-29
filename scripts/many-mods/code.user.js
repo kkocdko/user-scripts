@@ -2,7 +2,7 @@
 // @name        Many Mods
 // @description Many many small modify for many sites.
 // @namespace   https://greasyfork.org/users/197529
-// @version     2.0.90
+// @version     2.0.91
 // @author      kkocdko
 // @license     Unlicense
 // @match       *://*/*
@@ -556,9 +556,11 @@ if (host === "www.bing.com" && pathname === "/search") {
     #bpage #b_results > * {
       margin: 0;
     }
-    #sb_form_q,
-    .b_bop_cs_sb {
+    #sb_form_q {
       border: none;
+    }
+    #b_copilot_search_container {
+      display: none;
     }
     #b_results .b_algoheader,
     #b_results .b_algoheader * {
