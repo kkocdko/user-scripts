@@ -2,14 +2,12 @@
 // @name        Many Mods
 // @description Many many small modify for many sites.
 // @namespace   https://greasyfork.org/users/197529
-// @version     2.0.91
+// @version     2.0.93
 // @author      kkocdko
 // @license     Unlicense
 // @match       *://*/*
 // @exclude-match  *://127.0.0.1:8109/*
-// @exclude-match  *://127.0.0.1:9393/*
 // @exclude-match  *://127.0.0.1:9090/*
-// @exclude-match  *://generated.vusercontent.net/*
 // @exclude-match  *://godbolt.org/*
 // @exclude-match  *://vercel.com/*
 // @exclude-match  *://v0.dev/*
@@ -54,7 +52,7 @@
 // @exclude-match  *://*.diagrams.net/*
 // @exclude-match  *://live.mdnplay.dev/*
 // @exclude-match  *://hedzr.com/*
-// @require     https://registry.npmmirror.com/darkreader/4.9.109/files/darkreader.js
+// @require     https://registry.npmmirror.com/darkreader/4.9.112/files/darkreader.js
 // @grant       GM_xmlhttpRequest
 // @run-at      document-start
 // ==/UserScript==
@@ -559,6 +557,7 @@ if (host === "www.bing.com" && pathname === "/search") {
     #sb_form_q {
       border: none;
     }
+    #rcld_animation,
     #b_copilot_search_container {
       display: none;
     }
@@ -849,6 +848,28 @@ if (host === "oi-wiki.org") {
   `;
 }
 
+if (host === "makerworld.com.cn" || host === "makerworld.com") {
+  darkOptions = undefined;
+  css`
+    body {
+      --mui-palette-colorSystem-bg_middle: #000;
+      --mui-palette-colorSystem-bg_base: #000;
+      --mui-palette-colorSystem-grey900: #ffffff;
+      --mui-palette-colorSystem-grey800: #f5f5f5;
+      --mui-palette-colorSystem-grey700: #d6d6d6;
+      --mui-palette-colorSystem-grey600: #b8b8b8;
+    }
+    .footer.js-footer,
+    :not(.one) > .top-row + * {
+      display: none;
+    }
+    :not(.one) > .top-row > div > .one {
+      height: 50px;
+      margin-top: -10px;
+    }
+  `;
+}
+
 // Telegram Web K > settings > language > show translate button = off
 if (host === "web.telegram.org" && (pathname === "/k/" || pathname === "/k")) {
   darkOptions = undefined;
@@ -907,7 +928,7 @@ if (darkOptions) {
     afterEnter(() => run());
   } else {
     console.log("[many-mods] start load darkreader by dynamic import");
-    const url = `https://registry.npmmirror.com/darkreader/4.9.109/files/darkreader.js`;
+    const url = `https://registry.npmmirror.com/darkreader/4.9.112/files/darkreader.js`;
     import(url).then(() => afterEnter(() => run()));
   }
 }
