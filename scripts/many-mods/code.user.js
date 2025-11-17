@@ -2,14 +2,12 @@
 // @name        Many Mods
 // @description Many many small modify for many sites.
 // @namespace   https://greasyfork.org/users/197529
-// @version     2.0.89
+// @version     2.0.94
 // @author      kkocdko
 // @license     Unlicense
 // @match       *://*/*
 // @exclude-match  *://127.0.0.1:8109/*
-// @exclude-match  *://127.0.0.1:9393/*
 // @exclude-match  *://127.0.0.1:9090/*
-// @exclude-match  *://generated.vusercontent.net/*
 // @exclude-match  *://godbolt.org/*
 // @exclude-match  *://vercel.com/*
 // @exclude-match  *://v0.dev/*
@@ -54,7 +52,7 @@
 // @exclude-match  *://*.diagrams.net/*
 // @exclude-match  *://live.mdnplay.dev/*
 // @exclude-match  *://hedzr.com/*
-// @require     https://registry.npmmirror.com/darkreader/4.9.109/files/darkreader.js
+// @require     https://registry.npmmirror.com/darkreader/4.9.112/files/darkreader.js
 // @grant       GM_xmlhttpRequest
 // @run-at      document-start
 // ==/UserScript==
@@ -183,19 +181,6 @@ if (host === "developer.mozilla.org") {
   `;
 }
 
-// React Docs
-if (host === "beta.reactjs.org") {
-  css`
-    .sp-editor {
-      height: auto;
-      max-height: unset;
-    }
-    .sp-editor ~ * {
-      display: none;
-    }
-  `;
-}
-
 // Kubernetes Docs
 if (host === "kubernetes.io") {
   css`
@@ -250,15 +235,6 @@ if (host === "m.nmc.cn") {
   `;
 }
 
-// wechat articles
-if (host.endsWith("mp.weixin.qq.com")) {
-  css`
-    #page-content {
-      background: #000;
-    }
-  `;
-}
-
 // Debian man pages
 if (host === "manpages.debian.org") {
   darkOptions = undefined;
@@ -287,21 +263,11 @@ if (host === "aistudio.google.com" || host === "gemini.google.com") {
   slowdownTimers();
   css`
     html,
-    body,
-    .banner-and-app-container,
-    .chat-container input-container {
-      --color-canvas-background: #000;
-      --color-surface-container-high: #252627;
-      --gem-sys-color--surface: #000;
-      --gem-sys-color--surface-container: #000;
-      --mat-sidenav-content-text-color: #fff;
-      --mat-sys-on-background: #fff;
-      --gem-sys-color--on-surface: #fff;
-      --gem-sys-color--surface-container-high: #252628;
+    body {
+      --color-v3-surface: #000;
+      --color-v3-surface-container: #000;
+      --color-v3-surface-left-nav: #000;
       background: #000;
-    }
-    input-container.input-gradient::before {
-      display: none;
     }
   `;
 }
@@ -351,7 +317,7 @@ if (host === "katex.org") {
 
 if (host === "chess.com" || host.endsWith(".chess.com")) {
   darkOptions = undefined;
-  disableHeavyFeatures();
+  // disableHeavyFeatures();
   css`
     body {
       background: #000;
@@ -422,10 +388,6 @@ if (host === "v2ex.com" || host.endsWith(".v2ex.com")) {
     }
     h1 {
       font-weight: normal;
-    }
-    .disable_now {
-      background: none;
-      border: 1px solid #666;
     }
     a:visited {
       color: #999;
@@ -516,28 +478,13 @@ if (host === "blog.csdn.net") {
   `;
 }
 
-// GitHub
+// GitHub // must use with [ Settings > Increase contrast: on ]
 if (host === "github.com" || host === "gist.github.com") {
   darkOptions = undefined;
   css`
     html {
-      --color-fg-default: #fff;
-      --color-canvas-default: #000;
-      --color-page-header-bg: #000;
-      --color-canvas-subtle: #000;
-      --color-btn-bg: #000;
-      --color-border-default: #777;
-      --color-btn-border: #777;
-      --color-border-muted: #777;
-      --color-canvas-overlay: #000;
-      --color-header-bg: #000;
-      --color-fg-muted: hsl(212deg 9% 74%);
-      --color-accent-fg: hsl(215deg 56% 66%);
-      --button-primary-bgColor-rest: #09b43aee;
-      --button-default-bgColor-rest: #000;
       --bgColor-muted: #000;
-      --bgColor-default: #000;
-      --bgColor-inset: #000;
+      --control-bgColor-rest: #000;
     }
   `;
 }
@@ -572,6 +519,10 @@ if (host === "www.bing.com" && pathname === "/search") {
     }
     #sb_form_q {
       border: none;
+    }
+    #rcld_animation,
+    #b_copilot_search_container {
+      display: none;
     }
     #b_results .b_algoheader,
     #b_results .b_algoheader * {
@@ -631,14 +582,57 @@ if (host.endsWith(".youtube.com")) {
       transform: none;
       transition: none;
     }
-    .ad-showing video {
-      visibility: hidden;
+    .ad-showing video,
+    .player-controls-background {
+      display: none;
     }
   `;
   // localStorage["yt-player-quality"]=JSON.stringify({data:"{\"quality\":144,\"previousQuality\":144}",expiration:5747494973140,creation:1747494973140})
-  // https://greasyfork.org/scripts/457579  使用移动版(平板布局)页面  https://m.youtube.com/?persist_app=1&app=m  |  app=desktop
-  // https://greasyfork.org/scripts/525586  允许后台播放
+  // 使用移动版(平板布局)页面  https://m.youtube.com/?persist_app=1&app=m  |  app=desktop
 }
+// 允许后台播放 https://greasyfork.org/scripts/521370
+/*
+// [patch:20250915]
+window.addEventListener('visibilitychange', e => {
+  e.stopImmediatePropagation();
+  setTimeout(() => document.querySelector('video').play(), 2000);
+}, true);
+*/
+/*
+// [backup:20250915]
+// ==UserScript==
+// @name         YouTube Background Playback - Kiwi Browser
+// @namespace    https://greasyfork.org/en/users/670188-hacker09?sort=daily_installs
+// @version      1
+// @description  Enable YouTube background playback in Kiwi.
+// @author       hacker09
+// @match        *://*.youtube.com/*
+// @match        *://*.youtube-nocookie.com/*
+// @run-at       document-end
+// @grant        none
+// ==/UserScript==
+ 
+'use strict';
+const lactRefreshInterval = 5 * 60 * 1000; // 5 mins
+const initialLactDelay = 1000;
+ 
+// Page Visibility API
+Object.defineProperties(document, { 'hidden': { value: false }, 'visibilityState': { value: 'visible' } });
+window.addEventListener('visibilitychange', e => e.stopImmediatePropagation(), true);
+ 
+// _lact stuff
+function waitForYoutubeLactInit(delay = initialLactDelay) {
+  if (window.hasOwnProperty('_lact')) {
+    window.setInterval(() => { window._lact = Date.now(); }, lactRefreshInterval);
+  }
+  else{
+    window.setTimeout(() => waitForYoutubeLactInit(delay * 2), delay);
+  }
+ 
+}
+ 
+waitForYoutubeLactInit();
+*/
 
 // Bing Login
 if (host === "login.live.com") {
@@ -818,6 +812,28 @@ if (host === "oi-wiki.org") {
   `;
 }
 
+if (host === "makerworld.com.cn" || host === "makerworld.com") {
+  darkOptions = undefined;
+  css`
+    body {
+      --mui-palette-colorSystem-bg_middle: #000;
+      --mui-palette-colorSystem-bg_base: #000;
+      --mui-palette-colorSystem-grey900: #ffffff;
+      --mui-palette-colorSystem-grey800: #f5f5f5;
+      --mui-palette-colorSystem-grey700: #d6d6d6;
+      --mui-palette-colorSystem-grey600: #b8b8b8;
+    }
+    .footer.js-footer,
+    :not(.one) > .top-row + * {
+      display: none;
+    }
+    :not(.one) > .top-row > div > .one {
+      height: 50px;
+      margin-top: -10px;
+    }
+  `;
+}
+
 // Telegram Web K > settings > language > show translate button = off
 if (host === "web.telegram.org" && (pathname === "/k/" || pathname === "/k")) {
   darkOptions = undefined;
@@ -826,8 +842,6 @@ if (host === "web.telegram.org" && (pathname === "/k/" || pathname === "/k")) {
       backdrop-filter: none;
       animation: none;
       transition: none;
-    }
-    html {
       --body-background-color: #000;
       --body-background-color-rgb: 0, 0, 0;
       --background-color-true: #181818;
@@ -878,7 +892,7 @@ if (darkOptions) {
     afterEnter(() => run());
   } else {
     console.log("[many-mods] start load darkreader by dynamic import");
-    const url = `https://registry.npmmirror.com/darkreader/4.9.109/files/darkreader.js`;
+    const url = `https://registry.npmmirror.com/darkreader/4.9.112/files/darkreader.js`;
     import(url).then(() => afterEnter(() => run()));
   }
 }
