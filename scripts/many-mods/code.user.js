@@ -2,7 +2,7 @@
 // @name        Many Mods
 // @description Many many small modify for many sites.
 // @namespace   https://greasyfork.org/users/197529
-// @version     2.0.94
+// @version     2.0.96
 // @author      kkocdko
 // @license     Unlicense
 // @match       *://*/*
@@ -52,7 +52,7 @@
 // @exclude-match  *://*.diagrams.net/*
 // @exclude-match  *://live.mdnplay.dev/*
 // @exclude-match  *://hedzr.com/*
-// @require     https://registry.npmmirror.com/darkreader/4.9.112/files/darkreader.js
+// @require     https://registry.npmmirror.com/darkreader/4.9.119/files/darkreader.js
 // @grant       GM_xmlhttpRequest
 // @run-at      document-start
 // ==/UserScript==
@@ -155,7 +155,9 @@ const disableHeavyFeatures = () => {
   Object.defineProperty(globalThis.navigator, "serviceWorker", {
     value: { getRegistrations: async () => {} },
   });
-  Object.defineProperty(globalThis.indexedDB, "open", {});
+  Object.defineProperty(globalThis.indexedDB, "open", {
+    value: () => Promise.resolve(),
+  });
   indexedDB
     .databases()
     .then((dbs) => dbs.map((db) => indexedDB.deleteDatabase(db.name)));
@@ -317,10 +319,10 @@ if (host === "katex.org") {
 
 if (host === "chess.com" || host.endsWith(".chess.com")) {
   darkOptions = undefined;
-  // disableHeavyFeatures();
+  disableHeavyFeatures();
   css`
     body {
-      background: #000;
+      --color-bg-primary: #000;
       --color-neutrals-white: #bbb;
       --gutter: 0rem;
       --gutterSmall: 1px;
@@ -349,8 +351,15 @@ if (host === "chess.com" || host.endsWith(".chess.com")) {
       transform: none;
       position: absolute;
     }
+    .mobile-toolbar-wrapper,
     .evaluation-bar-score {
       padding: 1px;
+    }
+    .sidebar-link * {
+      overflow: unset;
+    }
+    .icon-font-chess::before {
+      content: attr(data-figurine);
     }
   `;
   if (pathname === "/home") {
@@ -680,8 +689,8 @@ if (host === "tower.im") {
 
 // Bilibili
 if (host.endsWith(".bilibili.com")) {
-  disableHeavyFeatures();
   darkOptions = undefined;
+  disableHeavyFeatures();
   css`
     :root {
       --brand_pink: #d67;
@@ -723,11 +732,7 @@ if (
 ) {
   darkOptions = undefined;
   afterEnter(
-    () => {
-      // force enable highcontrast dark theme when not login
-      document.body.classList.add("theme-dark");
-      document.body.classList.add("theme-highcontrast");
-    },
+    () => document.body.classList.add("theme-dark", "theme-highcontrast"), // force enable highcontrast dark theme when not login
     () => document?.body?.classList?.add
   );
   css`
@@ -735,30 +740,18 @@ if (
       --theme-post-title-color: #7cbfed;
       --theme-link-color: #7cbfed;
     }
-    #question-header a[href="/questions/ask"],
-    body {
-      background: #000;
-      color: #fff;
-    }
     .js-consent-banner,
-    .js-dismissable-hero {
+    .js-dismissable-hero,
+    .site-header--container {
       display: none;
     }
     header.js-top-bar {
       position: absolute;
-      margin: 0;
-      border-top: none;
-      background: none;
     }
-    header.js-top-bar * {
+    #question-header a[href="/questions/ask"],
+    .s-sidebarwidget {
       background: none;
-    }
-    .site-header--container {
-      display: none;
-    }
-    .s-sidebarwidget,
-    .s-sidebarwidget * {
-      background: none;
+      color: var(--theme-link-color);
     }
   `;
 }
@@ -816,20 +809,29 @@ if (host === "makerworld.com.cn" || host === "makerworld.com") {
   darkOptions = undefined;
   css`
     body {
-      --mui-palette-colorSystem-bg_middle: #000;
+      --mui-palette-colorSystem-bg: #000;
       --mui-palette-colorSystem-bg_base: #000;
+      --mui-palette-colorSystem-bg_top: #000;
+      --mui-palette-colorSystem-bg_middle: #000;
       --mui-palette-colorSystem-grey900: #ffffff;
       --mui-palette-colorSystem-grey800: #f5f5f5;
       --mui-palette-colorSystem-grey700: #d6d6d6;
       --mui-palette-colorSystem-grey600: #b8b8b8;
     }
-    .footer.js-footer,
-    :not(.one) > .top-row + * {
-      display: none;
+    main > header {
+      position: absolute;
+      left: 0;
+      height: 36px;
+      padding: 0 4px 0 4px;
     }
-    :not(.one) > .top-row > div > .one {
-      height: 50px;
-      margin-top: -10px;
+    main > header > * {
+      max-height: 30px;
+    }
+    .global_new {
+      position: relative;
+      top: 0;
+      padding: 4px 0;
+      margin-top: -28px;
     }
   `;
 }
@@ -892,7 +894,7 @@ if (darkOptions) {
     afterEnter(() => run());
   } else {
     console.log("[many-mods] start load darkreader by dynamic import");
-    const url = `https://registry.npmmirror.com/darkreader/4.9.112/files/darkreader.js`;
+    const url = `https://registry.npmmirror.com/darkreader/4.9.119/files/darkreader.js`;
     import(url).then(() => afterEnter(() => run()));
   }
 }
