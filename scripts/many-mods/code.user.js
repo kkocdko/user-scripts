@@ -2,7 +2,7 @@
 // @name        Many Mods
 // @description Many many small modify for many sites.
 // @namespace   https://greasyfork.org/users/197529
-// @version     2.0.96
+// @version     2.0.101
 // @author      kkocdko
 // @license     Unlicense
 // @match       *://*/*
@@ -52,7 +52,7 @@
 // @exclude-match  *://*.diagrams.net/*
 // @exclude-match  *://live.mdnplay.dev/*
 // @exclude-match  *://hedzr.com/*
-// @require     https://registry.npmmirror.com/darkreader/4.9.119/files/darkreader.js
+// @require     https://registry.npmmirror.com/darkreader/4.9.120/files/darkreader.js
 // @grant       GM_xmlhttpRequest
 // @run-at      document-start
 // ==/UserScript==
@@ -327,7 +327,6 @@ if (host === "chess.com" || host.endsWith(".chess.com")) {
       --gutter: 0rem;
       --gutterSmall: 1px;
       --subtractFrom: 0rem;
-      --evalWidth: calc(2rem - 2px);
     }
     wc-chess-board {
       background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 2 2"><path fill="%23474747" d="M0,0H1V2H2V1H0Z"/></svg>')
@@ -620,15 +619,12 @@ window.addEventListener('visibilitychange', e => {
 // @run-at       document-end
 // @grant        none
 // ==/UserScript==
- 
 'use strict';
 const lactRefreshInterval = 5 * 60 * 1000; // 5 mins
 const initialLactDelay = 1000;
- 
 // Page Visibility API
 Object.defineProperties(document, { 'hidden': { value: false }, 'visibilityState': { value: 'visible' } });
 window.addEventListener('visibilitychange', e => e.stopImmediatePropagation(), true);
- 
 // _lact stuff
 function waitForYoutubeLactInit(delay = initialLactDelay) {
   if (window.hasOwnProperty('_lact')) {
@@ -637,9 +633,7 @@ function waitForYoutubeLactInit(delay = initialLactDelay) {
   else{
     window.setTimeout(() => waitForYoutubeLactInit(delay * 2), delay);
   }
- 
 }
- 
 waitForYoutubeLactInit();
 */
 
@@ -691,6 +685,7 @@ if (host === "tower.im") {
 if (host.endsWith(".bilibili.com")) {
   darkOptions = undefined;
   disableHeavyFeatures();
+  localStorage.bilibili_player_gpu_renderer = "m3"; // force enable av1. dump "https://s1.hdslb.com/bfs/static/player/main/core.8dff69ea.js", keywords: "rtx [3-9]", "getGPUInfo()", "bilibili_player_gpu_renderer", "shouldUseHardwareDecodingAV1", "shouldUseNativeHEVCDecode", "mediaCapabilities"
   css`
     :root {
       --brand_pink: #d67;
@@ -894,7 +889,7 @@ if (darkOptions) {
     afterEnter(() => run());
   } else {
     console.log("[many-mods] start load darkreader by dynamic import");
-    const url = `https://registry.npmmirror.com/darkreader/4.9.119/files/darkreader.js`;
+    const url = `https://registry.npmmirror.com/darkreader/4.9.120/files/darkreader.js`;
     import(url).then(() => afterEnter(() => run()));
   }
 }
