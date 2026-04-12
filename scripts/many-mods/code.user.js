@@ -2,16 +2,16 @@
 // @name        Many Mods
 // @description Many many small modify for many sites.
 // @namespace   https://greasyfork.org/users/197529
-// @version     2.0.101
+// @version     2.0.102
 // @author      kkocdko
 // @license     Unlicense
 // @match       *://*/*
-// @exclude-match  *://127.0.0.1:8109/*
-// @exclude-match  *://127.0.0.1:9090/*
 // @exclude-match  *://godbolt.org/*
 // @exclude-match  *://vercel.com/*
-// @exclude-match  *://v0.dev/*
 // @exclude-match  *://*.github.dev/*
+// @exclude-match  *://ianlecorbeau.github.io/blog/*
+// @exclude-match  *://nnethercote.github.io/perf-book/*
+// @exclude-match  *://danielyxie.github.io/bitburner/*
 // @exclude-match  *://discord.com/*
 // @exclude-match  *://replit.com/*
 // @exclude-match  *://*.y8.com/*
@@ -20,20 +20,18 @@
 // @exclude-match  *://online-go.com/*
 // @exclude-match  *://krunker.io/*
 // @exclude-match  *://*.js13kgames.com/*
-// @exclude-match  *://material.angular.io/*
+// @exclude-match  *://*angular.io/*
 // @exclude-match  *://caniuse.com/*
-// @exclude-match  *://esbuild.github.io/*
 // @exclude-match  *://codesandbox.io/*
 // @exclude-match  *://codepen.io/*
 // @exclude-match  *://*.xda-developers.com/*
 // @exclude-match  *://meet.google.com/*
 // @exclude-match  *://tailwindcss.com/*
 // @exclude-match  *://mui.com/*
-// @exclude-match  *://react.fluentui.dev/*
+// @exclude-match  *://*.fluentui.dev/*
 // @exclude-match  *://chakra-ui.com/*
 // @exclude-match  *://ui.shadcn.com/*
 // @exclude-match  *://*.radix-ui.com/*
-// @exclude-match  *://ianlecorbeau.github.io/blog/*
 // @exclude-match  *://*.codeium.com/*
 // @exclude-match  *://*.babylonjs.com/*
 // @exclude-match  *://*.web.dev/*
@@ -41,9 +39,7 @@
 // @exclude-match  *://*.lhr.life/*
 // @exclude-match  *://*.cdnjs.com/*
 // @exclude-match  *://*.feishu.cn/*
-// @exclude-match  *://nnethercote.github.io/perf-book/*
 // @exclude-match  *://colab.research.google.com/*
-// @exclude-match  *://danielyxie.github.io/bitburner/*
 // @exclude-match  *://*.skk.moe/*
 // @exclude-match  *://regex101.com/*
 // @exclude-match  *://*.toolpad.io/*
@@ -128,12 +124,12 @@ afterEnter(() => {
   document.documentElement.style.setProperty(
     "color-scheme",
     "dark",
-    "important"
+    "important",
   );
   document.documentElement.style.setProperty(
     "background-color",
     "#000",
-    "important"
+    "important",
   );
 });
 css`
@@ -317,57 +313,22 @@ if (host === "katex.org") {
   };
 }
 
-if (host === "chess.com" || host.endsWith(".chess.com")) {
+if (host === "lichess.org") {
   darkOptions = undefined;
   disableHeavyFeatures();
   css`
-    body {
-      --color-bg-primary: #000;
-      --color-neutrals-white: #bbb;
-      --gutter: 0rem;
-      --gutterSmall: 1px;
-      --subtractFrom: 0rem;
+    /* piece-set = staunty */
+    cg-board > piece.white {
+      filter: brightness(0.85);
     }
-    wc-chess-board {
+    cg-board > piece.black {
+      filter: sepia(1) brightness(1.1);
+    }
+    cg-board::before {
       background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 2 2"><path fill="%23474747" d="M0,0H1V2H2V1H0Z"/></svg>')
         0 0 / 25% repeat;
     }
-    wc-chess-board.analysis-overlay:before {
-      box-shadow: 0 0 0 1px #1976d2;
-      background: none;
-    }
-    .piece:is(.wp, .wr, .wn, .wb, .wq, .wk) {
-      filter: brightness(0.9);
-    }
-    .piece:is(.bp, .br, .bn, .bb, .bq, .bk) {
-      filter: sepia(1) brightness(1.1);
-    }
-    wc-chess-board .hint {
-      background-color: #567;
-    }
-    .clock-icon-icon > svg,
-    .clock-time-monospace {
-      transform: none;
-      position: absolute;
-    }
-    .mobile-toolbar-wrapper,
-    .evaluation-bar-score {
-      padding: 1px;
-    }
-    .sidebar-link * {
-      overflow: unset;
-    }
-    .icon-font-chess::before {
-      content: attr(data-figurine);
-    }
   `;
-  if (pathname === "/home") {
-    const getEl = () => document.querySelector(".tv-player-component");
-    console.time("find_tv_remove");
-    afterEnter(() => {
-      getEl().remove(), console.timeEnd("find_tv_remove");
-    }, getEl);
-  }
 }
 
 // V2EX
@@ -728,7 +689,7 @@ if (
   darkOptions = undefined;
   afterEnter(
     () => document.body.classList.add("theme-dark", "theme-highcontrast"), // force enable highcontrast dark theme when not login
-    () => document?.body?.classList?.add
+    () => document?.body?.classList?.add,
   );
   css`
     * {
@@ -888,9 +849,10 @@ if (darkOptions) {
   if (window.DarkReader) {
     afterEnter(() => run());
   } else {
-    console.log("[many-mods] start load darkreader by dynamic import");
-    const url = `https://registry.npmmirror.com/darkreader/4.9.120/files/darkreader.js`;
-    import(url).then(() => afterEnter(() => run()));
+    alert("");
+    // console.log("[many-mods] start load darkreader by dynamic import");
+    // const url = `https://registry.npmmirror.com/darkreader/__placeholder__`;
+    // import(url).then(() => afterEnter(() => run()));
   }
 }
 
