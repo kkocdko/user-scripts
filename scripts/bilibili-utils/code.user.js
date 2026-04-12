@@ -2,11 +2,40 @@
 // @name        Bilibili Utils
 // @description Small utils
 // @namespace   https://greasyfork.org/users/197529
-// @version     0.1.0
+// @version     0.1.1
 // @author      kkocdko
 // @license     Unlicense
 // @match       *://www.bilibili.com/robots.txt
+// @match       *://www.bilibili.com/video/*
+// @run-at      document-start
 // ==/UserScript==
+
+addEventListener("keydown", (e) => {
+  const video = document.querySelector("video");
+
+  // origin ratio
+  if (e.key === "o") {
+    if (devicePixelRatio !== 1) return alert("please set scale = 1");
+    video.style.setProperty("width", video.videoWidth + "px", "important");
+    video.style.setProperty("height", video.videoHeight + "px", "important");
+    video.style.marginTop =
+      Math.round((innerHeight - video.videoHeight) / 3) + "px";
+  }
+
+  // reshape to 16:9
+  if (e.key === "r") {
+    if (!document.fullscreenElement) return;
+    let el = document.querySelector("video");
+    if (el.dataset.reshaped) return;
+    el.dataset.reshaped = "true";
+    let height = Math.trunc(el.clientHeight / 4) * 4;
+    el.style.height = height + "px";
+    el.style.width = Math.trunc(((height / 10) * 16) / 4) * 4 + "px";
+    el.style.objectFit = "fill";
+  }
+});
+
+throw new Error("stop");
 
 document.documentElement.style.colorScheme = "dark light";
 document.body.replaceChildren();
