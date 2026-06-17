@@ -2,7 +2,7 @@
 // @name        Many Mods
 // @description Many many small modify for many sites.
 // @namespace   https://greasyfork.org/users/197529
-// @version     2.0.102
+// @version     2.0.105
 // @author      kkocdko
 // @license     Unlicense
 // @match       *://*/*
@@ -48,7 +48,7 @@
 // @exclude-match  *://*.diagrams.net/*
 // @exclude-match  *://live.mdnplay.dev/*
 // @exclude-match  *://hedzr.com/*
-// @require     https://registry.npmmirror.com/darkreader/4.9.120/files/darkreader.js
+// @require     https://registry.npmmirror.com/darkreader/4.9.125/files/darkreader.js
 // @grant       GM_xmlhttpRequest
 // @run-at      document-start
 // ==/UserScript==
@@ -266,6 +266,27 @@ if (host === "aistudio.google.com" || host === "gemini.google.com") {
       --color-v3-surface-container: #000;
       --color-v3-surface-left-nav: #000;
       background: #000;
+    }
+    .chat-container .chat-view-container {
+      padding: 0 4px 0 0;
+    }
+    ms-playground-toolbar ms-header {
+      padding: 2px 4px 0 4px;
+    }
+    ms-prompt-box .prompt-box-container {
+      padding: 4px 8px;
+      border-radius: 0;
+      margin: -12px 0 0;
+    }
+    .prompt-box-container {
+      gap: 0;
+    }
+    * {
+      backdrop-filter: none;
+      -webkit-backdrop-filter: none;
+    }
+    ms-chat-bottom-overlay {
+      display: none;
     }
   `;
 }
@@ -496,6 +517,20 @@ if (host === "www.bing.com" && pathname === "/search") {
     #b_results .b_algoheader,
     #b_results .b_algoheader * {
       background-color: #0000;
+    }
+  `;
+}
+
+// Brave search
+if (host === "search.brave.com") {
+  darkOptions = undefined;
+  css`
+    body {
+      --color-search-background-page: #000;
+    }
+    .favicon-wrapper,
+    .image-grid-item {
+      background-color: #777;
     }
   `;
 }
