@@ -2,7 +2,7 @@
 // @name        Many Mods
 // @description Many many small modify for many sites.
 // @namespace   https://greasyfork.org/users/197529
-// @version     2.0.105
+// @version     2.0.109
 // @author      kkocdko
 // @license     Unlicense
 // @match       *://*/*
@@ -233,28 +233,6 @@ if (host === "m.nmc.cn") {
   `;
 }
 
-// Debian man pages
-if (host === "manpages.debian.org") {
-  darkOptions = undefined;
-  css`
-    * {
-      background-image: unset;
-      background: #000;
-      color: #fff;
-    }
-    a,
-    a * {
-      color: #acf;
-    }
-    .maincontent {
-      max-width: unset;
-    }
-    .Bl-tag > dd {
-      overflow: hidden;
-    }
-  `;
-}
-
 // Google AI Studio / Gemini
 if (host === "aistudio.google.com" || host === "gemini.google.com") {
   darkOptions = undefined;
@@ -358,6 +336,9 @@ if (host === "v2ex.com" || host.endsWith(".v2ex.com")) {
     window.stop();
     location.host = "v2ex.com";
     throw new Error("jumped");
+  }
+  if (!document.querySelector("#Wrapper.Night")) {
+    document.querySelector('a[href^="/settings/night/toggle?"]')?.click();
   }
   darkOptions = undefined;
   css`
@@ -529,8 +510,31 @@ if (host === "search.brave.com") {
       --color-search-background-page: #000;
     }
     .favicon-wrapper,
-    .image-grid-item {
+    .image-grid-item,
+    .infobox-thumbnail,
+    .suggestion .img {
       background-color: #777;
+    }
+  `;
+}
+
+// Brave search
+if (host.endsWith(".google.com") && pathname === "/search") {
+  darkOptions = undefined;
+  css`
+    body {
+      background: #000;
+    }
+    * {
+      color: #fff;
+    }
+    a,
+    a * {
+      color: #a9d3ff;
+    }
+    cite,
+    cite * {
+      color: #ccc;
     }
   `;
 }
@@ -871,7 +875,25 @@ if (host === "web.telegram.org" && (pathname === "/k/" || pathname === "/k")) {
   `;
 }
 
+// Facebook Messager
+if (host === "www.facebook.com" && pathname.startsWith("/messages/")) {
+  darkOptions = undefined;
+  css`
+    * {
+      --messenger-card-spacing: 0px;
+      --card-background: #000;
+      --surface-background: #000;
+      --mwp-header-background-color: #000;
+      --nav-bar-background: #000;
+      --messenger-card-background: #000;
+      --chat-outgoing-message-bubble-background-color: #234;
+      --chat-outgoing-message-background-gradient: none;
+    }
+  `;
+}
+
 if (darkOptions) {
+  console.log("ohh darkreader");
   const run = () => {
     if (darkOptions.fetchMethod)
       DarkReader.setFetchMethod(darkOptions.fetchMethod);
@@ -884,7 +906,7 @@ if (darkOptions) {
   if (window.DarkReader) {
     afterEnter(() => run());
   } else {
-    alert("");
+    alert("[many-mods] darkreader not loaded");
     // console.log("[many-mods] start load darkreader by dynamic import");
     // const url = `https://registry.npmmirror.com/darkreader/__placeholder__`;
     // import(url).then(() => afterEnter(() => run()));
