@@ -2,18 +2,20 @@
 // @name        Many Mods
 // @description Many many small modify for many sites.
 // @namespace   https://greasyfork.org/users/197529
-// @version     2.0.109
+// @version     2.0.113
 // @author      kkocdko
 // @license     Unlicense
 // @match       *://*/*
-// @exclude-match  *://godbolt.org/*
 // @exclude-match  *://vercel.com/*
 // @exclude-match  *://*.github.dev/*
 // @exclude-match  *://ianlecorbeau.github.io/blog/*
 // @exclude-match  *://nnethercote.github.io/perf-book/*
 // @exclude-match  *://danielyxie.github.io/bitburner/*
+// @exclude-match  *://crates.io/*
 // @exclude-match  *://discord.com/*
 // @exclude-match  *://replit.com/*
+// @exclude-match  *://missav.ai/*
+// @exclude-match  *://ender3v3ke.internal/*
 // @exclude-match  *://*.y8.com/*
 // @exclude-match  *://html5.gamedistribution.com/*
 // @exclude-match  *://skydom.pecpoc.com/*
@@ -28,8 +30,6 @@
 // @exclude-match  *://meet.google.com/*
 // @exclude-match  *://tailwindcss.com/*
 // @exclude-match  *://mui.com/*
-// @exclude-match  *://*.fluentui.dev/*
-// @exclude-match  *://chakra-ui.com/*
 // @exclude-match  *://ui.shadcn.com/*
 // @exclude-match  *://*.radix-ui.com/*
 // @exclude-match  *://*.codeium.com/*
@@ -46,9 +46,7 @@
 // @exclude-match  *://parceljs.org/*
 // @exclude-match  *://*.draw.io/*
 // @exclude-match  *://*.diagrams.net/*
-// @exclude-match  *://live.mdnplay.dev/*
-// @exclude-match  *://hedzr.com/*
-// @require     https://registry.npmmirror.com/darkreader/4.9.125/files/darkreader.js
+// @require     https://registry.npmmirror.com/darkreader/4.9.128/files/darkreader.js
 // @grant       GM_xmlhttpRequest
 // @run-at      document-start
 // ==/UserScript==
@@ -121,16 +119,10 @@ let darkOptions = {
 };
 
 afterEnter(() => {
-  document.documentElement.style.setProperty(
-    "color-scheme",
-    "dark",
-    "important",
-  );
-  document.documentElement.style.setProperty(
-    "background-color",
-    "#000",
-    "important",
-  );
+  const set = (k, v) =>
+    document.documentElement.style.setProperty(k, v, "important");
+  set("color-scheme", "dark");
+  set("background-color", "#000");
 });
 css`
   :root,
@@ -460,65 +452,44 @@ if (host === "github.com" || host === "gist.github.com") {
   `;
 }
 
-// Bing search
+// Bing Login
+if (host === "login.live.com") {
+  css`
+    .template-section.main-section {
+      background: #fff;
+    }
+  `;
+}
+
+// Bing Search
 if (host === "www.bing.com" && pathname === "/search") {
   darkOptions = undefined;
+  setTimeout(() => {
+    if (document.body.classList.contains("b_dark")) return;
+    setTimeout(() => id_l.click(), 700);
+    setTimeout(() => rdiodark.click(), 1400);
+  }, 500);
   css`
-    *,
-    #b_results *,
-    .b_scopebar ul:after,
-    .b_pinhead:not(.b_dark) #b_header {
-      background-image: unset;
-      background-color: #000;
-      color: #fff;
-      border-color: #777;
-    }
-    #b_results a,
-    #b_results a *:not(.rdtopattr *, .b_tpcn *),
-    #b_algospacing .b_algospacing_link {
-      color: #acf;
-    }
-    #b_header,
-    .b_scopebar {
-      padding-top: 0;
-      padding-bottom: 0;
-      margin-top: 0;
-      margin-bottom: 0;
-    }
-    #bpage #b_results > * {
-      margin: 0;
-    }
-    #sb_form_q {
-      border: none;
-    }
-    #rcld_animation,
-    #b_copilot_search_container {
+    #b_bop_cs_sb_place,
+    #ca_main {
       display: none;
     }
-    #b_results .b_algoheader,
-    #b_results .b_algoheader * {
-      background-color: #0000;
+    html,
+    #b_header,
+    #b_results > * {
+      --smtc-background-web-page-primary: #000;
+      background: #000;
+    }
+    #b_header {
+      position: relative;
+    }
+    #b_results a:not(:visited) {
+      color: #acf;
     }
   `;
 }
 
-// Brave search
-if (host === "search.brave.com") {
-  darkOptions = undefined;
-  css`
-    body {
-      --color-search-background-page: #000;
-    }
-    .favicon-wrapper,
-    .image-grid-item,
-    .infobox-thumbnail,
-    .suggestion .img {
-      background-color: #777;
-    }
-  `;
-}
-
-// Brave search
+// Google search
 if (host.endsWith(".google.com") && pathname === "/search") {
   darkOptions = undefined;
   css`
@@ -636,15 +607,6 @@ function waitForYoutubeLactInit(delay = initialLactDelay) {
 }
 waitForYoutubeLactInit();
 */
-
-// Bing Login
-if (host === "login.live.com") {
-  css`
-    .template-section.main-section {
-      background: #fff;
-    }
-  `;
-}
 
 // Tower
 if (host === "tower.im") {
@@ -803,7 +765,7 @@ if (host === "oi-wiki.org") {
 if (host === "makerworld.com.cn" || host === "makerworld.com") {
   darkOptions = undefined;
   css`
-    body {
+    * {
       --mui-palette-colorSystem-bg: #000;
       --mui-palette-colorSystem-bg_base: #000;
       --mui-palette-colorSystem-bg_top: #000;
@@ -812,21 +774,9 @@ if (host === "makerworld.com.cn" || host === "makerworld.com") {
       --mui-palette-colorSystem-grey800: #f5f5f5;
       --mui-palette-colorSystem-grey700: #d6d6d6;
       --mui-palette-colorSystem-grey600: #b8b8b8;
-    }
-    main > header {
-      position: absolute;
-      left: 0;
-      height: 36px;
-      padding: 0 4px 0 4px;
-    }
-    main > header > * {
-      max-height: 30px;
-    }
-    .global_new {
-      position: relative;
-      top: 0;
-      padding: 4px 0;
-      margin-top: -28px;
+      --mui-palette-colorSystem-primary: #07ab07;
+      --mui-palette-primary-main: #07ab07;
+      --pageContentSidePadding: 12px;
     }
   `;
 }
@@ -875,10 +825,13 @@ if (host === "web.telegram.org" && (pathname === "/k/" || pathname === "/k")) {
   `;
 }
 
-// Facebook Messager
+// Facebook Messager, do not use www.messenger.com
 if (host === "www.facebook.com" && pathname.startsWith("/messages/")) {
   darkOptions = undefined;
   css`
+    html#facebook {
+      overflow-y: hidden;
+    }
     * {
       --messenger-card-spacing: 0px;
       --card-background: #000;
@@ -898,10 +851,11 @@ if (darkOptions) {
     if (darkOptions.fetchMethod)
       DarkReader.setFetchMethod(darkOptions.fetchMethod);
     // https://github.com/darkreader/darkreader/issues/9567
-    const raf = window.requestAnimationFrame; // slow down requestAnimationFrame temporarily
-    window.requestAnimationFrame = (f) => setTimeout(f, 700);
+    const g = typeof unsafeWindow === "undefined" ? window : unsafeWindow;
+    const raf = g.requestAnimationFrame; // slow down requestAnimationFrame temporarily
+    g.requestAnimationFrame = (f) => setTimeout(f, 700);
     DarkReader.auto(darkOptions, darkOptions.fixes);
-    window.requestAnimationFrame = raf;
+    g.requestAnimationFrame = raf;
   };
   if (window.DarkReader) {
     afterEnter(() => run());
