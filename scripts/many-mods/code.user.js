@@ -2,7 +2,7 @@
 // @name        Many Mods
 // @description Many many small modify for many sites.
 // @namespace   https://greasyfork.org/users/197529
-// @version     2.0.113
+// @version     2.0.116
 // @author      kkocdko
 // @license     Unlicense
 // @match       *://*/*
@@ -258,7 +258,18 @@ if (host === "aistudio.google.com" || host === "gemini.google.com") {
     ms-chat-bottom-overlay {
       display: none;
     }
+    .show-lm-background::before {
+      content: unset;
+    }
   `;
+  // fix mobile keyboard bug
+  const t = setInterval(() => {
+    let el = document.querySelector(".top-bar-actions");
+    el = el.appendChild(document.createElement("input"));
+    el.setAttribute("style", "width:1em;position:absolute;left:-2em");
+    clearInterval(t);
+  }, 700);
+  setTimeout(() => clearInterval(t), 5000);
 }
 
 // Qwen (Alibaba)
