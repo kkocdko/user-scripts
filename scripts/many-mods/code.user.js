@@ -2,7 +2,7 @@
 // @name        Many Mods
 // @description Many many small modify for many sites.
 // @namespace   https://greasyfork.org/users/197529
-// @version     2.0.116
+// @version     2.0.117
 // @author      kkocdko
 // @license     Unlicense
 // @match       *://*/*
@@ -255,11 +255,11 @@ if (host === "aistudio.google.com" || host === "gemini.google.com") {
       backdrop-filter: none;
       -webkit-backdrop-filter: none;
     }
-    ms-chat-bottom-overlay {
-      display: none;
-    }
-    .show-lm-background::before {
+    ms-chat-bottom-overlay,
+    .show-lm-background::before,
+    .show-lm-background > .lm-glow {
       content: unset;
+      display: none;
     }
   `;
   // fix mobile keyboard bug
